@@ -1,9 +1,7 @@
 package org.hetsold.bugtracker.model;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /*
  * This class describe issue events depending on state change
