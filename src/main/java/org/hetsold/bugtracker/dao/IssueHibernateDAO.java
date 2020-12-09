@@ -1,17 +1,13 @@
 package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.model.Issue;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.orm.hibernate5.HibernateCallback;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
-import java.util.Optional;
 
 public class IssueHibernateDAO implements IssueDAO {
     private HibernateTemplate hibernateTemplate;
