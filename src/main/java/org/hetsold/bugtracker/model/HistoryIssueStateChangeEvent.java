@@ -2,8 +2,10 @@ package org.hetsold.bugtracker.model;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "BT_ISSUESTATECHANGEEVENT")
 public class HistoryIssueStateChangeEvent extends HistoryEvent {
     private State state;
     private String expectedFixVersion;

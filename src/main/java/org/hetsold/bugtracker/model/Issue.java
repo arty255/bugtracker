@@ -4,19 +4,17 @@ package org.hetsold.bugtracker.model;
  * A Issue object describe basic data about issue
  */
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
+@Table(name = "BT_ISSUE")
 public class Issue extends AbstractIdentity {
 
     private String issueId;
-    private String shotDescription;
+    private String shortDescription;
     private String fullDescription;
     private Date issueAppearanceTime;
     private Date ticketCreationTime;
@@ -25,8 +23,10 @@ public class Issue extends AbstractIdentity {
     private String existedResult;
     private String expectedResult;
     @ManyToOne
+    @JoinTable(name = "BT_ISSUE_REPORTEDBY", joinColumns = @JoinColumn(name = "ISSUEID"), inverseJoinColumns = @JoinColumn(name = "USERID"))
     private User reportedBy;
     @ManyToOne
+    @JoinTable(name = "BT_ISSUE_ASSIGNED", joinColumns = @JoinColumn(name = "ISSUEID"), inverseJoinColumns = @JoinColumn(name = "USERID"))
     private User assignedTo;
     private Severity severity;
     //todo: maybe optimize by using aggregator
@@ -48,12 +48,12 @@ public class Issue extends AbstractIdentity {
         this.issueId = issueId;
     }
 
-    public String getShotDescription() {
-        return shotDescription;
+    public String getShortDescription() {
+        return shortDescription;
     }
 
-    public void setShotDescription(String shotDescription) {
-        this.shotDescription = shotDescription;
+    public void setShortDescription(String shotDescription) {
+        this.shortDescription = shotDescription;
     }
 
     public String getFullDescription() {

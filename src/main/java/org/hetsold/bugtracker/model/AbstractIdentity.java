@@ -7,7 +7,7 @@ import java.util.Objects;
  * This util class describe typical JPA entity fields.
  */
 
-@Entity
+@MappedSuperclass
 public class AbstractIdentity {
     @Id
     private String uuid;

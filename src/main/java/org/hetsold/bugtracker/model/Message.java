@@ -2,8 +2,10 @@ package org.hetsold.bugtracker.model;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "BT_MESSAGE")
 public class Message extends AbstractIdentity {
     @ManyToOne
     private User messageCreator;

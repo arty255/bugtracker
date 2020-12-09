@@ -1,7 +1,6 @@
 create schema h_bugtracker;
 use h_bugtracker;
 
-
 drop table if exists bt_user;
 create table if not exists bt_user
 (
@@ -19,7 +18,7 @@ create table if not exists bt_message
     version        int,
     title          varchar(200),
     content        varchar(1500),
-    messageCreator long not null,
+    messageCreator varchar(40) not null,
     primary key (uuid),
     foreign key (messageCreator) references bt_user (uuid) on delete cascade
 );
@@ -49,7 +48,7 @@ create table if not exists bt_issue_assigned
 (
     issueId varchar(40) not null,
     userId  varchar(40),
-    primary key (issueId, issueId),
+    primary key (issueId, userId),
     foreign key (issueId) references bt_issue (uuid) on delete cascade
 );
 
@@ -58,7 +57,7 @@ create table if not exists bt_issue_reportedBy
 (
     issueId varchar(40) not null,
     userId  varchar(40) not null,
-    primary key (issueId, issueId),
+    primary key (issueId, userId),
     foreign key (issueId) references bt_issue (uuid) on delete cascade,
     foreign key (userId) references bt_user (uuid) on delete cascade
 );

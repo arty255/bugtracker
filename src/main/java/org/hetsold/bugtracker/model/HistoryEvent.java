@@ -8,6 +8,7 @@ import java.util.Date;
  * */
 
 @Entity
+@Table(name = "BT_HISTORYEVENT")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class HistoryEvent extends AbstractIdentity {
     @ManyToOne
