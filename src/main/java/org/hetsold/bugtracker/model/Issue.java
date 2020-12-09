@@ -38,6 +38,7 @@ public class Issue extends AbstractIdentity {
 
     public Issue() {
         history = new ArrayList<>();
+        currentState = State.OPEN;
     }
 
     public String getIssueId() {
@@ -158,5 +159,57 @@ public class Issue extends AbstractIdentity {
 
     public void setHistory(List<HistoryEvent> history) {
         this.history = history;
+    }
+
+    public static class Builder {
+        private Issue newIssue;
+
+        public Builder() {
+            newIssue = new Issue();
+        }
+
+        public Builder withIssueId(String issueId) {
+            newIssue.setIssueId(issueId);
+            return this;
+        }
+
+        public Builder withShortDescription(String shortDescription) {
+            newIssue.setShortDescription(shortDescription);
+            return this;
+        }
+
+        public Builder withFullDescription(String fullDescription) {
+            newIssue.setFullDescription(fullDescription);
+            return this;
+        }
+
+        public Builder withReproduceSteps(String reproduceSteps) {
+            newIssue.setReproduceSteps(reproduceSteps);
+            return this;
+        }
+
+        public Builder withProductVersion(String productVersion) {
+            newIssue.setProductVersion(productVersion);
+            return this;
+        }
+
+        public Builder withReportedBy(User reportedBy) {
+            newIssue.setReportedBy(reportedBy);
+            return this;
+        }
+
+        public Builder withIssueAppearanceTime(Date issueAppearanceTime) {
+            newIssue.setIssueAppearanceTime(issueAppearanceTime);
+            return this;
+        }
+
+        public Builder withTicketCreationTime(Date ticketCreationTime) {
+            newIssue.setTicketCreationTime(ticketCreationTime);
+            return this;
+        }
+
+        public Issue build() {
+            return newIssue;
+        }
     }
 }

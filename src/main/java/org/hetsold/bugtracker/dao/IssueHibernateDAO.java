@@ -46,4 +46,9 @@ public class IssueHibernateDAO implements IssueDAO {
             return 0;
         }
     }
+
+    @Override
+    public Issue getIssueById(String uuid) {
+        return hibernateTemplate.get(Issue.class, uuid);
+    }
 }

@@ -12,4 +12,6 @@ public interface IssueDAO {
     void delete(Issue issue);
 
     long getIssueCount();
+
+    Issue getIssueById(String uuid);
 }
