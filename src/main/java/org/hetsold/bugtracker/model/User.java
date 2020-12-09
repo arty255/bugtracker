@@ -19,10 +19,18 @@ public class User extends AbstractIdentity {
     @OneToMany(mappedBy = "messageCreator", fetch = FetchType.LAZY)
     private List<Message> messageList;
 
-    public User() {
+    {
         foundIssues = new ArrayList<>();
         assignedIssues = new ArrayList<>();
         messageList = new ArrayList<>();
+    }
+
+    public User() {
+    }
+
+    public User(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public String getFirstName() {

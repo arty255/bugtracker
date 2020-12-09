@@ -2,6 +2,8 @@ package org.hetsold.bugtracker;
 
 import org.hetsold.bugtracker.dao.IssueDAO;
 import org.hetsold.bugtracker.dao.IssueHibernateDAO;
+import org.hetsold.bugtracker.dao.UserDao;
+import org.hetsold.bugtracker.dao.UserHibernateDao;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +14,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
+import javax.persistence.Basic;
 import javax.sql.DataSource;
 import java.util.Properties;
 
@@ -39,6 +42,12 @@ public class AppConfig {
     @Bean
     public IssueDAO getIssueDAOBean(@Autowired SessionFactory sessionFactory) {
         return new IssueHibernateDAO(sessionFactory);
+    }
+
+    @Bean
+    @Autowired
+    public UserDao getUserDao(SessionFactory sessionFactory) {
+        return new UserHibernateDao(sessionFactory);
     }
 
     @Bean
