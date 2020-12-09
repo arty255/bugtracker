@@ -1,6 +1,8 @@
 package org.hetsold.bugtracker.model;
 
-import javax.persistence.*;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 import java.util.Objects;
 
 /*

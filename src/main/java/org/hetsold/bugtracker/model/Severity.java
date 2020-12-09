@@ -5,5 +5,6 @@ public enum Severity {
     CRITICAL,
     MEDIUM,
     MINOR,
-    TRIVIAL
+    TRIVIAL,
+    UNRATED
 }
