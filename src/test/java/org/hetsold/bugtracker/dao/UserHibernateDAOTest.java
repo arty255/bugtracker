@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 @Transactional
 public class UserHibernateDAOTest {
     @Autowired
-    private UserDao userDao;
+    private UserDAO userDao;
 
     private static List<User> userList = new ArrayList<>();
 

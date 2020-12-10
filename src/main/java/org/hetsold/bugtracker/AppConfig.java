@@ -1,9 +1,6 @@
 package org.hetsold.bugtracker;
 
-import org.hetsold.bugtracker.dao.IssueDAO;
-import org.hetsold.bugtracker.dao.IssueHibernateDAO;
-import org.hetsold.bugtracker.dao.UserDao;
-import org.hetsold.bugtracker.dao.UserHibernateDao;
+import org.hetsold.bugtracker.dao.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -38,14 +35,27 @@ public class AppConfig {
     }
 
     @Bean
-    public IssueDAO getIssueDAOBean(@Autowired SessionFactory sessionFactory) {
+    @Autowired
+    public IssueDAO getIssueDAOBean(SessionFactory sessionFactory) {
         return new IssueHibernateDAO(sessionFactory);
     }
 
     @Bean
     @Autowired
-    public UserDao getUserDao(SessionFactory sessionFactory) {
-        return new UserHibernateDao(sessionFactory);
+    public UserDAO getUserDao(SessionFactory sessionFactory) {
+        return new UserHibernateDAO(sessionFactory);
+    }
+
+    @Bean
+    @Autowired
+    public HistoryEventDAO getHistoryEventDAOBean(SessionFactory sessionFactory) {
+        return new HistoryEventHibernateDAO(sessionFactory);
+    }
+
+    @Bean
+    @Autowired
+    public MessageDAO getMessageDAOBean(SessionFactory sessionFactory) {
+        return new MessageHibernateDAO(sessionFactory);
     }
 
     @Bean

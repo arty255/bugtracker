@@ -1,6 +1,7 @@
 package org.hetsold.bugtracker.model;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -8,6 +9,7 @@ import javax.persistence.Table;
 @Table(name = "BT_ISSUEMESSAGEEVENT")
 public class HistoryIssueMessageEvent extends HistoryEvent {
     @OneToOne
+    @JoinColumn(name = "messageId")
     private Message message;
 
     public Message getMessage() {

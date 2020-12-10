@@ -4,7 +4,7 @@ import org.hetsold.bugtracker.model.User;
 
 import java.util.List;
 
-public interface UserDao {
+public interface UserDAO {
     void save(User user);
 
     List<User> listAll();

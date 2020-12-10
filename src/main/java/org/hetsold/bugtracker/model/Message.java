@@ -1,18 +1,23 @@
 package org.hetsold.bugtracker.model;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "BT_MESSAGE")
 public class Message extends AbstractIdentity {
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "messageCreator")
     private User messageCreator;
     private String title;
-    private String messageContent;
+    private String content;
 
     public Message() {
+    }
+
+    public Message(User messageCreator, String title, String messageContent) {
+        this.messageCreator = messageCreator;
+        this.title = title;
+        this.content = messageContent;
     }
 
     public User getMessageCreator() {
@@ -31,11 +36,11 @@ public class Message extends AbstractIdentity {
         this.title = title;
     }
 
-    public String getMessageContent() {
-        return messageContent;
+    public String getContent() {
+        return content;
     }
 
-    public void setMessageContent(String messageContent) {
-        this.messageContent = messageContent;
+    public void setContent(String content) {
+        this.content = content;
     }
 }

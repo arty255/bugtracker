@@ -9,10 +9,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-public class UserHibernateDao implements UserDao {
+public class UserHibernateDAO implements UserDAO {
     private HibernateTemplate hibernateTemplate;
 
-    public UserHibernateDao(SessionFactory sessionFactory) {
+    public UserHibernateDAO(SessionFactory sessionFactory) {
         hibernateTemplate = new HibernateTemplate(sessionFactory);
     }
 
