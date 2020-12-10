@@ -1,6 +1,10 @@
 package org.hetsold.bugtracker;
 
 import org.hetsold.bugtracker.dao.*;
+import org.hetsold.bugtracker.service.DefaultIssueService;
+import org.hetsold.bugtracker.service.DefaultUserService;
+import org.hetsold.bugtracker.service.IssueService;
+import org.hetsold.bugtracker.service.UserService;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -57,6 +61,18 @@ public class AppConfig {
     @Autowired
     public MessageDAO getMessageDAOBean(SessionFactory sessionFactory) {
         return new MessageHibernateDAO(sessionFactory);
+    }
+
+    @Bean
+    @Autowired
+    public UserService getUserServiceBean(UserDAO userDAO) {
+        return new DefaultUserService(userDAO);
+    }
+
+    @Bean
+    @Autowired
+    public IssueService getIssueServiceBean(IssueDAO issueDAO, UserDAO userDAO) {
+        return new DefaultIssueService(issueDAO, userDAO);
     }
 
     @Bean
