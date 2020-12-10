@@ -34,19 +34,20 @@ public class UserHibernateDAOTest {
 
     @Test
     public void checkIfUserCanBeSaved() {
-        userDao.save(userList.get(0));
-        List<User> resultUserList = userDao.listAll();
-        assertEquals(resultUserList.size(), 1);
+        User user = userList.get(0);
+        userDao.save(user);
+        User resultUser = userDao.getUserById(user.getUuid());
+        assertEquals(user.getUuid(), resultUser.getUuid());
+        assertEquals(user.getFirstName(), resultUser.getFirstName());
+        assertEquals(user.getLastName(), user.getLastName());
     }
 
     @Test
     public void checkIfUserCanBeDeleted() {
         userDao.save(userList.get(0));
-        userDao.save(userList.get(1));
-        userDao.delete(userList.get(1));
+        userDao.delete(userList.get(0));
         List<User> resultList = userDao.listAll();
-        assertEquals(resultList.size(), 1);
-        assertEquals(resultList.get(0).getUuid(), userList.get(0).getUuid());
+        assertEquals(resultList.size(), 0);
     }
 
     @Test
@@ -61,9 +62,7 @@ public class UserHibernateDAOTest {
 
     @Test
     public void checkIfUserCorrectCount() {
-        userDao.save(userList.get(0));
-        userDao.save(userList.get(1));
-        userDao.save(userList.get(2));
-        assertEquals(userDao.getUsersCount(), 3);
+        userList.forEach(item -> userDao.save(item));
+        assertEquals(userDao.getUsersCount(), userList.size());
     }
 }

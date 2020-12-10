@@ -26,6 +26,7 @@ public class AppConfig {
     }
 
     @Bean
+    @Autowired
     public LocalSessionFactoryBean getSessionFactoryBean(DataSource dataSource) {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
@@ -67,7 +68,7 @@ public class AppConfig {
 
     private Properties getAdditionalHibernateProperties() {
         Properties properties = new Properties();
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
         return properties;
     }
 }

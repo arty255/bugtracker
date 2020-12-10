@@ -10,12 +10,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.transaction.Transactional;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {org.hetsold.bugtracker.AppConfig.class, org.hetsold.bugtracker.TestAppConfig.class})
@@ -59,20 +59,19 @@ public class IssueHibernateDAOTest {
     }
 
     @Test
-    public void checkIfIssueExistsById() {
+    public void checkIfIssueCanBeFoundById() {
         Issue issue = issueList.get(2);
         issueDAO.save(issue);
         Issue resultIssue = issueDAO.getIssueById(issue.getUuid());
         assertNotNull(resultIssue);
         assertEquals(resultIssue.getUuid(), issue.getUuid());
         assertEquals(resultIssue.getIssueId(), issue.getIssueId());
+        assertEquals(resultIssue.getFullDescription(), issue.getFullDescription());
     }
 
     @Test
     public void checkIssueCorrectCount() {
-        issueDAO.save(issueList.get(0));
-        issueDAO.save(issueList.get(1));
-        issueDAO.save(issueList.get(2));
-        assertEquals(issueDAO.getIssueCount(), 3);
+        issueList.forEach(i -> issueDAO.save(i));
+        assertEquals(issueDAO.getIssueCount(), issueList.size());
     }
 }
