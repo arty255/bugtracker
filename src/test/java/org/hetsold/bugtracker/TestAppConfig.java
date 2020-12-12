@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 
 @Configuration
 public class TestAppConfig {
-    @Bean(name = "MySQLTest")
+    @Bean()
     @Profile("test")
     public DataSource getDataSourceBean() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
