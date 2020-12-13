@@ -1,6 +1,5 @@
 package org.hetsold.bugtracker.service;
 
-import org.hamcrest.core.Is;
 import org.hetsold.bugtracker.AppConfig;
 import org.hetsold.bugtracker.TestAppConfig;
 import org.hetsold.bugtracker.dao.IssueDAO;
