@@ -31,6 +31,8 @@ public class Issue extends AbstractIdentity {
     private Severity severity;
     //todo: maybe optimize by using aggregator
     private String fixVersion;
+    @Enumerated
+    @Column(columnDefinition = "tinyint")
     private State currentState;
 
     @OneToMany(mappedBy = "issue", fetch = FetchType.LAZY)

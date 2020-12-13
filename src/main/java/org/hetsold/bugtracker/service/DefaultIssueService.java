@@ -5,6 +5,7 @@ import org.hetsold.bugtracker.dao.UserDAO;
 import org.hetsold.bugtracker.model.Issue;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Transactional
 public class DefaultIssueService implements IssueService {
@@ -48,5 +49,10 @@ public class DefaultIssueService implements IssueService {
             throw new IllegalArgumentException("issue and uuid cannot be empty");
         }
         issueDAO.delete(issue);
+    }
+
+    @Override
+    public List<Issue> findIssueByCriteria(Issue issue) {
+        return issueDAO.getIssueByCriteria(issue);
     }
 }

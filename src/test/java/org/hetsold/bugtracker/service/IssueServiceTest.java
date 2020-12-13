@@ -1,5 +1,6 @@
 package org.hetsold.bugtracker.service;
 
+import org.hamcrest.core.Is;
 import org.hetsold.bugtracker.AppConfig;
 import org.hetsold.bugtracker.TestAppConfig;
 import org.hetsold.bugtracker.dao.IssueDAO;
@@ -15,22 +16,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
-
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class, TestAppConfig.class})
 @ActiveProfiles(profiles = {"test", "mock"})
 public class IssueServiceTest {
-    private Issue correctIssue;
-    private Issue incorrectIssueUser;
-    private Issue incorrectIssueDate;
-    private Issue incorrectIssueDescription;
-    private User user;
-
     @Autowired
     private IssueService issueService;
     @Autowired
@@ -38,82 +29,51 @@ public class IssueServiceTest {
     @Autowired
     private UserDAO userDAO;
 
+    IssueFactory issueFactory;
+
     @Before
     public void prepareData() {
-        user = new User("reportUser", "report user");
-        correctIssue = new Issue.Builder()
-                .withIssueId("issue number 1")
-                .withIssueAppearanceTime(new Date())
-                .withTicketCreationTime(new Date())
-                .withProductVersion("product version v0.1")
-                .withShortDescription("short description")
-                .withFullDescription("full description")
-                .withReproduceSteps("1.step 1, 2.step 2")
-                .withReportedBy(user)
-                .build();
-        incorrectIssueUser = new Issue.Builder()
-                .withIssueId("issue number 1")
-                .withIssueAppearanceTime(new Date())
-                .withTicketCreationTime(new Date())
-                .withProductVersion("product version v0.1")
-                .withShortDescription("short description")
-                .withFullDescription("full description")
-                .withReproduceSteps("1.step 1, 2.step 2")
-                .withReportedBy(null)
-                .build();
-        incorrectIssueDate = new Issue.Builder()
-                .withIssueId("issue number 1")
-                .withIssueAppearanceTime(Date.from(LocalDateTime.now().plusSeconds(5).atZone(ZoneId.systemDefault()).toInstant()))
-                .withTicketCreationTime(Date.from(LocalDateTime.now().plusSeconds(5).atZone(ZoneId.systemDefault()).toInstant()))
-                .withProductVersion("product version v0.1")
-                .withShortDescription("short description")
-                .withFullDescription("full description")
-                .withReproduceSteps("1.step 1, 2.step 2")
-                .withReportedBy(user)
-                .build();
-        incorrectIssueDescription = new Issue.Builder()
-                .withIssueId("issue number 1")
-                .withIssueAppearanceTime(new Date())
-                .withTicketCreationTime(new Date())
-                .withProductVersion("product version v0.1")
-                .withShortDescription("")
-                .withFullDescription("")
-                .withReproduceSteps("1.step 1, 2.step 2")
-                .withReportedBy(user)
-                .build();
+        User firstUser = new User("reportUser1", "report user1");
+        User secondUser = new User("reportUser2", "report user2");
+        issueFactory = new IssueFactory(firstUser, secondUser);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkIncorrectIssueDatesSaveThrowException() {
-        issueService.save(incorrectIssueDate);
-        Mockito.verify(issueDAO, Mockito.never()).save(incorrectIssueDate);
+        Issue factoryIssue = issueFactory.getIssue(IssueType.InvalidCreationDateIssue);
+        issueService.save(factoryIssue);
+        Mockito.verify(issueDAO, Mockito.never()).save(factoryIssue);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkIncorrectIssueUserSaveThrowException() {
-        issueService.save(incorrectIssueUser);
-        Mockito.verify(issueDAO, Mockito.never()).save(incorrectIssueUser);
+        Issue issue = issueFactory.getIssue(IssueType.InvalidUserIssue);
+        issueService.save(issue);
+        Mockito.verify(issueDAO, Mockito.never()).save(issue);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkEmptyIssueDescriptionAndShortDescriptionSaveThrowException() {
-        issueService.save(incorrectIssueDescription);
-        Mockito.verify(issueDAO, Mockito.never()).save(incorrectIssueDescription);
+        Issue issue = issueFactory.getIssue(IssueType.InvalidShortAndFullDescriptionIssue);
+        issueService.save(issue);
+        Mockito.verify(issueDAO, Mockito.never()).save(issue);
     }
 
     @Test
     public void checkIfCorrectIssueCanBeSaved() {
-        Mockito.when(userDAO.getUserById(correctIssue.getReportedBy().getUuid())).thenReturn(correctIssue.getReportedBy());
-        issueService.save(correctIssue);
-        Mockito.verify(issueDAO).save(correctIssue);
+        Issue issue = issueFactory.getIssue(IssueType.CorrectIssue);
+        Mockito.when(userDAO.getUserById(issue.getReportedBy().getUuid())).thenReturn(issue.getReportedBy());
+        issueService.save(issue);
+        Mockito.verify(issueDAO).save(issue);
     }
 
     @Test
     public void checkIfIssuePresentInListById() {
-        Mockito.when(issueDAO.getIssueById(correctIssue.getUuid())).thenReturn(correctIssue);
-        Issue resultIssue = issueService.getIssueById(correctIssue.getUuid());
-        Mockito.verify(issueDAO).getIssueById(correctIssue.getUuid());
-        assertEquals(correctIssue.getUuid(), resultIssue.getUuid());
+        Issue issue = issueFactory.getIssue(IssueType.CorrectIssue);
+        Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
+        Issue resultIssue = issueService.getIssueById(issue.getUuid());
+        Mockito.verify(issueDAO).getIssueById(issue.getUuid());
+        assertEquals(issue.getUuid(), resultIssue.getUuid());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -124,7 +84,15 @@ public class IssueServiceTest {
 
     @Test
     public void checkIfIssueCanBeeDeleted() {
-        issueService.deleteIssue(correctIssue);
-        Mockito.verify(issueDAO).delete(correctIssue);
+        Issue issue = issueFactory.getIssue(IssueType.CorrectIssue);
+        issueService.deleteIssue(issue);
+        Mockito.verify(issueDAO).delete(issue);
+    }
+
+    @Test
+    public void checkIfCriteriaRequestPreform() {
+        Issue issue = new Issue();
+        issueService.findIssueByCriteria(issue);
+        Mockito.verify(issueDAO).getIssueByCriteria(issue);
     }
 }

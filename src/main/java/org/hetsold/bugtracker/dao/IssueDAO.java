@@ -14,4 +14,6 @@ public interface IssueDAO {
     long getIssueCount();
 
     Issue getIssueById(String uuid);
+
+    List<Issue> getIssueByCriteria(Issue issue);
 }
