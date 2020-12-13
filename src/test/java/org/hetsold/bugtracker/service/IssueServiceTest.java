@@ -19,6 +19,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
+import static org.junit.Assert.assertEquals;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class, TestAppConfig.class})
 @ActiveProfiles(profiles = {"test", "mock"})
@@ -26,6 +28,7 @@ public class IssueServiceTest {
     private Issue correctIssue;
     private Issue incorrectIssueUser;
     private Issue incorrectIssueDate;
+    private Issue incorrectIssueDescription;
     private User user;
 
     @Autowired
@@ -68,18 +71,34 @@ public class IssueServiceTest {
                 .withReproduceSteps("1.step 1, 2.step 2")
                 .withReportedBy(user)
                 .build();
+        incorrectIssueDescription = new Issue.Builder()
+                .withIssueId("issue number 1")
+                .withIssueAppearanceTime(new Date())
+                .withTicketCreationTime(new Date())
+                .withProductVersion("product version v0.1")
+                .withShortDescription("")
+                .withFullDescription("")
+                .withReproduceSteps("1.step 1, 2.step 2")
+                .withReportedBy(user)
+                .build();
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void checkIncorrectIssueDatesThrowException() {
+    public void checkIncorrectIssueDatesSaveThrowException() {
         issueService.save(incorrectIssueDate);
         Mockito.verify(issueDAO, Mockito.never()).save(incorrectIssueDate);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void checkIncorrectIssueUserThrowException() {
+    public void checkIncorrectIssueUserSaveThrowException() {
         issueService.save(incorrectIssueUser);
         Mockito.verify(issueDAO, Mockito.never()).save(incorrectIssueUser);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkEmptyIssueDescriptionAndShortDescriptionSaveThrowException() {
+        issueService.save(incorrectIssueDescription);
+        Mockito.verify(issueDAO, Mockito.never()).save(incorrectIssueDescription);
     }
 
     @Test
@@ -87,5 +106,25 @@ public class IssueServiceTest {
         Mockito.when(userDAO.getUserById(correctIssue.getReportedBy().getUuid())).thenReturn(correctIssue.getReportedBy());
         issueService.save(correctIssue);
         Mockito.verify(issueDAO).save(correctIssue);
+    }
+
+    @Test
+    public void checkIfIssuePresentInListById() {
+        Mockito.when(issueDAO.getIssueById(correctIssue.getUuid())).thenReturn(correctIssue);
+        Issue resultIssue = issueService.getIssueById(correctIssue.getUuid());
+        Mockito.verify(issueDAO).getIssueById(correctIssue.getUuid());
+        assertEquals(correctIssue.getUuid(), resultIssue.getUuid());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkEmptyIssueDeleteThrowException() {
+        issueService.deleteIssue(null);
+        Mockito.verify(userDAO, Mockito.never()).delete(null);
+    }
+
+    @Test
+    public void checkIfIssueCanBeeDeleted() {
+        issueService.deleteIssue(correctIssue);
+        Mockito.verify(issueDAO).delete(correctIssue);
     }
 }
