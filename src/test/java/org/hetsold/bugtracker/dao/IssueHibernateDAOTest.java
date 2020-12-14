@@ -4,6 +4,7 @@ import org.hetsold.bugtracker.model.Issue;
 import org.hetsold.bugtracker.model.User;
 import org.hetsold.bugtracker.service.IssueFactory;
 import org.hetsold.bugtracker.service.IssueType;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,11 +51,15 @@ public class IssueHibernateDAOTest {
         }
     }
 
+    @Before
+    public void prepareUserData() {
+        userDAO.save(firstUser);
+        userDAO.save(secondUser);
+    }
 
     @Test
     public void checkIfIssueCanBeSaved() {
         Issue issue = issueFactory.getIssue(IssueType.CorrectIssue);
-        userDAO.save(issue.getReportedBy());
         issueDAO.save(issue);
         List<Issue> issues = issueDAO.listAll();
         assertEquals(issues.size(), 1);
@@ -63,7 +68,6 @@ public class IssueHibernateDAOTest {
     @Test
     public void checkIfIssueCanBeDeleted() {
         Issue issue = issueFactory.getIssue(IssueType.CorrectIssue);
-        userDAO.save(issue.getReportedBy());
         issueDAO.save(issue);
         issueDAO.delete(issue);
         List<Issue> issues = issueDAO.listAll();
@@ -73,7 +77,6 @@ public class IssueHibernateDAOTest {
     @Test
     public void checkIfIssueCanBeFoundById() {
         Issue issue = issueFactory.getIssue(IssueType.CorrectIssue);
-        userDAO.save(issue.getReportedBy());
         issueDAO.save(issue);
         Issue resultIssue = issueDAO.getIssueById(issue.getUuid());
         assertNotNull(resultIssue);
@@ -84,17 +87,12 @@ public class IssueHibernateDAOTest {
 
     @Test
     public void checkIssueCorrectCount() {
-        issueList.forEach(issue -> {
-            issueDAO.save(issue);
-            userDAO.save(issue.getReportedBy());
-        });
+        issueList.forEach(issue -> issueDAO.save(issue));
         assertEquals(issueDAO.getIssueCount(), issueList.size());
     }
 
     @Test
     public void checkIssueAgeCorrectCount() {
-        userDAO.save(firstUser);
-        userDAO.save(secondUser);
         Date filterDate = Date.from(LocalDateTime.now().minusWeeks(3).atZone(ZoneId.systemDefault()).toInstant());
         List<Issue> resultList = issueList.stream().filter(issue -> issue.getIssueAppearanceTime().before(filterDate)).collect(Collectors.toList());
         issueList.forEach(issue -> issueDAO.save(issue));
