@@ -72,8 +72,8 @@ public class AppConfig {
 
     @Bean
     @Autowired
-    public IssueService getIssueServiceBean(IssueDAO issueDAO, UserDAO userDAO) {
-        return new DefaultIssueService(issueDAO, userDAO);
+    public IssueService getIssueServiceBean(IssueDAO issueDAO, UserDAO userDAO, HistoryEventDAO historyEventDAO) {
+        return new DefaultIssueService(issueDAO, userDAO, historyEventDAO);
     }
 
     @Bean
