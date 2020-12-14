@@ -100,4 +100,15 @@ public class IssueHibernateDAOTest {
         criteriaIssue.setTicketCreationTime(filterDate);
         assertEquals(resultList.size(), issueDAO.getIssueByCriteria(criteriaIssue).size());
     }
+
+    @Test
+    public void checkIfLoadedIssueHasCorrectScope() {
+        Issue testIssue = issueFactory.getIssue(IssueType.CorrectIssue);
+        testIssue.setReportedBy(userDAO.listAll().get(0));
+        issueDAO.save(testIssue);
+        Issue resultIssue = issueDAO.getIssueToDetailedViewById(testIssue.getUuid());
+        assertEquals(resultIssue.getReportedBy(), testIssue.getReportedBy());
+        assertEquals(resultIssue.getReportedBy().getMessageList().size(), 0);
+        assertEquals(resultIssue.getReportedBy().getFoundIssues().size(), 0);
+    }
 }

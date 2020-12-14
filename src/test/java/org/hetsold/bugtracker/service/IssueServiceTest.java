@@ -90,8 +90,16 @@ public class IssueServiceTest {
 
     @Test
     public void checkIfCriteriaRequestPreform() {
-        Issue issue = new Issue();
+        Issue issue = issueFactory.getIssue(IssueType.CorrectIssue);
         issueService.findIssueByCriteria(issue);
         Mockito.verify(issueDAO).getIssueByCriteria(issue);
+    }
+
+    @Test
+    public void checkIfIssueCanBeLoadedByIdWithCorrectGraph() {
+        Issue issue = issueFactory.getIssue(IssueType.CorrectIssue);
+        Mockito.when(issueDAO.getIssueToDetailedViewById(issue.getUuid())).thenReturn(issue);
+        Issue issueResult = issueService.getIssueForViewById(issue.getUuid());
+        Mockito.verify(issueDAO).getIssueToDetailedViewById(issue.getUuid());
     }
 }
