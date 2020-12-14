@@ -55,4 +55,9 @@ public class DefaultIssueService implements IssueService {
     public List<Issue> findIssueByCriteria(Issue issue) {
         return issueDAO.getIssueByCriteria(issue);
     }
+
+    @Override
+    public Issue getIssueForViewById(String uuid) {
+        return issueDAO.getIssueToDetailedViewById(uuid);
+    }
 }

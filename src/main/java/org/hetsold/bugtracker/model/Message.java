@@ -3,7 +3,7 @@ package org.hetsold.bugtracker.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "BT_MESSAGE")
+@Table(name = "message")
 public class Message extends AbstractIdentity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "messageCreator")

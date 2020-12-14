@@ -5,6 +5,8 @@ import org.hetsold.bugtracker.model.Issue_;
 import org.hibernate.SessionFactory;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 
+import javax.persistence.EntityGraph;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -69,6 +71,20 @@ public class IssueHibernateDAO implements IssueDAO {
                 query.where(predicates);
             }
             return session.createQuery(query).getResultList();
+        });
+    }
+
+    @Override
+    public Issue getIssueToDetailedViewById(String uuid) {
+        return hibernateTemplate.execute(session -> {
+            EntityGraph issueEntityGraph = session.getEntityGraph("IssueEntityGraphToDetailedView");
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Issue> query = criteriaBuilder.createQuery(Issue.class);
+            Root<Issue> root = query.from(Issue.class);
+            query.where(criteriaBuilder.equal(root.get("uuid"), uuid));
+            TypedQuery<Issue> typedQuery = session.createQuery(query);
+            typedQuery.setHint("javax.persistence.loadgraph", issueEntityGraph);
+            return typedQuery.getSingleResult();
         });
     }
 

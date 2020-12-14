@@ -1,8 +1,5 @@
-create schema h_bugtracker;
-use h_bugtracker;
-
-drop table if exists bt_user;
-create table if not exists bt_user
+drop table if exists user;
+create table if not exists user
 (
     uuid      varchar(40) not null,
     version   tinyint,
@@ -11,8 +8,8 @@ create table if not exists bt_user
     primary key (uuid)
 );
 
-drop table if exists bt_message;
-create table if not exists bt_message
+drop table if exists message;
+create table if not exists message
 (
     uuid           varchar(40) not null,
     version        int,
@@ -20,11 +17,11 @@ create table if not exists bt_message
     content        varchar(1500),
     messageCreator varchar(40) not null,
     primary key (uuid),
-    foreign key (messageCreator) references bt_user (uuid) on delete cascade
+    foreign key (messageCreator) references user (uuid) on delete cascade
 );
 
-drop table if exists bt_issue;
-create table if not exists bt_issue
+drop table if exists issue;
+create table if not exists issue
 (
     uuid                varchar(40) not null,
     version             int,
@@ -43,27 +40,27 @@ create table if not exists bt_issue
     primary key (uuid)
 );
 
-drop table if exists bt_issue_assigned;
-create table if not exists bt_issue_assigned
+drop table if exists issue_assigned;
+create table if not exists issue_assigned
 (
     issueId varchar(40) not null,
     userId  varchar(40),
     primary key (issueId, userId),
-    foreign key (issueId) references bt_issue (uuid) on delete cascade
+    foreign key (issueId) references issue (uuid) on delete cascade
 );
 
-drop table if exists bt_issue_reportedBy;
-create table if not exists bt_issue_reportedBy
+drop table if exists issue_reportedBy;
+create table if not exists issue_reportedBy
 (
     issueId varchar(40) not null,
     userId  varchar(40) not null,
     primary key (issueId, userId),
-    foreign key (issueId) references bt_issue (uuid) on delete cascade,
-    foreign key (userId) references bt_user (uuid) on delete cascade
+    foreign key (issueId) references issue (uuid) on delete cascade,
+    foreign key (userId) references user (uuid) on delete cascade
 );
 
-drop table if exists bt_historyEvent;
-create table if not exists bt_historyEvent
+drop table if exists historyEvent;
+create table if not exists historyEvent
 (
     uuid      varchar(40)     not null,
     version   int,
@@ -72,27 +69,27 @@ create table if not exists bt_historyEvent
     primary key (uuid)
 );
 
-drop table if exists bt_issueMessageEvent;
-create table if not exists bt_issueMessageEvent
+drop table if exists issueMessageEvent;
+create table if not exists issueMessageEvent
 (
     uuid      varchar(40) not null,
     messageId long not null,
     primary key (uuid)
 );
 
-drop table if exists bt_issueStateChangeEvent;
-create table if not exists bt_issueStateChangeEvent
+drop table if exists issueStateChangeEvent;
+create table if not exists issueStateChangeEvent
 (
     uuid               varchar(40) not null,
     state              tinyint,
     expectedFixVersion varchar(70),
     redactorId         varchar(40),
     primary key (uuid),
-    foreign key (redactorId) references bt_user (uuid) on delete cascade
+    foreign key (redactorId) references user (uuid) on delete cascade
 );
 
-drop table if exists bt_issue_historyEvent;
-create table if not exists bt_issue_historyEvent
+drop table if exists issue_historyEvent;
+create table if not exists issue_historyEvent
 (
     issueId   varchar(40) not null,
     historyId varchar(40) not null,

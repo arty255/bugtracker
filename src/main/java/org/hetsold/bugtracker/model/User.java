@@ -1,18 +1,15 @@
 package org.hetsold.bugtracker.model;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "BT_USER")
+@Table(name = "user")
 public class User extends AbstractIdentity {
     private String firstName;
     private String lastName;
-    @OneToMany(mappedBy = "reportedBy", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "reportedBy", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Issue> foundIssues;
     @OneToMany(mappedBy = "assignedTo", fetch = FetchType.LAZY)
     private List<Issue> assignedIssues;

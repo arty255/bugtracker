@@ -16,4 +16,6 @@ public interface IssueDAO {
     Issue getIssueById(String uuid);
 
     List<Issue> getIssueByCriteria(Issue issue);
+
+    Issue getIssueToDetailedViewById(String uuid);
 }
