@@ -16,6 +16,7 @@ create table if not exists message
     title          varchar(200),
     content        varchar(1500),
     messageCreator varchar(40) not null,
+    messageDate    datetime    not null,
     primary key (uuid),
     foreign key (messageCreator) references user (uuid) on delete cascade
 );
@@ -62,9 +63,9 @@ create table if not exists issue_reportedBy
 drop table if exists historyEvent;
 create table if not exists historyEvent
 (
-    uuid      varchar(40)     not null,
+    uuid      varchar(40) not null,
     version   int,
-    eventDate datetime not null,
+    eventDate datetime    not null,
     userId    varchar(40),
     primary key (uuid)
 );
@@ -73,7 +74,7 @@ drop table if exists issueMessageEvent;
 create table if not exists issueMessageEvent
 (
     uuid      varchar(40) not null,
-    messageId long not null,
+    messageId long        not null,
     primary key (uuid)
 );
 

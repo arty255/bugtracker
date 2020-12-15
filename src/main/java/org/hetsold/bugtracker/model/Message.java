@@ -1,6 +1,7 @@
 package org.hetsold.bugtracker.model;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "message")
@@ -10,6 +11,7 @@ public class Message extends AbstractIdentity {
     private User messageCreator;
     private String title;
     private String content;
+    private Date messageDate;
 
     public Message() {
     }
@@ -42,5 +44,13 @@ public class Message extends AbstractIdentity {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Date getMessageDate() {
+        return messageDate;
+    }
+
+    public void setMessageDate(Date date) {
+        this.messageDate = date;
     }
 }

@@ -68,27 +68,28 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
-    public void changeIssueState(Issue issue, State newState, User user) {
+    public void changeIssueState(Issue issue, State newState, User assignedTo) {
         if (issue == null || issueDAO.getIssueById(issue.getUuid()) == null) {
             throw new IllegalArgumentException("issue not exists");
         }
         if (newState == null) {
             throw new IllegalArgumentException("incompatible newState");
         }
-        if (user == null || (user = userDAO.getUserById(user.getUuid())) == null) {
+        if (assignedTo == null || (assignedTo = userDAO.getUserById(assignedTo.getUuid())) == null) {
             throw new IllegalArgumentException("non existed user");
         }
         if (newState == State.ASSIGNED && (issue.getAssignedTo() == null || userDAO.getUserById(issue.getAssignedTo().getUuid()) == null)) {
             throw new IllegalArgumentException("issue can be assigned to existed user");
         }
-        //get current user;
-        //todo: change after spring security integration
         issue = issueDAO.getIssueById(issue.getUuid());
         issue.setCurrentState(newState);
+        issue.setAssignedTo(assignedTo);
         HistoryIssueStateChangeEvent event = new HistoryIssueStateChangeEvent();
         event.setEventDate(new Date());
         event.setIssue(issue);
-        event.setRedactor(user);
+        //get current security context user;
+        //todo: change after spring security integration
+        //event.setRedactor(user);
         event.setState(newState);
         issue.setCurrentState(newState);
         historyEventDAO.saveStateChange(event);
@@ -114,5 +115,29 @@ public class DefaultIssueService implements IssueService {
         messageEvent.setIssue(issue);
         messageEvent.setEventDate(new Date());
         historyEventDAO.saveIssueMessage(messageEvent);
+    }
+
+    @Override
+    public void changeIssueMessageContent(Message message, Message newMessage) {
+        if (message == null || messageDAO.getMessageById(message.getUuid()) == null) {
+            throw new IllegalArgumentException("message not exist");
+        }
+        if (newMessage == null || newMessage.getContent().isEmpty()) {
+            throw new IllegalArgumentException("new message is empty");
+        }
+        message.setTitle(newMessage.getTitle());
+        message.setContent(newMessage.getContent());
+        message.setMessageDate(new Date());
+        messageDAO.save(message);
+    }
+
+    @Override
+    public void deleteMessage(Message message) {
+        if (message == null || (message = messageDAO.getMessageById(message.getUuid())) == null) {
+            throw new IllegalArgumentException("message not exist");
+        }
+        HistoryIssueMessageEvent messageEvent = historyEventDAO.getHistoryIssueMessageEventByMessage(message);
+        historyEventDAO.deleteIssueMessageEvent(messageEvent);
+        messageDAO.delete(message);
     }
 }

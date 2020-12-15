@@ -2,6 +2,8 @@ package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.model.Message;
 import org.hetsold.bugtracker.model.User;
+import org.hetsold.bugtracker.util.MessageFactory;
+import org.hetsold.bugtracker.util.MessageFactoryCreatedMessageType;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,10 +29,12 @@ public class MessageHibernateDAOTest {
     @Autowired
     private UserDAO userDAO;
     private static User user;
+    private static MessageFactory messageFactory;
 
     @BeforeClass
     public static void prepareData() {
         user = new User("test_user1", "test_user1");
+        messageFactory = new MessageFactory(user);
     }
 
     @Before
@@ -40,7 +44,7 @@ public class MessageHibernateDAOTest {
 
     @Test
     public void checkIfMessageCanBeSaved() {
-        Message message = new Message(user, "message title", "message content");
+        Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
         messageDao.save(message);
         Message resultMessage = messageDao.getMessageById(message.getUuid());
         assertEquals(message.getUuid(), resultMessage.getUuid());
@@ -50,7 +54,7 @@ public class MessageHibernateDAOTest {
 
     @Test
     public void checkIfMessageCanBeDeleted() {
-        Message message = new Message(user, "message title", "message content");
+        Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
         messageDao.save(message);
         messageDao.delete(message);
         List<Message> messageList = messageDao.loadAll();

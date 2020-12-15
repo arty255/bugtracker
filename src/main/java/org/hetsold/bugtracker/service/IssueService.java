@@ -18,7 +18,14 @@ public interface IssueService {
 
     Issue getIssueForViewById(String uuid);
 
-    void changeIssueState(Issue issue, State state, User user);
+    //issue - selected issue to change State
+    //newState - new issue state
+    //assignedTo - user to who issue will be assigned
+    void changeIssueState(Issue issue, State newState, User assignedTo);
 
     void addIssueMessage(Issue issue, Message message);
+
+    void changeIssueMessageContent(Message message, Message newMessage);
+
+    void deleteMessage(Message message);
 }

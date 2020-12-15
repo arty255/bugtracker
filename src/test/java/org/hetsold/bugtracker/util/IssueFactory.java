@@ -1,4 +1,4 @@
-package org.hetsold.bugtracker.service;
+package org.hetsold.bugtracker.util;
 
 import org.hetsold.bugtracker.model.Issue;
 import org.hetsold.bugtracker.model.State;
@@ -10,14 +10,12 @@ import java.util.Date;
 
 public class IssueFactory {
     private User firstUser;
-    private User secondUser;
 
-    public IssueFactory(User firstUser, User secondUser) {
+    public IssueFactory(User firstUser) {
         this.firstUser = firstUser;
-        this.secondUser = secondUser;
     }
 
-    public synchronized Issue getIssue(IssueType issueType) {
+    public synchronized Issue getIssue(IssueFactoryCreatedIssueType issueFactoryCreatedIssueType) {
         Date date;
         Issue issue = new Issue.Builder()
                 .withIssueId("issue number 1")
@@ -29,7 +27,7 @@ public class IssueFactory {
                 .withReproduceSteps("1.step 1, 2.step 2")
                 .withReportedBy(firstUser)
                 .build();
-        switch (issueType) {
+        switch (issueFactoryCreatedIssueType) {
             case CorrectIssue:
                 break;
             case CorrectOpenIssue:
@@ -70,12 +68,6 @@ public class IssueFactory {
                 date = Date.from(LocalDateTime.now().minusMonths(1).atZone(ZoneId.systemDefault()).toInstant());
                 issue.setTicketCreationTime(date);
                 issue.setIssueAppearanceTime(date);
-                break;
-            case CorrectFirstUserIssue:
-                issue.setReportedBy(firstUser);
-                break;
-            case CorrectSecondUserIssue:
-                issue.setReportedBy(secondUser);
                 break;
         }
         return issue;

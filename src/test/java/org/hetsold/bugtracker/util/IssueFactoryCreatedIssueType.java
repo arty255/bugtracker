@@ -1,6 +1,6 @@
-package org.hetsold.bugtracker.service;
+package org.hetsold.bugtracker.util;
 
-public enum IssueType {
+public enum IssueFactoryCreatedIssueType {
     InvalidUserIssue,
     InvalidCreationDateIssue,
     InvalidAppearanceDateIssue,
@@ -12,6 +12,4 @@ public enum IssueType {
     CorrectWeekAgoIssue,
     CorrectTwoWeekAgoIssue,
     CorrectMountAgoIssue,
-    CorrectFirstUserIssue,
-    CorrectSecondUserIssue
 }

@@ -46,7 +46,7 @@ public class TestAppConfig {
     @Bean
     @Primary
     @Profile("mock")
-    public MessageHibernateDAO getMessageHibernateMockDAO() {
+    public MessageHibernateDAO getMessageMockDAO() {
         return Mockito.mock(MessageHibernateDAO.class);
     }
 }
