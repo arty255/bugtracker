@@ -6,7 +6,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "BT_ISSUEMESSAGEEVENT")
+@Table(name = "issueMessageEvent")
 public class HistoryIssueMessageEvent extends HistoryEvent {
     @OneToOne
     @JoinColumn(name = "messageId")

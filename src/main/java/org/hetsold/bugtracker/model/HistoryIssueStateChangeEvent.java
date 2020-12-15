@@ -1,15 +1,15 @@
 package org.hetsold.bugtracker.model;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "BT_ISSUESTATECHANGEEVENT")
+@Table(name = "issueStateChangeEvent")
 public class HistoryIssueStateChangeEvent extends HistoryEvent {
+    @Enumerated
     private State state;
     private String expectedFixVersion;
     @OneToOne
+    @JoinColumn(name = "redactorId")
     private User redactor;
 
     public State getState() {

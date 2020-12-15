@@ -9,30 +9,71 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Entity
-@Table(name = "BT_ISSUE")
-public class Issue extends AbstractIdentity {
+@NamedEntityGraph(
+        name = "IssueEntityGraphToDetailedView",
+        includeAllAttributes = true,
+        attributeNodes = {
+                @NamedAttributeNode(value = "reportedBy", subgraph = "reportedBySubGraph"),
+                @NamedAttributeNode(value = "history", subgraph = "historyEventSubGraph"),
+        },
+        subgraphs = {
+                @NamedSubgraph(name = "reportedBySubGraph",
+                        attributeNodes = {
+                                @NamedAttributeNode("firstName"),
+                                @NamedAttributeNode("lastName")
+                        }),
+                @NamedSubgraph(name = "historyEventSubGraph",
+                        attributeNodes = {
+                                @NamedAttributeNode("eventDate"),
+                        }),
+        },
+        subclassSubgraphs = {
+                @NamedSubgraph(name = "historyEventSubGraph",
+                        type = org.hetsold.bugtracker.model.AbstractIdentity.class,
+                        attributeNodes = {}
+                ),
+                @NamedSubgraph(name = "historyEventSubGraph",
+                        type = org.hetsold.bugtracker.model.HistoryIssueMessageEvent.class,
+                        attributeNodes = {
+                                @NamedAttributeNode("messageCreator")
+                        }),
+                @NamedSubgraph(name = "historyEventSubGraph",
+                        type = org.hetsold.bugtracker.model.HistoryIssueStateChangeEvent.class,
+                        attributeNodes = {
+                                @NamedAttributeNode("redactor")
+                        })
+        }
+)
 
+@Entity
+@Table(name = "issue")
+public class Issue extends AbstractIdentity {
     private String issueId;
     private String shortDescription;
     private String fullDescription;
+    @Basic(fetch = FetchType.LAZY)
     private Date issueAppearanceTime;
+    @Basic(fetch = FetchType.LAZY)
     private Date ticketCreationTime;
     private String productVersion;
     private String reproduceSteps;
     private String existedResult;
     private String expectedResult;
-    @ManyToOne
-    @JoinTable(name = "BT_ISSUE_REPORTEDBY", joinColumns = @JoinColumn(name = "ISSUEID"), inverseJoinColumns = @JoinColumn(name = "USERID"))
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "issue_reportedBy",
+            joinColumns = @JoinColumn(name = "issueId", referencedColumnName = "uuid"),
+            inverseJoinColumns = @JoinColumn(name = "userId", referencedColumnName = "uuid"))
     private User reportedBy;
-    @ManyToOne
-    @JoinTable(name = "BT_ISSUE_ASSIGNED", joinColumns = @JoinColumn(name = "ISSUEID"), inverseJoinColumns = @JoinColumn(name = "USERID"))
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinTable(name = "issue_assigned",
+            joinColumns = @JoinColumn(name = "issueId"),
+            inverseJoinColumns = @JoinColumn(name = "userId"))
     private User assignedTo;
     private Severity severity;
-    //todo: maybe optimize by using aggregator
     private String fixVersion;
+    @Enumerated
+    @Column(columnDefinition = "tinyint")
     private State currentState;
-
     @OneToMany(mappedBy = "issue", fetch = FetchType.LAZY)
     private List<HistoryEvent> history;
 

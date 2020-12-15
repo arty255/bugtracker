@@ -8,11 +8,11 @@ import java.util.Date;
  * */
 
 @Entity
-@Table(name = "BT_HISTORYEVENT")
+@Table(name = "historyEvent")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class HistoryEvent extends AbstractIdentity {
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(name = "bt_issue_historyevent", joinColumns = @JoinColumn(name = "historyId"), inverseJoinColumns = @JoinColumn(name = "issueId"))
+    @ManyToOne()
+    @JoinTable(name = "issue_historyEvent", joinColumns = @JoinColumn(name = "historyId"), inverseJoinColumns = @JoinColumn(name = "issueId"))
     private Issue issue;
     private Date eventDate;
 

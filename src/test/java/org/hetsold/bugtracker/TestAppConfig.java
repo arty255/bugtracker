@@ -1,9 +1,6 @@
 package org.hetsold.bugtracker;
 
-import org.hetsold.bugtracker.dao.IssueDAO;
-import org.hetsold.bugtracker.dao.IssueHibernateDAO;
-import org.hetsold.bugtracker.dao.UserDAO;
-import org.hetsold.bugtracker.dao.UserHibernateDAO;
+import org.hetsold.bugtracker.dao.*;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,5 +34,19 @@ public class TestAppConfig {
     @Profile("mock")
     public IssueDAO gIssueDAOMockBean() {
         return Mockito.mock(IssueHibernateDAO.class);
+    }
+
+    @Bean
+    @Primary
+    @Profile("mock")
+    public HistoryEventDAO getHistoryEventMockDAO() {
+        return Mockito.mock(HistoryEventHibernateDAO.class);
+    }
+
+    @Bean
+    @Primary
+    @Profile("mock")
+    public MessageHibernateDAO getMessageMockDAO() {
+        return Mockito.mock(MessageHibernateDAO.class);
     }
 }
