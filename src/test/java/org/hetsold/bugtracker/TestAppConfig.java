@@ -42,4 +42,11 @@ public class TestAppConfig {
     public HistoryEventDAO getHistoryEventMockDAO() {
         return Mockito.mock(HistoryEventHibernateDAO.class);
     }
+
+    @Bean
+    @Primary
+    @Profile("mock")
+    public MessageHibernateDAO getMessageHibernateMockDAO() {
+        return Mockito.mock(MessageHibernateDAO.class);
+    }
 }

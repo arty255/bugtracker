@@ -2,11 +2,9 @@ package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dao.HistoryEventDAO;
 import org.hetsold.bugtracker.dao.IssueDAO;
+import org.hetsold.bugtracker.dao.MessageDAO;
 import org.hetsold.bugtracker.dao.UserDAO;
-import org.hetsold.bugtracker.model.HistoryIssueStateChangeEvent;
-import org.hetsold.bugtracker.model.Issue;
-import org.hetsold.bugtracker.model.State;
-import org.hetsold.bugtracker.model.User;
+import org.hetsold.bugtracker.model.*;
 
 import javax.transaction.Transactional;
 import java.util.Date;
@@ -17,12 +15,13 @@ public class DefaultIssueService implements IssueService {
     private IssueDAO issueDAO;
     private UserDAO userDAO;
     private HistoryEventDAO historyEventDAO;
+    private MessageDAO messageDAO;
 
-
-    public DefaultIssueService(IssueDAO issueDAO, UserDAO userDAO, HistoryEventDAO historyEventDAO) {
+    public DefaultIssueService(IssueDAO issueDAO, UserDAO userDAO, HistoryEventDAO historyEventDAO, MessageDAO messageDAO) {
         this.issueDAO = issueDAO;
         this.userDAO = userDAO;
         this.historyEventDAO = historyEventDAO;
+        this.messageDAO = messageDAO;
     }
 
     @Override
@@ -94,5 +93,26 @@ public class DefaultIssueService implements IssueService {
         issue.setCurrentState(newState);
         historyEventDAO.saveStateChange(event);
         issueDAO.save(issue);
+    }
+
+    @Override
+    public void addIssueMessage(Issue issue, Message message) {
+        if (issue == null || (issue = issueDAO.getIssueById(issue.getUuid())) == null) {
+            throw new IllegalArgumentException("issue not exist");
+        }
+        if (message == null || message.getContent().isEmpty()) {
+            throw new IllegalArgumentException("message is empty");
+        }
+        User user;
+        if ((user = message.getMessageCreator()) == null || (user = userDAO.getUserById(user.getUuid())) == null) {
+            throw new IllegalArgumentException("user not exist");
+        }
+        message.setMessageCreator(user);
+        messageDAO.save(message);
+        HistoryIssueMessageEvent messageEvent = new HistoryIssueMessageEvent();
+        messageEvent.setMessage(message);
+        messageEvent.setIssue(issue);
+        messageEvent.setEventDate(new Date());
+        historyEventDAO.saveIssueMessage(messageEvent);
     }
 }

@@ -1,6 +1,7 @@
 package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.model.Issue;
+import org.hetsold.bugtracker.model.Message;
 import org.hetsold.bugtracker.model.State;
 import org.hetsold.bugtracker.model.User;
 
@@ -18,4 +19,6 @@ public interface IssueService {
     Issue getIssueForViewById(String uuid);
 
     void changeIssueState(Issue issue, State state, User user);
+
+    void addIssueMessage(Issue issue, Message message);
 }

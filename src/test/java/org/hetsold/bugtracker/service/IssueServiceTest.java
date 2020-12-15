@@ -4,8 +4,10 @@ import org.hetsold.bugtracker.AppConfig;
 import org.hetsold.bugtracker.TestAppConfig;
 import org.hetsold.bugtracker.dao.HistoryEventDAO;
 import org.hetsold.bugtracker.dao.IssueDAO;
+import org.hetsold.bugtracker.dao.MessageDAO;
 import org.hetsold.bugtracker.dao.UserDAO;
 import org.hetsold.bugtracker.model.Issue;
+import org.hetsold.bugtracker.model.Message;
 import org.hetsold.bugtracker.model.State;
 import org.hetsold.bugtracker.model.User;
 import org.junit.Before;
@@ -31,7 +33,8 @@ public class IssueServiceTest {
     private UserDAO userDAO;
     @Autowired
     private HistoryEventDAO historyEventDAO;
-
+    @Autowired
+    private MessageDAO messageDAO;
 
     IssueFactory issueFactory;
 
@@ -141,5 +144,53 @@ public class IssueServiceTest {
         issueService.changeIssueState(issue, newState, user);
         Mockito.verify(userDAO).getUserById(user.getUuid());
         Mockito.verify(issueDAO).save(issue);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkIfEmptyMessageThrowException() {
+        Message message = new Message();
+        message.setContent("");
+        Issue issue = issueFactory.getIssue(IssueType.CorrectIssue);
+        issueService.addIssueMessage(issue, message);
+        Mockito.verify(issueDAO, Mockito.never()).save(issue);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkIfMessageWithNotExistedUserThrowException() {
+        User user = new User();
+        Message message = new Message();
+        message.setContent("test");
+        message.setMessageCreator(user);
+        Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
+        Issue issue = issueFactory.getIssue(IssueType.CorrectIssue);
+        issueService.addIssueMessage(issue, message);
+        Mockito.verify(issueDAO, Mockito.never()).save(issue);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkIfMessageForNotExistedIssueThrowException() {
+        User user = new User();
+        Message message = new Message();
+        message.setContent("test");
+        message.setMessageCreator(user);
+        Issue issue = issueFactory.getIssue(IssueType.CorrectIssue);
+        Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
+        Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(null);
+        issueService.addIssueMessage(issue, message);
+        Mockito.verify(issueDAO, Mockito.never()).save(issue);
+    }
+
+    @Test
+    public void checkIfCorrectMessageCanBeSaved() {
+        User user = new User();
+        Message message = new Message();
+        message.setContent("test");
+        message.setMessageCreator(user);
+        Issue issue = issueFactory.getIssue(IssueType.CorrectIssue);
+        Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
+        Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
+        issueService.addIssueMessage(issue, message);
+        Mockito.verify(messageDAO).save(message);
+        Mockito.verify(historyEventDAO).saveIssueMessage(Mockito.any());
     }
 }
