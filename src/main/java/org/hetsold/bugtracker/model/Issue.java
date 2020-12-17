@@ -45,22 +45,6 @@ import java.util.List;
         }
 )
 
-@NamedEntityGraph(
-        name = "IssueEntityGraphToShortView",
-        attributeNodes = {
-                @NamedAttributeNode(value = "uuid"),
-                @NamedAttributeNode(value = "reportedBy", subgraph = "reportedBySubGraph")
-        },
-        subgraphs = {
-                @NamedSubgraph(name = "reportedBySubGraph",
-                        attributeNodes = {
-                                @NamedAttributeNode("firstName"),
-                                @NamedAttributeNode("lastName")
-                        }
-                )
-        }
-)
-
 @Entity
 @Table(name = "issue")
 public class Issue extends AbstractIdentity {
@@ -218,8 +202,8 @@ public class Issue extends AbstractIdentity {
             newIssue = new Issue();
         }
 
-        public Builder withIssueNumber(String issueNumber) {
-            newIssue.setIssueNumber(issueNumber);
+        public Builder withIssueId(String issueId) {
+            newIssue.setIssueNumber(issueId);
             return this;
         }
 
@@ -245,26 +229,6 @@ public class Issue extends AbstractIdentity {
 
         public Builder withCreationTime(Date creationTime) {
             newIssue.setCreationTime(creationTime);
-            return this;
-        }
-
-        public Builder withIssueExistedResult(String existedResult) {
-            newIssue.setExistedResult(existedResult);
-            return this;
-        }
-
-        public Builder withIssueExpectedResult(String expectedResult) {
-            newIssue.setExpectedResult(expectedResult);
-            return this;
-        }
-
-        public Builder withIssueSeverity(Severity issueSeverity) {
-            newIssue.setSeverity(issueSeverity);
-            return this;
-        }
-
-        public Builder withIssueState(State issueState) {
-            newIssue.setCurrentState(issueState);
             return this;
         }
 

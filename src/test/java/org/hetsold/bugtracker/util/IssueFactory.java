@@ -9,21 +9,21 @@ import java.time.ZoneId;
 import java.util.Date;
 
 public class IssueFactory {
-    private User user;
+    private User firstUser;
 
-    public IssueFactory(User user) {
-        this.user = user;
+    public IssueFactory(User firstUser) {
+        this.firstUser = firstUser;
     }
 
     public synchronized Issue getIssue(IssueFactoryCreatedIssueType issueFactoryCreatedIssueType) {
         Date date;
         Issue issue = new Issue.Builder()
-                .withIssueNumber("issue number 1")
+                .withIssueId("issue number 1")
                 .withCreationTime(new Date())
                 .withProductVersion("product version v0.1")
                 .withDescription("description")
                 .withReproduceSteps("1.step 1, 2.step 2")
-                .withReportedBy(user)
+                .withReportedBy(firstUser)
                 .build();
         switch (issueFactoryCreatedIssueType) {
             case CorrectIssue:
