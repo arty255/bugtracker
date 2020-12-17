@@ -39,14 +39,6 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public User getUserById(User user) {
-        if (user == null || user.getUuid().isEmpty()) {
-            throw new IllegalArgumentException("incorrect user");
-        }
-        return userDAO.getUserById(user.getUuid());
-    }
-
-    @Override
     public void delete(User user) {
         userDAO.delete(user);
     }

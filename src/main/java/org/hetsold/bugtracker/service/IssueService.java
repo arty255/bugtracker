@@ -7,11 +7,15 @@ import java.util.List;
 public interface IssueService {
     void save(Issue issue);
 
+    void generateAndSaveIssue();
+
     Issue getIssueById(String uuid);
 
     void deleteIssue(Issue issue);
 
     List<Issue> findIssueByFilter(Issue issue);
+
+    List<Issue> getIssueList();
 
     Issue getIssueForViewById(String uuid);
 

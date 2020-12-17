@@ -5,6 +5,7 @@ import org.hetsold.bugtracker.service.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
@@ -12,12 +13,15 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
+@EnableWebMvc
 @EnableTransactionManagement
+@ComponentScan(basePackages = {"org.hetsold.bugtracker.rest"})
 public class AppConfig {
     @Bean()
     @Primary
@@ -33,7 +37,7 @@ public class AppConfig {
 
     @Bean
     @Autowired
-    public LocalSessionFactoryBean getSessionFactory(DataSource dataSource) {
+    public LocalSessionFactoryBean getSessionFactoryBean(DataSource dataSource) {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
         sessionFactory.setPackagesToScan("org.hetsold.bugtracker.model");
@@ -43,25 +47,25 @@ public class AppConfig {
 
     @Bean
     @Autowired
-    public IssueDAO getIssueDAO(SessionFactory sessionFactory) {
+    public IssueDAO getIssueDAOBean(SessionFactory sessionFactory) {
         return new IssueHibernateDAO(sessionFactory);
     }
 
     @Bean
     @Autowired
-    public UserDAO getUserDAO(SessionFactory sessionFactory) {
+    public UserDAO getUserDao(SessionFactory sessionFactory) {
         return new UserHibernateDAO(sessionFactory);
     }
 
     @Bean
     @Autowired
-    public HistoryEventDAO getHistoryEventDAO(SessionFactory sessionFactory) {
+    public HistoryEventDAO getHistoryEventDAOBean(SessionFactory sessionFactory) {
         return new HistoryEventHibernateDAO(sessionFactory);
     }
 
     @Bean
     @Autowired
-    public MessageDAO getMessageDAO(SessionFactory sessionFactory) {
+    public MessageDAO getMessageDAOBean(SessionFactory sessionFactory) {
         return new MessageHibernateDAO(sessionFactory);
     }
 
