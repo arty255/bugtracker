@@ -79,8 +79,8 @@ public class IssueHibernateDAOTest {
         Issue resultIssue = issueDAO.getIssueById(issue.getUuid());
         assertNotNull(resultIssue);
         assertEquals(resultIssue.getUuid(), issue.getUuid());
-        assertEquals(resultIssue.getIssueId(), issue.getIssueId());
-        assertEquals(resultIssue.getFullDescription(), issue.getFullDescription());
+        assertEquals(resultIssue.getIssueNumber(), issue.getIssueNumber());
+        assertEquals(resultIssue.getDescription(), issue.getDescription());
     }
 
     @Test
@@ -92,10 +92,10 @@ public class IssueHibernateDAOTest {
     @Test
     public void checkIssueAgeCorrectCount() {
         Date filterDate = Date.from(LocalDateTime.now().minusWeeks(3).atZone(ZoneId.systemDefault()).toInstant());
-        List<Issue> resultList = issueList.stream().filter(issue -> issue.getIssueAppearanceTime().before(filterDate)).collect(Collectors.toList());
+        List<Issue> resultList = issueList.stream().filter(issue -> issue.getCreationTime().before(filterDate)).collect(Collectors.toList());
         issueList.forEach(issue -> issueDAO.save(issue));
         Issue criteriaIssue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
-        criteriaIssue.setTicketCreationTime(filterDate);
+        criteriaIssue.setCreationTime(filterDate);
         assertEquals(resultList.size(), issueDAO.getIssueByCriteria(criteriaIssue).size());
     }
 

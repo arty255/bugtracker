@@ -68,7 +68,7 @@ public class IssueServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void checkEmptyIssueDescriptionAndShortDescriptionSaveThrowException() {
-        Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.InvalidShortAndFullDescriptionIssue);
+        Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.InvalidDescriptionIssue);
         issueService.save(issue);
         Mockito.verify(issueDAO, Mockito.never()).save(issue);
     }

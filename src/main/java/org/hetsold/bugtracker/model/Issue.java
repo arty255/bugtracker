@@ -48,13 +48,9 @@ import java.util.List;
 @Entity
 @Table(name = "issue")
 public class Issue extends AbstractIdentity {
-    private String issueId;
-    private String shortDescription;
-    private String fullDescription;
-    @Basic(fetch = FetchType.LAZY)
-    private Date issueAppearanceTime;
-    @Basic(fetch = FetchType.LAZY)
-    private Date ticketCreationTime;
+    private String issueNumber;
+    private String description;
+    private Date creationTime;
     private String productVersion;
     private String reproduceSteps;
     private String existedResult;
@@ -76,57 +72,39 @@ public class Issue extends AbstractIdentity {
     private State currentState;
     @OneToMany(mappedBy = "issue", fetch = FetchType.LAZY)
     private List<HistoryEvent> history;
+    @OneToOne
+    @JoinTable(name = "issue_ticket",
+            joinColumns = @JoinColumn(name = "issueId", referencedColumnName = "uuid"),
+            inverseJoinColumns = @JoinColumn(name = "ticketId", referencedColumnName = "uuid"))
+    private Ticket ticket;
 
-    {
+    public Issue() {
         history = new ArrayList<>();
         currentState = State.OPEN;
     }
 
-    public Issue() {
+    public String getIssueNumber() {
+        return issueNumber;
     }
 
-    public Issue(String uuid) {
-        this.setUuid(uuid);
+    public void setIssueNumber(String issueId) {
+        this.issueNumber = issueId;
     }
 
-    public String getIssueId() {
-        return issueId;
+    public String getDescription() {
+        return description;
     }
 
-    public void setIssueId(String issueId) {
-        this.issueId = issueId;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getShortDescription() {
-        return shortDescription;
+    public Date getCreationTime() {
+        return creationTime;
     }
 
-    public void setShortDescription(String shotDescription) {
-        this.shortDescription = shotDescription;
-    }
-
-    public String getFullDescription() {
-        return fullDescription;
-    }
-
-    public void setFullDescription(String fullDescription) {
-        this.fullDescription = fullDescription;
-    }
-
-    public Date getIssueAppearanceTime() {
-        return issueAppearanceTime;
-    }
-
-    public void setIssueAppearanceTime(Date appearanceTime) {
-        this.issueAppearanceTime = appearanceTime;
-    }
-
-    public Date getTicketCreationTime() {
-        return ticketCreationTime;
-    }
-
-    public void setTicketCreationTime(Date issueCreatedTime) {
-        this.ticketCreationTime = issueCreatedTime;
+    public void setCreationTime(Date issueCreatedTime) {
+        this.creationTime = issueCreatedTime;
     }
 
     public String getProductVersion() {
@@ -209,6 +187,14 @@ public class Issue extends AbstractIdentity {
         this.history = history;
     }
 
+    public Ticket getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
+
     public static class Builder {
         private Issue newIssue;
 
@@ -217,17 +203,12 @@ public class Issue extends AbstractIdentity {
         }
 
         public Builder withIssueId(String issueId) {
-            newIssue.setIssueId(issueId);
+            newIssue.setIssueNumber(issueId);
             return this;
         }
 
-        public Builder withShortDescription(String shortDescription) {
-            newIssue.setShortDescription(shortDescription);
-            return this;
-        }
-
-        public Builder withFullDescription(String fullDescription) {
-            newIssue.setFullDescription(fullDescription);
+        public Builder withDescription(String description) {
+            newIssue.setDescription(description);
             return this;
         }
 
@@ -246,13 +227,8 @@ public class Issue extends AbstractIdentity {
             return this;
         }
 
-        public Builder withIssueAppearanceTime(Date issueAppearanceTime) {
-            newIssue.setIssueAppearanceTime(issueAppearanceTime);
-            return this;
-        }
-
-        public Builder withTicketCreationTime(Date ticketCreationTime) {
-            newIssue.setTicketCreationTime(ticketCreationTime);
+        public Builder withCreationTime(Date creationTime) {
+            newIssue.setCreationTime(creationTime);
             return this;
         }
 

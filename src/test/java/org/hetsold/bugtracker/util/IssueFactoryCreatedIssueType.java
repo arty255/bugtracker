@@ -3,8 +3,7 @@ package org.hetsold.bugtracker.util;
 public enum IssueFactoryCreatedIssueType {
     InvalidUserIssue,
     InvalidCreationDateIssue,
-    InvalidAppearanceDateIssue,
-    InvalidShortAndFullDescriptionIssue,
+    InvalidDescriptionIssue,
     CorrectIssue,
     CorrectOpenIssue,
     CorrectClosedIssue,
