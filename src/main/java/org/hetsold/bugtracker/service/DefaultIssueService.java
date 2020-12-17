@@ -2,6 +2,7 @@ package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dao.HistoryEventDAO;
 import org.hetsold.bugtracker.dao.IssueDAO;
+import org.hetsold.bugtracker.dao.MessageDAO;
 import org.hetsold.bugtracker.dao.UserDAO;
 import org.hetsold.bugtracker.model.*;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class DefaultIssueService implements IssueService {
         this.ticketService = ticketService;
     }
 
+    @Override
     public void save(Issue issue) {
         if (issue.getCreationTime() == null) {
             throw new IllegalArgumentException("issue creationTime can not be null");
@@ -64,7 +66,7 @@ public class DefaultIssueService implements IssueService {
     @Override
     public Issue getIssueById(String uuid) {
         if (uuid == null || uuid.isEmpty()) {
-            throw new IllegalArgumentException("uuid argument can not be empty");
+            throw new IllegalArgumentException("uuid cannot be empty");
         }
         return issueDAO.getIssueById(uuid);
     }

@@ -13,6 +13,7 @@ create table if not exists message
 (
     uuid           varchar(40) not null,
     version        int,
+    title          varchar(200),
     content        varchar(1500),
     messageCreator varchar(40) not null,
     messageDate    datetime    not null,
