@@ -5,11 +5,14 @@ import org.hetsold.bugtracker.dao.IssueDAO;
 import org.hetsold.bugtracker.dao.MessageDAO;
 import org.hetsold.bugtracker.dao.UserDAO;
 import org.hetsold.bugtracker.model.*;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
+@Service
 @Transactional
 public class DefaultIssueService implements IssueService {
     private IssueDAO issueDAO;
@@ -42,6 +45,23 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
+    public void generateAndSaveIssue() {
+        Random random = new Random();
+        User user;
+        List<User> userList = userDAO.listAll();
+        if (userList.size() < 5) {
+            user = new User("user" + random.nextInt(5) + " firsName", "user " + random.nextInt(5) + " lastName");
+            userDAO.save(user);
+            user = userDAO.getUserById(user.getUuid());
+        } else {
+            user = userList.get(random.nextInt(5));
+        }
+        Issue issue = new Issue();
+        issue.setReportedBy(user);
+        issueDAO.save(issue);
+    }
+
+    @Override
     public Issue getIssueById(String uuid) {
         if (uuid == null || uuid.isEmpty()) {
             throw new IllegalArgumentException("uuid cannot be empty");
@@ -60,6 +80,11 @@ public class DefaultIssueService implements IssueService {
     @Override
     public List<Issue> findIssueByCriteria(Issue issue) {
         return issueDAO.getIssueByCriteria(issue);
+    }
+
+    @Override
+    public List<Issue> getIssueList() {
+        return issueDAO.listAll();
     }
 
     @Override

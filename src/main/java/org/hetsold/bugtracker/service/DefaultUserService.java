@@ -20,6 +20,10 @@ public class DefaultUserService implements UserService {
         userDAO.save(user);
     }
 
+    public User getUser(String userId) {
+        return userDAO.getUserById(userId);
+    }
+
     @Override
     public void delete(User user) {
         userDAO.delete(user);

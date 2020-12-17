@@ -77,9 +77,16 @@ public class Issue extends AbstractIdentity {
     @OneToMany(mappedBy = "issue", fetch = FetchType.LAZY)
     private List<HistoryEvent> history;
 
-    public Issue() {
+    {
         history = new ArrayList<>();
         currentState = State.OPEN;
+    }
+
+    public Issue() {
+    }
+
+    public Issue(String uuid) {
+        this.setUuid(uuid);
     }
 
     public String getIssueId() {
