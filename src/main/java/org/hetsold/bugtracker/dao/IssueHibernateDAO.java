@@ -93,14 +93,11 @@ public class IssueHibernateDAO implements IssueDAO {
         if (issue.getCurrentState() != null) {
             predicateList.add(criteriaBuilder.equal(root.get(Issue_.currentState), issue.getCurrentState()));
         }
-        if (issue.getShortDescription() != null && !issue.getShortDescription().isEmpty()) {
-            predicateList.add(criteriaBuilder.like(root.get(Issue_.shortDescription), issue.getShortDescription()));
+        if (issue.getDescription() != null) {
+            predicateList.add(criteriaBuilder.like(root.get(Issue_.description), issue.getDescription()));
         }
-        if (issue.getTicketCreationTime() != null) {
-            predicateList.add(criteriaBuilder.lessThan(root.get(Issue_.ticketCreationTime), issue.getTicketCreationTime()));
-        }
-        if (issue.getIssueAppearanceTime() != null) {
-            predicateList.add(criteriaBuilder.lessThan(root.get(Issue_.issueAppearanceTime), issue.getIssueAppearanceTime()));
+        if (issue.getCreationTime() != null) {
+            predicateList.add(criteriaBuilder.lessThan(root.get(Issue_.creationTime), issue.getCreationTime()));
         }
         if (issue.getReportedBy() != null) {
             predicateList.add(criteriaBuilder.equal(root.get(Issue_.reportedBy), issue.getReportedBy()));

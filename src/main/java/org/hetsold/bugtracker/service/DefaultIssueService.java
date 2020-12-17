@@ -26,16 +26,13 @@ public class DefaultIssueService implements IssueService {
 
     @Override
     public void save(Issue issue) {
-        if (issue.getIssueAppearanceTime() == null || issue.getIssueAppearanceTime().getTime() > System.currentTimeMillis()) {
-            throw new IllegalArgumentException("wrong issueAppearanceTime");
-        }
-        if (issue.getTicketCreationTime() == null || issue.getTicketCreationTime().getTime() > System.currentTimeMillis()) {
+        if (issue.getCreationTime() == null || issue.getCreationTime().getTime() > System.currentTimeMillis()) {
             throw new IllegalArgumentException("wrong ticketCreationTime");
         }
         if (issue.getReportedBy() == null || userDAO.getUserById(issue.getReportedBy().getUuid()) == null) {
             throw new IllegalArgumentException("wrong issueReporter");
         }
-        if (issue.getShortDescription().isEmpty() || issue.getFullDescription().isEmpty()) {
+        if (issue.getDescription().isEmpty()) {
             throw new IllegalArgumentException("issue description and short description is null");
         }
         issueDAO.save(issue);
