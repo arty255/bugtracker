@@ -1,11 +1,13 @@
 package org.hetsold.bugtracker;
 
 import org.hetsold.bugtracker.dao.*;
-import org.hetsold.bugtracker.service.*;
+import org.hetsold.bugtracker.service.DefaultIssueService;
+import org.hetsold.bugtracker.service.DefaultUserService;
+import org.hetsold.bugtracker.service.IssueService;
+import org.hetsold.bugtracker.service.UserService;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -71,12 +73,6 @@ public class AppConfig {
     @Autowired
     public UserService getUserServiceBean(UserDAO userDAO) {
         return new DefaultUserService(userDAO);
-    }
-
-    @Bean
-    @Autowired
-    IssueAssembler getIssueAssemblerBean(IssueService issueService) {
-        return new IssueAssembler(issueService);
     }
 
     @Bean
