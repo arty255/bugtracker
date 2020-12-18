@@ -137,4 +137,41 @@ public class DefaultIssueService implements IssueService {
         historyEventDAO.deleteIssueMessageEvent(messageEvent);
         messageDAO.delete(message);
     }
+
+
+    @Override
+    public void createIssue(Issue issue, User user) {
+        issue.setCreationTime(new Date());
+        issue.setReportedBy(user);
+        this.save(issue);
+    }
+
+    @Override
+    public void createIssueFromTicket(Ticket ticket, User user) {
+        Issue issue = ticketToIssueTransfer(ticket);
+        issue.setReportedBy(user);
+        issue.setTicket(ticket);
+        issueDAO.save(issue);
+    }
+
+    @Override
+    public void updateIssueState(Issue issue, User user) {
+        Issue oldIssue = this.getIssueById(issue.getUuid());
+        if (oldIssue.getAssignedTo() != issue.getAssignedTo() || oldIssue.getSeverity() != issue.getSeverity() || !oldIssue.getFixVersion().equals(issue.getFixVersion())) {
+            HistoryIssueStateChangeEvent stateChangeEvent = new HistoryIssueStateChangeEvent();
+            stateChangeEvent.setState(issue.getCurrentState());
+            stateChangeEvent.setRedactor(user);
+            stateChangeEvent.setExpectedFixVersion(issue.getFixVersion());
+            stateChangeEvent.setEventDate(new Date());
+        }
+    }
+
+    private Issue ticketToIssueTransfer(Ticket ticket) {
+        return new Issue.Builder()
+                .withIssueId("")
+                .withReproduceSteps(ticket.getReproduceSteps())
+                .withProductVersion(ticket.getProductVersion())
+                .withCreationTime(new Date())
+                .withDescription(ticket.getDescription()).build();
+    }
 }

@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class, TestAppConfig.class})
 @ActiveProfiles(profiles = {"test", "mock"})
-public class UserServiceTest {
+public class DefaultUserServiceTest {
     private static User user;
     @Autowired
     private UserDAO userDAO;
@@ -32,12 +32,12 @@ public class UserServiceTest {
     @Test
     public void checkIfUserSaved() {
         userService.save(user);
-        Mockito.verify(userDAO).save(user);
+        Mockito.verify(userDAO, Mockito.times(1)).save(user);
     }
 
     @Test
-    public void checkIfUserDeleted() {
+    public void checkIfUserCanBeDeleted() {
         userService.delete(user);
-        Mockito.verify(userDAO).delete(user);
+        Mockito.verify(userDAO, Mockito.times(1)).delete(user);
     }
 }

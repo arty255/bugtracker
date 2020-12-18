@@ -6,18 +6,13 @@ import org.hetsold.bugtracker.dao.HistoryEventDAO;
 import org.hetsold.bugtracker.dao.IssueDAO;
 import org.hetsold.bugtracker.dao.MessageDAO;
 import org.hetsold.bugtracker.dao.UserDAO;
-import org.hetsold.bugtracker.model.Issue;
-import org.hetsold.bugtracker.model.Message;
-import org.hetsold.bugtracker.model.State;
-import org.hetsold.bugtracker.model.User;
-import org.hetsold.bugtracker.util.IssueFactory;
-import org.hetsold.bugtracker.util.IssueFactoryCreatedIssueType;
-import org.hetsold.bugtracker.util.MessageFactory;
-import org.hetsold.bugtracker.util.MessageFactoryCreatedMessageType;
+import org.hetsold.bugtracker.model.*;
+import org.hetsold.bugtracker.util.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
@@ -29,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class, TestAppConfig.class})
 @ActiveProfiles(profiles = {"test", "mock"})
-public class IssueServiceTest {
+public class DefaultIssueServiceTest {
     @Autowired
     private IssueService issueService;
     @Autowired
@@ -43,6 +38,7 @@ public class IssueServiceTest {
 
     private IssueFactory issueFactory;
     private MessageFactory messageFactory;
+    private TicketFactory ticketFactory;
     private User user;
 
     @Before
@@ -50,6 +46,7 @@ public class IssueServiceTest {
         user = new User("test user fn", "test user ln");
         issueFactory = new IssueFactory(user);
         messageFactory = new MessageFactory(user);
+        ticketFactory = new TicketFactory(user);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -217,5 +214,19 @@ public class IssueServiceTest {
         Mockito.when(messageDAO.getMessageById(message.getUuid())).thenReturn(null);
         issueService.deleteMessage(message);
         Mockito.verify(messageDAO, Mockito.never()).delete(message);
+    }
+
+    @Test
+    public void checkIfIssueFromTicketTransferDataCorrect() {
+        Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
+        ArgumentCaptor<Issue> issueArgumentCaptor = ArgumentCaptor.forClass(Issue.class);
+        issueService.createIssueFromTicket(ticket, ticket.getCreatedBy());
+        Mockito.verify(issueDAO, Mockito.atLeastOnce()).save(issueArgumentCaptor.capture());
+        Issue savedIssue = issueArgumentCaptor.getValue();
+        assertEquals(ticket.getDescription(), savedIssue.getDescription());
+        assertEquals(ticket.getProductVersion(), savedIssue.getProductVersion());
+        assertEquals(ticket.getReproduceSteps(), savedIssue.getReproduceSteps());
+        assertEquals(user, savedIssue.getReportedBy());
+        assertEquals(ticket, savedIssue.getTicket());
     }
 }
