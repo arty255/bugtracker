@@ -1,0 +1,33 @@
+package org.hetsold.bugtracker.service;
+
+import org.hetsold.bugtracker.dao.TicketDAO;
+import org.hetsold.bugtracker.dao.UserDAO;
+import org.hetsold.bugtracker.model.Ticket;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+
+@Transactional
+public class DefaultTicketService implements TicketService {
+    private TicketDAO ticketDao;
+    private UserDAO userDAO;
+
+    public DefaultTicketService(TicketDAO ticketDao, UserDAO userDAO) {
+        this.ticketDao = ticketDao;
+        this.userDAO = userDAO;
+    }
+
+    @Override
+    public void save(Ticket ticket) {
+        if (ticket.getDescription().isEmpty()) {
+            throw new IllegalArgumentException("description cannot be empty");
+        }
+        if (ticket.getCreatedBy() == null || ticketDao.getTicketById(ticket.getCreatedBy().getUuid()) == null) {
+            throw new IllegalArgumentException("user not exist");
+        }
+        ticket.setCreationTime(new Date());
+        ticketDao.save(ticket);
+    }
+
+
+}
