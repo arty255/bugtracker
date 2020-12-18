@@ -1,6 +1,7 @@
 package org.hetsold.bugtracker;
 
 import org.hetsold.bugtracker.dao.*;
+import org.hetsold.bugtracker.facade.TicketConvertor;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +19,7 @@ public class TestAppConfig {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl("jdbc:mysql://localhost:3306/h_bugtracker_test");
         dataSource.setUsername("root");
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setPassword("OnHG8^nnP");
         return dataSource;
     }
@@ -54,7 +55,14 @@ public class TestAppConfig {
     @Bean
     @Primary
     @Profile("mock")
-    public TicketDAO ticketHibernateDao() {
+    public TicketDAO getTicketHibernateDao() {
         return Mockito.mock(TicketHibernateDAO.class);
+    }
+
+    @Bean
+    @Primary
+    @Profile("mock")
+    public TicketConvertor getTicketConvertor() {
+        return Mockito.mock(TicketConvertor.class);
     }
 }

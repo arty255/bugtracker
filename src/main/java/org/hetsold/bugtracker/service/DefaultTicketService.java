@@ -3,9 +3,12 @@ package org.hetsold.bugtracker.service;
 import org.hetsold.bugtracker.dao.TicketDAO;
 import org.hetsold.bugtracker.dao.UserDAO;
 import org.hetsold.bugtracker.model.Ticket;
+import org.hetsold.bugtracker.model.TicketResolveState;
+import org.hetsold.bugtracker.model.TicketVerificationState;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 @Transactional
 public class DefaultTicketService implements TicketService {
@@ -22,12 +25,27 @@ public class DefaultTicketService implements TicketService {
         if (ticket.getDescription().isEmpty()) {
             throw new IllegalArgumentException("description cannot be empty");
         }
-        if (ticket.getCreatedBy() == null || ticketDao.getTicketById(ticket.getCreatedBy().getUuid()) == null) {
+        if (ticket.getCreatedBy() == null || userDAO.getUserById(ticket.getCreatedBy().getUuid()) == null) {
             throw new IllegalArgumentException("user not exist");
         }
         ticket.setCreationTime(new Date());
         ticketDao.save(ticket);
     }
 
+    @Override
+    public List<Ticket> getTickets() {
+        return ticketDao.loadAll();
+    }
 
+    @Override
+    public void delete(Ticket ticket) {
+        ticketDao.delete(ticket);
+    }
+
+    @Override
+    public void applyForIssue(Ticket ticket) {
+        ticket.setVerificationState(TicketVerificationState.Verified);
+        ticket.setResolveState(TicketResolveState.Resolving);
+        ticketDao.save(ticket);
+    }
 }

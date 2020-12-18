@@ -1,9 +1,6 @@
 package org.hetsold.bugtracker.service;
 
-import org.hetsold.bugtracker.model.Issue;
-import org.hetsold.bugtracker.model.Message;
-import org.hetsold.bugtracker.model.State;
-import org.hetsold.bugtracker.model.User;
+import org.hetsold.bugtracker.model.*;
 
 import java.util.List;
 
@@ -32,4 +29,10 @@ public interface IssueService {
     void changeIssueMessageContent(Message message, Message newMessage);
 
     void deleteMessage(Message message);
+
+    void createIssue(Issue issue, User user);
+
+    void createIssueFromTicket(Ticket ticket, User user);
+
+    void updateIssueState(Issue issue, User user);
 }
