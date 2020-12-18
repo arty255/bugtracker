@@ -18,6 +18,7 @@ public class TestAppConfig {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl("jdbc:mysql://localhost:3306/h_bugtracker_test");
         dataSource.setUsername("root");
+        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         dataSource.setPassword("OnHG8^nnP");
         return dataSource;
     }
@@ -46,7 +47,14 @@ public class TestAppConfig {
     @Bean
     @Primary
     @Profile("mock")
-    public MessageHibernateDAO getMessageMockDAO() {
+    public MessageDAO getMessageMockDAO() {
         return Mockito.mock(MessageHibernateDAO.class);
+    }
+
+    @Bean
+    @Primary
+    @Profile("mock")
+    public TicketDAO ticketHibernateDao() {
+        return Mockito.mock(TicketHibernateDAO.class);
     }
 }

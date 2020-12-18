@@ -1,15 +1,13 @@
 package org.hetsold.bugtracker;
 
 import org.hetsold.bugtracker.dao.*;
-import org.hetsold.bugtracker.service.DefaultIssueService;
-import org.hetsold.bugtracker.service.DefaultUserService;
-import org.hetsold.bugtracker.service.IssueService;
-import org.hetsold.bugtracker.service.UserService;
+import org.hetsold.bugtracker.service.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -26,7 +24,8 @@ import java.util.Properties;
 public class AppConfig {
     @Bean()
     @Primary
-    public DataSource getDataSourceBean() {
+    @Profile("prod")
+    public DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl("jdbc:mysql://localhost:3306/h_bugtracker");
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
@@ -37,7 +36,7 @@ public class AppConfig {
 
     @Bean
     @Autowired
-    public LocalSessionFactoryBean getSessionFactoryBean(DataSource dataSource) {
+    public LocalSessionFactoryBean getSessionFactory(DataSource dataSource) {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
         sessionFactory.setPackagesToScan("org.hetsold.bugtracker.model");
@@ -47,38 +46,50 @@ public class AppConfig {
 
     @Bean
     @Autowired
-    public IssueDAO getIssueDAOBean(SessionFactory sessionFactory) {
+    public IssueDAO getIssueDAO(SessionFactory sessionFactory) {
         return new IssueHibernateDAO(sessionFactory);
     }
 
     @Bean
     @Autowired
-    public UserDAO getUserDao(SessionFactory sessionFactory) {
+    public UserDAO getUserDAO(SessionFactory sessionFactory) {
         return new UserHibernateDAO(sessionFactory);
     }
 
     @Bean
     @Autowired
-    public HistoryEventDAO getHistoryEventDAOBean(SessionFactory sessionFactory) {
+    public HistoryEventDAO getHistoryEventDAO(SessionFactory sessionFactory) {
         return new HistoryEventHibernateDAO(sessionFactory);
     }
 
     @Bean
     @Autowired
-    public MessageDAO getMessageDAOBean(SessionFactory sessionFactory) {
+    public MessageDAO getMessageDAO(SessionFactory sessionFactory) {
         return new MessageHibernateDAO(sessionFactory);
     }
 
     @Bean
     @Autowired
-    public UserService getUserServiceBean(UserDAO userDAO) {
+    public TicketDAO getTicketDAO(SessionFactory sessionFactory) {
+        return new TicketHibernateDAO(sessionFactory);
+    }
+
+    @Bean
+    @Autowired
+    public UserService getUserService(UserDAO userDAO) {
         return new DefaultUserService(userDAO);
     }
 
     @Bean
     @Autowired
-    public IssueService getIssueServiceBean(IssueDAO issueDAO, UserDAO userDAO, HistoryEventDAO historyEventDAO, MessageDAO messageDao) {
+    public IssueService getIssueService(IssueDAO issueDAO, UserDAO userDAO, HistoryEventDAO historyEventDAO, MessageDAO messageDao) {
         return new DefaultIssueService(issueDAO, userDAO, historyEventDAO, messageDao);
+    }
+
+    @Bean
+    @Autowired
+    public TicketService getTicketService(TicketDAO ticketDAO, UserDAO userDAO) {
+        return new DefaultTicketService(ticketDAO, userDAO);
     }
 
     @Bean

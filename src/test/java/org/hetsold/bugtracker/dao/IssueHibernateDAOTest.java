@@ -25,7 +25,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {org.hetsold.bugtracker.AppConfig.class, org.hetsold.bugtracker.TestAppConfig.class})
+@ContextConfiguration(classes = {org.hetsold.bugtracker.TestAppConfig.class, org.hetsold.bugtracker.AppConfig.class})
 @ActiveProfiles("test")
 @Transactional
 public class IssueHibernateDAOTest {
@@ -107,6 +107,6 @@ public class IssueHibernateDAOTest {
         Issue resultIssue = issueDAO.getIssueToDetailedViewById(testIssue.getUuid());
         assertEquals(resultIssue.getReportedBy(), testIssue.getReportedBy());
         assertEquals(resultIssue.getReportedBy().getMessageList().size(), 0);
-        assertEquals(resultIssue.getReportedBy().getFoundIssues().size(), 0);
+        assertEquals(resultIssue.getReportedBy().getReportedIssues().size(), 0);
     }
 }

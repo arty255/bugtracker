@@ -10,14 +10,14 @@ public class User extends AbstractIdentity {
     private String firstName;
     private String lastName;
     @OneToMany(mappedBy = "reportedBy", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private List<Issue> foundIssues;
+    private List<Issue> reportedIssues;
     @OneToMany(mappedBy = "assignedTo", fetch = FetchType.LAZY)
     private List<Issue> assignedIssues;
     @OneToMany(mappedBy = "messageCreator", fetch = FetchType.LAZY)
     private List<Message> messageList;
 
     {
-        foundIssues = new ArrayList<>();
+        reportedIssues = new ArrayList<>();
         assignedIssues = new ArrayList<>();
         messageList = new ArrayList<>();
     }
@@ -46,12 +46,12 @@ public class User extends AbstractIdentity {
         this.lastName = lastName;
     }
 
-    public List<Issue> getFoundIssues() {
-        return foundIssues;
+    public List<Issue> getReportedIssues() {
+        return reportedIssues;
     }
 
-    public void setFoundIssues(List<Issue> foundIssues) {
-        this.foundIssues = foundIssues;
+    public void setReportedIssues(List<Issue> foundIssues) {
+        this.reportedIssues = foundIssues;
     }
 
     public List<Issue> getAssignedIssues() {
