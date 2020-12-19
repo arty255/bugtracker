@@ -13,6 +13,10 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>org.hetsold.bugtracker.AppConfig</param-value>
     </context-param>
+    <context-param>
+        <param-name>spring.profiles.active</param-name>
+        <param-value>dev</param-value>
+    </context-param>
 
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

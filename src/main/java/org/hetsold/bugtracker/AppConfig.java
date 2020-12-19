@@ -21,7 +21,7 @@ import java.util.Properties;
 public class AppConfig {
     @Bean()
     @Primary
-    @Profile("prod")
+    @Profile("dev")
     public DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl("jdbc:mysql://localhost:3306/h_bugtracker");
