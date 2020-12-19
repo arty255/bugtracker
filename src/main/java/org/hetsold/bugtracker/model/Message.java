@@ -9,16 +9,14 @@ public class Message extends AbstractIdentity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "messageCreator")
     private User messageCreator;
-    private String title;
     private String content;
     private Date messageDate;
 
     public Message() {
     }
 
-    public Message(User messageCreator, String title, String messageContent) {
+    public Message(User messageCreator, String messageContent) {
         this.messageCreator = messageCreator;
-        this.title = title;
         this.content = messageContent;
     }
 
@@ -28,14 +26,6 @@ public class Message extends AbstractIdentity {
 
     public void setMessageCreator(User messageCreator) {
         this.messageCreator = messageCreator;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getContent() {

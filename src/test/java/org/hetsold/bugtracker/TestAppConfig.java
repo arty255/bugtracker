@@ -1,7 +1,10 @@
 package org.hetsold.bugtracker;
 
 import org.hetsold.bugtracker.dao.*;
-import org.hetsold.bugtracker.facade.TicketConvertor;
+import org.hetsold.bugtracker.service.DefaultMessageService;
+import org.hetsold.bugtracker.service.DefaultTicketService;
+import org.hetsold.bugtracker.service.MessageService;
+import org.hetsold.bugtracker.service.TicketService;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,12 +60,5 @@ public class TestAppConfig {
     @Profile("mock")
     public TicketDAO getTicketHibernateDao() {
         return Mockito.mock(TicketHibernateDAO.class);
-    }
-
-    @Bean
-    @Primary
-    @Profile("mock")
-    public TicketConvertor getTicketConvertor() {
-        return Mockito.mock(TicketConvertor.class);
     }
 }

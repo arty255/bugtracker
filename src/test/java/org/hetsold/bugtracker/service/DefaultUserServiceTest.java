@@ -4,6 +4,7 @@ import org.hetsold.bugtracker.AppConfig;
 import org.hetsold.bugtracker.TestAppConfig;
 import org.hetsold.bugtracker.dao.UserDAO;
 import org.hetsold.bugtracker.model.User;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.mockito.Mockito.validateMockitoUsage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class, TestAppConfig.class})
@@ -27,6 +30,11 @@ public class DefaultUserServiceTest {
     @BeforeClass
     public static void prepareData() {
         user = new User("Oleg", "Sinevski");
+    }
+
+    @After
+    public void validate() {
+        validateMockitoUsage();
     }
 
     @Test
