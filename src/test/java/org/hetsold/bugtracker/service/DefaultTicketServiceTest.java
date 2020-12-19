@@ -4,45 +4,38 @@ import org.hetsold.bugtracker.AppConfig;
 import org.hetsold.bugtracker.TestAppConfig;
 import org.hetsold.bugtracker.dao.TicketDAO;
 import org.hetsold.bugtracker.dao.UserDAO;
-import org.hetsold.bugtracker.model.*;
-import org.hetsold.bugtracker.util.MessageFactory;
-import org.hetsold.bugtracker.util.MessageFactoryCreatedMessageType;
+import org.hetsold.bugtracker.model.Ticket;
+import org.hetsold.bugtracker.model.TicketResolveState;
+import org.hetsold.bugtracker.model.TicketVerificationState;
+import org.hetsold.bugtracker.model.User;
 import org.hetsold.bugtracker.util.TicketFactory;
 import org.hetsold.bugtracker.util.TicketFactoryTicketType;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.validateMockitoUsage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class, TestAppConfig.class})
-@ActiveProfiles(profiles = {"test"})
+@ActiveProfiles(profiles = {"test", "mock"})
 public class DefaultTicketServiceTest {
-    @InjectMocks
-    private TicketService ticketService = new DefaultTicketService();
-    @Mock
+    @Autowired
+    private TicketService ticketService;
+    @Autowired
     private UserDAO userDAO;
-    @Mock
+    @Autowired
     private TicketDAO ticketDao;
-    @Mock
-    private MessageService messageService;
 
     private final User user = new User("First Name", "Last Name");
     private final TicketFactory ticketFactory = new TicketFactory(user);
-    private MessageFactory messageFactory = new MessageFactory(user);
-
-    @Before
-    public void beforeTest() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @After
     public void validate() {
@@ -53,12 +46,14 @@ public class DefaultTicketServiceTest {
     public void checkIfTicketWithNoDescriptionCanBeSaved() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.IncorrectTicketEmptyDescription);
         ticketService.save(ticket);
+        Mockito.verify(ticketDao, Mockito.never()).save(ticket);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkIfTicketWithEmptyUserCantBeSaved() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.IncorrectTicketNullCreator);
         ticketService.save(ticket);
+        Mockito.verify(ticketDao, Mockito.never()).save(Mockito.any());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -67,6 +62,7 @@ public class DefaultTicketServiceTest {
         Mockito.when(userDAO.getUserById(ticket.getCreatedBy().getUuid())).thenReturn(null);
         ticketService.save(ticket);
         Mockito.verify(ticketDao, Mockito.times(1)).getTicketById(ticket.getUuid());
+        Mockito.verify(ticketDao, Mockito.never()).save(Mockito.any());
     }
 
     @Test
@@ -93,21 +89,5 @@ public class DefaultTicketServiceTest {
         Ticket transformedTicket = ticketArgumentCaptor.getValue();
         assertEquals(TicketResolveState.Resolving, transformedTicket.getResolveState());
         assertEquals(TicketVerificationState.Verified, transformedTicket.getVerificationState());
-    }
-
-    @Test
-    public void checkIfCorrectTicketMessageWillBeAdded() {
-        Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
-        Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
-        Mockito.when(ticketDao.getTicketById(ticket.getUuid())).thenReturn(ticket);
-        ticketService.addMessage(ticket, message, user);
-        Mockito.verify(messageService).saveMessage(message, user);
-        Mockito.verify(ticketDao, atLeastOnce()).save(ticket);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void checkIfTicketMessageWithEmptyTicketThroeException() {
-        Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
-        ticketService.addMessage(null, message, user);
     }
 }

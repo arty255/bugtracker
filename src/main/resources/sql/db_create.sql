@@ -13,7 +13,6 @@ create table if not exists message
 (
     uuid           varchar(40) not null,
     version        int,
-    title          varchar(200),
     content        varchar(1500),
     messageCreator varchar(40) not null,
     messageDate    datetime    not null,
@@ -34,8 +33,7 @@ create table if not exists ticket
     voteCount         int,
     verificationState tinyint,
     resolveState      tinyint,
-    primary key (uuid),
-    foreign key (createdBy) references user (uuid) on delete cascade
+    primary key (uuid)
 );
 
 drop table if exists ticket_message;
@@ -72,7 +70,8 @@ create table if not exists issue_assigned
     issueId varchar(40) not null,
     userId  varchar(40),
     primary key (issueId, userId),
-    foreign key (issueId) references issue (uuid) on delete cascade
+    foreign key (issueId) references issue (uuid) on delete cascade,
+    foreign key (userId) references user (uuid) on delete cascade
 );
 
 drop table if exists issue_reportedBy;
@@ -129,5 +128,7 @@ create table if not exists issue_historyEvent
 (
     issueId   varchar(40) not null,
     historyId varchar(40) not null,
-    primary key (issueId, historyId)
+    primary key (issueId, historyId),
+    foreign key (issueId) references issue (uuid) on delete cascade,
+    foreign key (historyId) references historyEvent (uuid) on delete cascade
 );

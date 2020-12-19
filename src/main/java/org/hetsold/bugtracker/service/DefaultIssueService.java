@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 @Service
 @Transactional
@@ -19,9 +18,6 @@ public class DefaultIssueService implements IssueService {
     private HistoryEventDAO historyEventDAO;
     private MessageService messageService;
     private TicketService ticketService;
-
-    public DefaultIssueService() {
-    }
 
     public DefaultIssueService(IssueDAO issueDAO, UserDAO userDAO, HistoryEventDAO historyEventDAO, MessageService messageService, TicketService ticketService) {
         this.issueDAO = issueDAO;
@@ -46,25 +42,6 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
-    public void generateAndSaveIssue() {
-        Random random = new Random();
-        User user;
-        List<User> userList = userDAO.listAll();
-        if (userList.size() < 5) {
-            user = new User("user" + random.nextInt(5) + " firsName", "user " + random.nextInt(5) + " lastName");
-            userDAO.save(user);
-            user = userDAO.getUserById(user.getUuid());
-        } else {
-            user = userList.get(random.nextInt(5));
-        }
-        Issue issue = new Issue();
-        issue.setReportedBy(user);
-        issue.setCreationTime(new Date());
-        issue.setDescription("description" + random.nextInt());
-        issueDAO.save(issue);
-    }
-
-    @Override
     public Issue getIssueById(String uuid) {
         if (uuid == null || uuid.isEmpty()) {
             throw new IllegalArgumentException("uuid cannot be empty");
@@ -81,17 +58,8 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
-    public List<Issue> findIssueByFilter(Issue issue) {
-        if (issue == null) {
-            issue = new Issue();
-            issue.setUuid("");
-        }
+    public List<Issue> findIssueByCriteria(Issue issue) {
         return issueDAO.getIssueByCriteria(issue);
-    }
-
-    @Override
-    public List<Issue> getIssueList() {
-        return issueDAO.listAll();
     }
 
     @Override
@@ -100,7 +68,7 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
-    public void changeIssueState(Issue issue, State newState, User assignedTo, User user) {
+    public void changeIssueState(Issue issue, State newState, User assignedTo) {
         if (issue == null || issueDAO.getIssueById(issue.getUuid()) == null) {
             throw new IllegalArgumentException("issue not exists");
         }
@@ -119,7 +87,9 @@ public class DefaultIssueService implements IssueService {
         HistoryIssueStateChangeEvent event = new HistoryIssueStateChangeEvent();
         event.setEventDate(new Date());
         event.setIssue(issue);
-        event.setRedactor(user);
+        //get current security context user;
+        //todo: change after spring security integration
+        //event.setRedactor(user);
         event.setState(newState);
         issue.setCurrentState(newState);
         historyEventDAO.saveStateChange(event);
@@ -127,25 +97,23 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
-    public void addIssueMessage(Issue issue, Message message, User user) {
-        if (issueDAO.getIssueById(issue.getUuid()) == null) {
+    public void addIssueMessage(Issue issue, Message message) {
+        if  (issueDAO.getIssueById(issue.getUuid()) == null) {
             throw new IllegalArgumentException("issue not exist");
         }
         if (message == null || message.getContent().isEmpty()) {
             throw new IllegalArgumentException("message is empty");
         }
-        if (user == null || (user = userDAO.getUserById(user.getUuid())) == null) {
+        User user;
+        if ((user = message.getMessageCreator()) == null || (user = userDAO.getUserById(user.getUuid())) == null) {
             throw new IllegalArgumentException("user not exist");
         }
-        boolean messageNotExists = messageService.getMessageById(message) == null;
-        messageService.saveMessage(message, user);
-        if (messageNotExists) {
-            HistoryIssueMessageEvent messageEvent = new HistoryIssueMessageEvent();
-            messageEvent.setMessage(message);
-            messageEvent.setIssue(issue);
-            messageEvent.setEventDate(new Date());
-            historyEventDAO.saveIssueMessage(messageEvent);
-        }
+        messageService.addMessage(message, user);
+        HistoryIssueMessageEvent messageEvent = new HistoryIssueMessageEvent();
+        messageEvent.setMessage(message);
+        messageEvent.setIssue(issue);
+        messageEvent.setEventDate(new Date());
+        historyEventDAO.saveIssueMessage(messageEvent);
     }
 
     @Override
@@ -157,7 +125,7 @@ public class DefaultIssueService implements IssueService {
 
     @Override
     public void createIssueFromTicket(Ticket ticket, User user) {
-        if (user == null) {
+        if(user == null){
             throw new IllegalArgumentException("user cannot be null");
         }
         Issue issue = ticketToIssueTransfer(ticket);

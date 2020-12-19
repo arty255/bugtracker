@@ -11,7 +11,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -21,20 +24,17 @@ import static org.mockito.Mockito.validateMockitoUsage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class, TestAppConfig.class})
-@ActiveProfiles(profiles = {"test", ""})
+@ActiveProfiles(profiles = {"test", "mock"})
 public class DefaultIssueServiceTest {
-    @InjectMocks
-    private final IssueService issueService = new DefaultIssueService();
-    @Mock
+    @Autowired
+    private IssueService issueService;
+    @Autowired
     private IssueDAO issueDAO;
-    @Mock
+    @Autowired
     private UserDAO userDAO;
-    @Mock
+    @Autowired
     private HistoryEventDAO historyEventDAO;
-    @Mock
-    private MessageService messageService;
-    @Mock
-    private TicketService ticketService;
+
 
     private IssueFactory issueFactory;
     private MessageFactory messageFactory;
@@ -43,7 +43,6 @@ public class DefaultIssueServiceTest {
 
     @Before
     public void prepareData() {
-        MockitoAnnotations.openMocks(this);
         user = new User("test user fn", "test user ln");
         issueFactory = new IssueFactory(user);
         messageFactory = new MessageFactory(user);
@@ -59,18 +58,21 @@ public class DefaultIssueServiceTest {
     public void checkIncorrectIssueDatesSaveThrowException() {
         Issue factoryIssue = issueFactory.getIssue(IssueFactoryCreatedIssueType.InvalidCreationDateIssue);
         issueService.save(factoryIssue);
+        Mockito.verify(issueDAO, Mockito.never()).save(factoryIssue);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkIncorrectIssueUserSaveThrowException() {
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.InvalidUserIssue);
         issueService.save(issue);
+        Mockito.verify(issueDAO, Mockito.never()).save(issue);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkEmptyIssueDescriptionAndShortDescriptionSaveThrowException() {
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.InvalidDescriptionIssue);
         issueService.save(issue);
+        Mockito.verify(issueDAO, Mockito.never()).save(issue);
     }
 
     @Test
@@ -82,7 +84,7 @@ public class DefaultIssueServiceTest {
     }
 
     @Test
-    public void checkIfIssueCanByFoundById() {
+    public void checkIfIssuePresentInListById() {
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
         Issue resultIssue = issueService.getIssueById(issue.getUuid());
@@ -93,6 +95,7 @@ public class DefaultIssueServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void checkEmptyIssueDeleteThrowException() {
         issueService.deleteIssue(null);
+        Mockito.verify(userDAO, Mockito.never()).delete(null);
     }
 
     @Test
@@ -103,18 +106,18 @@ public class DefaultIssueServiceTest {
     }
 
     @Test
-    public void checkIIssueSearchWithFilterPreform() {
+    public void checkIfCriteriaRequestPreform() {
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
-        issueService.findIssueByFilter(issue);
+        issueService.findIssueByCriteria(issue);
         Mockito.verify(issueDAO, Mockito.atLeastOnce()).getIssueByCriteria(issue);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void checkIfIssueStateChangeToEmptyThrowException() {
+    public void checkIfIssueEmptyStateThrowException() {
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
         issue.setCurrentState(null);
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
-        issueService.changeIssueState(issue, null, user, user);
+        issueService.changeIssueState(issue, null, null);
         Mockito.verify(issueDAO, Mockito.never()).save(issue);
     }
 
@@ -124,52 +127,57 @@ public class DefaultIssueServiceTest {
         Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
         issue.setAssignedTo(null);
-        issueService.changeIssueState(issue, State.ASSIGNED, null, user);
+        issueService.changeIssueState(issue, State.ASSIGNED, user);
+        Mockito.verify(issueDAO, Mockito.never()).save(issue);
     }
 
     @Test
-    public void checkIfIssueStateStateChangeToCorrectPreform() {
+    //@Sql(value = {"/test_db_data.sql"})
+    public void checkIfIssueStateChangingCorrectly() {
         State newState = State.REOPENED;
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
         Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
-        issueService.changeIssueState(issue, newState, user, user);
+        issueService.changeIssueState(issue, newState, user);
         Mockito.verify(userDAO).getUserById(user.getUuid());
         Mockito.verify(issueDAO).save(issue);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void checkIfSaveEmptyIssueMessageThrowException() {
+    public void checkIfEmptyMessageThrowException() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.IncorrectNullContentMessage);
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
-        issueService.addIssueMessage(issue, message, user);
+        issueService.addIssueMessage(issue, message);
+        Mockito.verify(issueDAO, Mockito.never()).save(Mockito.any());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void checkIfSaveMessageWithNotExistedUserThrowException() {
+    public void checkIfMessageWithNotExistedUserThrowException() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.IncorrectNullCreator);
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
-        issueService.addIssueMessage(issue, message, user);
+        //Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(null);
+        issueService.addIssueMessage(issue, message);
+        Mockito.verify(issueDAO, Mockito.never()).save(issue);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void checkIfSaveMessageForNotExistedIssueThrowException() {
+    public void checkIfMessageForNotExistedIssueThrowException() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
         Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(null);
-        issueService.addIssueMessage(issue, message, user);
+        issueService.addIssueMessage(issue, message);
+        Mockito.verify(issueDAO, Mockito.never()).save(issue);
     }
 
     @Test
-    public void checkIfSaveCorrectMessagePreform() {
+    public void checkIfCorrectMessageCanBeSaved() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
         Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
-        issueService.addIssueMessage(issue, message, user);
-        Mockito.verify(historyEventDAO, Mockito.times(1)).saveIssueMessage(Mockito.any());
-        Mockito.verify(messageService, Mockito.times(1)).saveMessage(message, user);
+        issueService.addIssueMessage(issue, message);
+        Mockito.verify(historyEventDAO).saveIssueMessage(Mockito.any());
     }
 
     @Test
@@ -184,8 +192,5 @@ public class DefaultIssueServiceTest {
         assertEquals(ticket.getReproduceSteps(), savedIssue.getReproduceSteps());
         assertEquals(user, savedIssue.getReportedBy());
         assertEquals(ticket, savedIssue.getTicket());
-        Mockito.verify(ticketService, Mockito.times(1)).applyForIssue(ticket);
     }
-
-
 }

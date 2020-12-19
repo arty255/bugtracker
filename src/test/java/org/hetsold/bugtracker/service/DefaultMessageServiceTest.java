@@ -9,11 +9,12 @@ import org.hetsold.bugtracker.model.User;
 import org.hetsold.bugtracker.util.MessageFactory;
 import org.hetsold.bugtracker.util.MessageFactoryCreatedMessageType;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -23,13 +24,13 @@ import static org.mockito.Mockito.validateMockitoUsage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestAppConfig.class, AppConfig.class})
-@ActiveProfiles(profiles = {"test"})
+@ActiveProfiles(profiles = {"test", "mock"})
 public class DefaultMessageServiceTest {
-    @InjectMocks
-    private final MessageService messageService = new DefaultMessageService();
-    @Mock
+    @Autowired
+    private MessageService messageService;
+    @Autowired
     private MessageDAO messageDAO;
-    @Mock
+    @Autowired
     private UserDAO userDAO;
     private static User user = new User("first name", "last name");
     private static MessageFactory messageFactory;
@@ -37,11 +38,6 @@ public class DefaultMessageServiceTest {
     @BeforeClass
     public static void prepareData() {
         messageFactory = new MessageFactory(user);
-    }
-
-    @Before
-    public void beforeTest() {
-        MockitoAnnotations.openMocks(this);
     }
 
     @After
@@ -53,13 +49,13 @@ public class DefaultMessageServiceTest {
     public void checkIfEmptyMessageThrowException() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
         message.setContent("");
-        messageService.saveMessage(message, user);
+        messageService.addMessage(message, user);
     }
 
     @Test
     public void checkIfMessageCanBeSaved() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
-        messageService.saveMessage(message, user);
+        messageService.addMessage(message, user);
         ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
         Mockito.verify(messageDAO, Mockito.atLeastOnce()).save(messageCaptor.capture());
         Message capturedMessage = messageCaptor.getValue();
@@ -82,7 +78,7 @@ public class DefaultMessageServiceTest {
         message.setContent(newContent);
         Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
         ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
-        messageService.saveMessage(message, user);
+        messageService.addMessage(message, user);
         Mockito.verify(messageDAO, Mockito.atLeastOnce()).save(messageCaptor.capture());
         Message capturedMessage = messageCaptor.getValue();
         assertEquals(newContent, capturedMessage.getContent());

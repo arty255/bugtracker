@@ -18,7 +18,7 @@ public class IssueFactory {
     public synchronized Issue getIssue(IssueFactoryCreatedIssueType issueFactoryCreatedIssueType) {
         Date date;
         Issue issue = new Issue.Builder()
-                .withIssueId("issue number 1")
+                .withIssueNumber("issue number 1")
                 .withCreationTime(new Date())
                 .withProductVersion("product version v0.1")
                 .withDescription("description")

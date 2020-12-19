@@ -1,28 +1,27 @@
 package org.hetsold.bugtracker;
 
 import org.hetsold.bugtracker.dao.*;
-import org.hetsold.bugtracker.facade.*;
 import org.hetsold.bugtracker.service.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@EnableWebMvc
-@ComponentScan(basePackages = {"org.hetsold.bugtracker.rest"})
 public class AppConfig {
     @Bean()
     @Primary
-    @Profile("dev")
+    @Profile("prod")
     public DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl("jdbc:mysql://localhost:3306/h_bugtracker");
@@ -92,8 +91,8 @@ public class AppConfig {
 
     @Bean
     @Autowired
-    public TicketService getTicketService(TicketDAO ticketDAO, UserDAO userDAO, MessageService messageService) {
-        return new DefaultTicketService(ticketDAO, userDAO, messageService);
+    public TicketService getTicketService(TicketDAO ticketDAO, UserDAO userDAO) {
+        return new DefaultTicketService(ticketDAO, userDAO);
     }
 
     @Bean
@@ -101,30 +100,6 @@ public class AppConfig {
         HibernateTransactionManager transactionManager = new HibernateTransactionManager();
         transactionManager.setSessionFactory(sessionFactory);
         return transactionManager;
-    }
-
-    @Bean
-    @Autowired
-    public IssueConverter getIssueConverter(IssueDAO issueDAO){
-        return new IssueConverter(issueDAO);
-    }
-
-    @Bean
-    @Autowired
-    public UserConvertor getUserConvertor(UserDAO userDAO){
-        return new UserConvertor(userDAO);
-    }
-
-    @Bean
-    @Autowired
-    public TicketConvertor getTicketConvertor(TicketDAO ticketDAO){
-        return new TicketConvertor(ticketDAO);
-    }
-
-    @Bean
-    @Autowired
-    public IssueFacade getIssueFacade(IssueService issueService, TicketService ticketService, IssueConverter issueConverter, UserConvertor userConvertor, TicketConvertor ticketConvertor) {
-        return new SimpleIssueFacade(issueService, ticketService, issueConverter, userConvertor, ticketConvertor);
     }
 
     private Properties getAdditionalHibernateProperties() {
