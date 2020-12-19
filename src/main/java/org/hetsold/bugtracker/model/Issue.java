@@ -237,17 +237,17 @@ public class Issue extends AbstractIdentity {
             return this;
         }
 
-        public Builder withIssueExpectedResult(String expectedResult){
+        public Builder withIssueExpectedResult(String expectedResult) {
             newIssue.setExpectedResult(expectedResult);
             return this;
         }
 
-        public Builder withIssueSeverity(Severity issueSeverity){
+        public Builder withIssueSeverity(Severity issueSeverity) {
             newIssue.setSeverity(issueSeverity);
             return this;
         }
 
-        public Builder withIssueState(State issueState){
+        public Builder withIssueState(State issueState) {
             newIssue.setCurrentState(issueState);
             return this;
         }

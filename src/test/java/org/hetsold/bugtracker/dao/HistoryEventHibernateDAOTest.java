@@ -1,13 +1,10 @@
 package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.model.*;
-import org.hetsold.bugtracker.util.IssueFactoryCreatedIssueType;
-import org.hetsold.bugtracker.util.MessageFactoryCreatedMessageType;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;

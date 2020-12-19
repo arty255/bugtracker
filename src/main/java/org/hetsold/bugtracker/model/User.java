@@ -9,7 +9,7 @@ import java.util.List;
 public class User extends AbstractIdentity {
     private String firstName;
     private String lastName;
-    @OneToMany(mappedBy = "reportedBy", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "reportedBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Issue> reportedIssues;
     @OneToMany(mappedBy = "assignedTo", fetch = FetchType.LAZY)
     private List<Issue> assignedIssues;

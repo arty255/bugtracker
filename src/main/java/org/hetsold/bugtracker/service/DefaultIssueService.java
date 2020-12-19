@@ -121,7 +121,7 @@ public class DefaultIssueService implements IssueService {
 
     @Override
     public void addIssueMessage(Issue issue, Message message) {
-        if  (issueDAO.getIssueById(issue.getUuid()) == null) {
+        if (issueDAO.getIssueById(issue.getUuid()) == null) {
             throw new IllegalArgumentException("issue not exist");
         }
         if (message == null || message.getContent().isEmpty()) {
@@ -148,7 +148,7 @@ public class DefaultIssueService implements IssueService {
 
     @Override
     public void createIssueFromTicket(Ticket ticket, User user) {
-        if(user == null){
+        if (user == null) {
             throw new IllegalArgumentException("user cannot be null");
         }
         Issue issue = ticketToIssueTransfer(ticket);

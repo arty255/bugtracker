@@ -1,10 +1,6 @@
 package org.hetsold.bugtracker;
 
 import org.hetsold.bugtracker.dao.*;
-import org.hetsold.bugtracker.service.DefaultMessageService;
-import org.hetsold.bugtracker.service.DefaultTicketService;
-import org.hetsold.bugtracker.service.MessageService;
-import org.hetsold.bugtracker.service.TicketService;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
