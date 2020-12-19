@@ -35,6 +35,7 @@ public class SimpleIssueFacade implements IssueFacade {
     @Override
     public void createIssueFromTicket(TicketDTO ticketDTO, UserDTO userDTO) {
         issueService.createIssueFromTicket(ticketConvertor.getTicket(ticketDTO), userConvertor.getUser(userDTO));
+        ticketService.applyForIssue(ticketConvertor.getTicket(ticketDTO));
     }
 
     @Override
