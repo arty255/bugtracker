@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 @Transactional
 public class MessageHibernateDAOTest {
     @Autowired
-    private MessageDAO messageDao;
+    private MessageDAO messageDAO;
     @Autowired
     private UserDAO userDAO;
     private static User user;
@@ -45,19 +46,20 @@ public class MessageHibernateDAOTest {
     @Test
     public void checkIfMessageCanBeSaved() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
-        messageDao.save(message);
-        Message resultMessage = messageDao.getMessageById(message.getUuid());
+        messageDAO.save(message);
+        Message resultMessage = messageDAO.getMessageById(message.getUuid());
         assertEquals(message.getUuid(), resultMessage.getUuid());
-        assertEquals(message.getTitle(), message.getTitle());
         assertEquals(message.getContent(), message.getContent());
     }
 
     @Test
     public void checkIfMessageCanBeDeleted() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
-        messageDao.save(message);
-        messageDao.delete(message);
-        List<Message> messageList = messageDao.loadAll();
+        messageDAO.save(message);
+        messageDAO.delete(message);
+        List<Message> messageList = messageDAO.loadAll();
         assertEquals(messageList.size(), 0);
     }
+
+
 }

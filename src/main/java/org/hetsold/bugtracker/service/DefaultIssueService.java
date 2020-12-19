@@ -2,7 +2,6 @@ package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dao.HistoryEventDAO;
 import org.hetsold.bugtracker.dao.IssueDAO;
-import org.hetsold.bugtracker.dao.MessageDAO;
 import org.hetsold.bugtracker.dao.UserDAO;
 import org.hetsold.bugtracker.model.*;
 import org.springframework.stereotype.Service;
@@ -18,13 +17,15 @@ public class DefaultIssueService implements IssueService {
     private IssueDAO issueDAO;
     private UserDAO userDAO;
     private HistoryEventDAO historyEventDAO;
-    private MessageDAO messageDAO;
+    private MessageService messageService;
+    private TicketService ticketService;
 
-    public DefaultIssueService(IssueDAO issueDAO, UserDAO userDAO, HistoryEventDAO historyEventDAO, MessageDAO messageDAO) {
+    public DefaultIssueService(IssueDAO issueDAO, UserDAO userDAO, HistoryEventDAO historyEventDAO, MessageService messageService, TicketService ticketService) {
         this.issueDAO = issueDAO;
         this.userDAO = userDAO;
         this.historyEventDAO = historyEventDAO;
-        this.messageDAO = messageDAO;
+        this.messageService = messageService;
+        this.ticketService = ticketService;
     }
 
     @Override
@@ -120,7 +121,7 @@ public class DefaultIssueService implements IssueService {
 
     @Override
     public void addIssueMessage(Issue issue, Message message) {
-        if (issue == null || (issue = issueDAO.getIssueById(issue.getUuid())) == null) {
+        if  (issueDAO.getIssueById(issue.getUuid()) == null) {
             throw new IllegalArgumentException("issue not exist");
         }
         if (message == null || message.getContent().isEmpty()) {
@@ -130,39 +131,13 @@ public class DefaultIssueService implements IssueService {
         if ((user = message.getMessageCreator()) == null || (user = userDAO.getUserById(user.getUuid())) == null) {
             throw new IllegalArgumentException("user not exist");
         }
-        message.setMessageCreator(user);
-        messageDAO.save(message);
+        messageService.addMessage(message, user);
         HistoryIssueMessageEvent messageEvent = new HistoryIssueMessageEvent();
         messageEvent.setMessage(message);
         messageEvent.setIssue(issue);
         messageEvent.setEventDate(new Date());
         historyEventDAO.saveIssueMessage(messageEvent);
     }
-
-    @Override
-    public void changeIssueMessageContent(Message message, Message newMessage) {
-        if (message == null || messageDAO.getMessageById(message.getUuid()) == null) {
-            throw new IllegalArgumentException("message not exist");
-        }
-        if (newMessage == null || newMessage.getContent().isEmpty()) {
-            throw new IllegalArgumentException("new message is empty");
-        }
-        message.setTitle(newMessage.getTitle());
-        message.setContent(newMessage.getContent());
-        message.setMessageDate(new Date());
-        messageDAO.save(message);
-    }
-
-    @Override
-    public void deleteMessage(Message message) {
-        if (message == null || (message = messageDAO.getMessageById(message.getUuid())) == null) {
-            throw new IllegalArgumentException("message not exist");
-        }
-        HistoryIssueMessageEvent messageEvent = historyEventDAO.getHistoryIssueMessageEventByMessage(message);
-        historyEventDAO.deleteIssueMessageEvent(messageEvent);
-        messageDAO.delete(message);
-    }
-
 
     @Override
     public void createIssue(Issue issue, User user) {
@@ -173,10 +148,14 @@ public class DefaultIssueService implements IssueService {
 
     @Override
     public void createIssueFromTicket(Ticket ticket, User user) {
+        if(user == null){
+            throw new IllegalArgumentException("user cannot be null");
+        }
         Issue issue = ticketToIssueTransfer(ticket);
         issue.setReportedBy(user);
         issue.setTicket(ticket);
         issueDAO.save(issue);
+        ticketService.applyForIssue(ticket);
     }
 
     @Override
@@ -193,7 +172,7 @@ public class DefaultIssueService implements IssueService {
 
     private Issue ticketToIssueTransfer(Ticket ticket) {
         return new Issue.Builder()
-                .withIssueId("")
+                .withIssueNumber("")
                 .withReproduceSteps(ticket.getReproduceSteps())
                 .withProductVersion(ticket.getProductVersion())
                 .withCreationTime(new Date())

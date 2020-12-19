@@ -1,10 +1,13 @@
 package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.model.*;
+import org.hetsold.bugtracker.util.IssueFactoryCreatedIssueType;
+import org.hetsold.bugtracker.util.MessageFactoryCreatedMessageType;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -37,7 +40,7 @@ public class HistoryEventHibernateDAOTest {
     public static void prepareData() {
         issue = new Issue();
         user = new User("user_1", "user_1");
-        message = new Message(user, "title", "message content");
+        message = new Message(user, "message content");
     }
 
     @Before

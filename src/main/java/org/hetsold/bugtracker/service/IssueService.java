@@ -26,10 +26,6 @@ public interface IssueService {
 
     void addIssueMessage(Issue issue, Message message);
 
-    void changeIssueMessageContent(Message message, Message newMessage);
-
-    void deleteMessage(Message message);
-
     void createIssue(Issue issue, User user);
 
     void createIssueFromTicket(Ticket ticket, User user);

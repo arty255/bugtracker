@@ -1,9 +1,6 @@
 package org.hetsold.bugtracker.facade;
 
-import org.hetsold.bugtracker.model.Issue;
-import org.hetsold.bugtracker.model.IssueShortDTO;
-import org.hetsold.bugtracker.model.TicketDTO;
-import org.hetsold.bugtracker.model.UserDTO;
+import org.hetsold.bugtracker.model.*;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +27,14 @@ public class SimpleIssueFacade implements IssueFacade {
     }
 
     @Override
-    public void createIssue(Issue issue, UserDTO userDTO) {
+    public void createIssue(IssueDTO issueDTO, UserDTO userDTO) {
+        Issue issue = issueConverter.getUnsavedIssue(issueDTO);
         issueService.createIssue(issue, userConvertor.getUser(userDTO));
     }
 
     @Override
     public void createIssueFromTicket(TicketDTO ticketDTO, UserDTO userDTO) {
         issueService.createIssueFromTicket(ticketConvertor.getTicket(ticketDTO), userConvertor.getUser(userDTO));
-        ticketService.applyForIssue(ticketConvertor.getTicket(ticketDTO));
     }
 
     @Override

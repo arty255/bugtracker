@@ -202,8 +202,8 @@ public class Issue extends AbstractIdentity {
             newIssue = new Issue();
         }
 
-        public Builder withIssueId(String issueId) {
-            newIssue.setIssueNumber(issueId);
+        public Builder withIssueNumber(String issueNumber) {
+            newIssue.setIssueNumber(issueNumber);
             return this;
         }
 
@@ -229,6 +229,26 @@ public class Issue extends AbstractIdentity {
 
         public Builder withCreationTime(Date creationTime) {
             newIssue.setCreationTime(creationTime);
+            return this;
+        }
+
+        public Builder withIssueExistedResult(String existedResult) {
+            newIssue.setExistedResult(existedResult);
+            return this;
+        }
+
+        public Builder withIssueExpectedResult(String expectedResult){
+            newIssue.setExpectedResult(expectedResult);
+            return this;
+        }
+
+        public Builder withIssueSeverity(Severity issueSeverity){
+            newIssue.setSeverity(issueSeverity);
+            return this;
+        }
+
+        public Builder withIssueState(State issueState){
+            newIssue.setCurrentState(issueState);
             return this;
         }
 

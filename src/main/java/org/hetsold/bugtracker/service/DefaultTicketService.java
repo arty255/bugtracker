@@ -5,11 +5,13 @@ import org.hetsold.bugtracker.dao.UserDAO;
 import org.hetsold.bugtracker.model.Ticket;
 import org.hetsold.bugtracker.model.TicketResolveState;
 import org.hetsold.bugtracker.model.TicketVerificationState;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 
+@Service
 @Transactional
 public class DefaultTicketService implements TicketService {
     private TicketDAO ticketDao;

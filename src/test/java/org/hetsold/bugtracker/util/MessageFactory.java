@@ -16,7 +16,6 @@ public class MessageFactory {
 
     public synchronized Message getMessage(MessageFactoryCreatedMessageType createdMessageType) {
         Message message = new Message();
-        message.setTitle("correct title");
         message.setContent("correct content");
         message.setMessageDate(new Date());
         message.setMessageCreator(user);

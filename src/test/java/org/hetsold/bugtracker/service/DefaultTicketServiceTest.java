@@ -10,6 +10,7 @@ import org.hetsold.bugtracker.model.TicketVerificationState;
 import org.hetsold.bugtracker.model.User;
 import org.hetsold.bugtracker.util.TicketFactory;
 import org.hetsold.bugtracker.util.TicketFactoryTicketType;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -20,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.validateMockitoUsage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class, TestAppConfig.class})
@@ -34,6 +36,11 @@ public class DefaultTicketServiceTest {
 
     private final User user = new User("First Name", "Last Name");
     private final TicketFactory ticketFactory = new TicketFactory(user);
+
+    @After
+    public void validate() {
+        validateMockitoUsage();
+    }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkIfTicketWithNoDescriptionCanBeSaved() {
@@ -63,14 +70,14 @@ public class DefaultTicketServiceTest {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
         Mockito.when(userDAO.getUserById(ticket.getCreatedBy().getUuid())).thenReturn(ticket.getCreatedBy());
         ticketService.save(ticket);
-        Mockito.verify(ticketDao, Mockito.times(1)).save(ticket);
+        Mockito.verify(ticketDao).save(ticket);
     }
 
     @Test
     public void checkIfTicketCanBeDeleted() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
         ticketService.delete(ticket);
-        Mockito.verify(ticketDao, Mockito.times(1)).delete(ticket);
+        Mockito.verify(ticketDao).delete(ticket);
     }
 
     @Test
