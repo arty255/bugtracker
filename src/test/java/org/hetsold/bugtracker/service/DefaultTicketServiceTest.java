@@ -56,6 +56,7 @@ public class DefaultTicketServiceTest {
     public void checkIfTicketWithNoDescriptionCanBeSaved() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.IncorrectTicketEmptyDescription);
         ticketService.save(ticket);
+        Mockito.verify(ticketDao, Mockito.never()).save(ticket);
     }
 
     @Test(expected = IllegalArgumentException.class)
