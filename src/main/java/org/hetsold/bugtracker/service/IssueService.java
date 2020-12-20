@@ -13,7 +13,7 @@ public interface IssueService {
 
     void deleteIssue(Issue issue);
 
-    List<Issue> findIssueByCriteria(Issue issue);
+    List<Issue> findIssueByFilter(Issue issue);
 
     List<Issue> getIssueList();
 

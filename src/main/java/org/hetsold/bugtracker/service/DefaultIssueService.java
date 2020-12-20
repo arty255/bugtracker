@@ -20,6 +20,9 @@ public class DefaultIssueService implements IssueService {
     private MessageService messageService;
     private TicketService ticketService;
 
+    public DefaultIssueService() {
+    }
+
     public DefaultIssueService(IssueDAO issueDAO, UserDAO userDAO, HistoryEventDAO historyEventDAO, MessageService messageService, TicketService ticketService) {
         this.issueDAO = issueDAO;
         this.userDAO = userDAO;
@@ -76,7 +79,7 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
-    public List<Issue> findIssueByCriteria(Issue issue) {
+    public List<Issue> findIssueByFilter(Issue issue) {
         return issueDAO.getIssueByCriteria(issue);
     }
 

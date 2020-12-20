@@ -6,10 +6,13 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
-@Transactional
 @Service
+@Transactional
 public class DefaultUserService implements UserService {
     private UserDAO userDAO;
+
+    public DefaultUserService() {
+    }
 
     public DefaultUserService(UserDAO userDAO) {
         this.userDAO = userDAO;
@@ -17,6 +20,9 @@ public class DefaultUserService implements UserService {
 
     @Override
     public void save(User user) {
+        if (user == null || user.getUuid().isEmpty()) {
+            throw new IllegalArgumentException("incorrect user");
+        }
         userDAO.save(user);
     }
 
@@ -25,7 +31,17 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
+    public User getUserById(User user) {
+        if (user == null || user.getUuid().isEmpty()) {
+            throw new IllegalArgumentException("incorrect user");
+        }
+        return userDAO.getUserById(user.getUuid());
+    }
+
+    @Override
     public void delete(User user) {
         userDAO.delete(user);
     }
+
+
 }

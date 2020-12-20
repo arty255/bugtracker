@@ -5,13 +5,15 @@ import org.hetsold.bugtracker.TestAppConfig;
 import org.hetsold.bugtracker.dao.TicketDAO;
 import org.hetsold.bugtracker.dao.UserDAO;
 import org.hetsold.bugtracker.model.*;
-import org.hetsold.bugtracker.util.*;
+import org.hetsold.bugtracker.util.MessageFactory;
+import org.hetsold.bugtracker.util.MessageFactoryCreatedMessageType;
+import org.hetsold.bugtracker.util.TicketFactory;
+import org.hetsold.bugtracker.util.TicketFactoryTicketType;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -22,20 +24,25 @@ import static org.mockito.Mockito.validateMockitoUsage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class, TestAppConfig.class})
-@ActiveProfiles(profiles = {"test", "mock"})
+@ActiveProfiles(profiles = {"test"})
 public class DefaultTicketServiceTest {
-    @Autowired
-    private TicketService ticketService;
-    @Autowired
+    @InjectMocks
+    private TicketService ticketService = new DefaultTicketService();
+    @Mock
     private UserDAO userDAO;
-    @Autowired
+    @Mock
     private TicketDAO ticketDao;
-    @Autowired
+    @Mock
     private MessageService messageService;
 
     private final User user = new User("First Name", "Last Name");
     private final TicketFactory ticketFactory = new TicketFactory(user);
     private MessageFactory messageFactory = new MessageFactory(user);
+
+    @Before
+    public void beforeTest() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @After
     public void validate() {
@@ -46,14 +53,12 @@ public class DefaultTicketServiceTest {
     public void checkIfTicketWithNoDescriptionCanBeSaved() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.IncorrectTicketEmptyDescription);
         ticketService.save(ticket);
-        Mockito.verify(ticketDao, Mockito.never()).save(ticket);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkIfTicketWithEmptyUserCantBeSaved() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.IncorrectTicketNullCreator);
         ticketService.save(ticket);
-        Mockito.verify(ticketDao, Mockito.never()).save(Mockito.any());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -62,7 +67,6 @@ public class DefaultTicketServiceTest {
         Mockito.when(userDAO.getUserById(ticket.getCreatedBy().getUuid())).thenReturn(null);
         ticketService.save(ticket);
         Mockito.verify(ticketDao, Mockito.times(1)).getTicketById(ticket.getUuid());
-        Mockito.verify(ticketDao, Mockito.never()).save(Mockito.any());
     }
 
     @Test
@@ -92,13 +96,7 @@ public class DefaultTicketServiceTest {
     }
 
     @Test
-    //mockito for some reason cannot verify transactional call - probably aop proxy - for now unwrap
     public void checkIfCorrectTicketMessageWillBeAdded() {
-        try {
-            messageService = (MessageService) SpringAOPUnWrapper.unwrapProxy(messageService);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
         Mockito.when(ticketDao.getTicketById(ticket.getUuid())).thenReturn(ticket);
@@ -112,6 +110,4 @@ public class DefaultTicketServiceTest {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
         ticketService.addMessage(null, message, user);
     }
-
-
 }

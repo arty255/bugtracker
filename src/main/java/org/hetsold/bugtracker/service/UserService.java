@@ -5,7 +5,7 @@ import org.hetsold.bugtracker.model.User;
 public interface UserService {
     void save(User user);
 
-    User getUser(String userId);
+    User getUserById(User user);
 
     void delete(User user);
 }

@@ -9,12 +9,11 @@ import org.hetsold.bugtracker.model.User;
 import org.hetsold.bugtracker.util.MessageFactory;
 import org.hetsold.bugtracker.util.MessageFactoryCreatedMessageType;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -24,13 +23,13 @@ import static org.mockito.Mockito.validateMockitoUsage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestAppConfig.class, AppConfig.class})
-@ActiveProfiles(profiles = {"test", "mock"})
+@ActiveProfiles(profiles = {"test"})
 public class DefaultMessageServiceTest {
-    @Autowired
-    private MessageService messageService;
-    @Autowired
+    @InjectMocks
+    private final MessageService messageService = new DefaultMessageService();
+    @Mock
     private MessageDAO messageDAO;
-    @Autowired
+    @Mock
     private UserDAO userDAO;
     private static User user = new User("first name", "last name");
     private static MessageFactory messageFactory;
@@ -38,6 +37,11 @@ public class DefaultMessageServiceTest {
     @BeforeClass
     public static void prepareData() {
         messageFactory = new MessageFactory(user);
+    }
+
+    @Before
+    public void beforeTest() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @After

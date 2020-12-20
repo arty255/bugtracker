@@ -19,6 +19,10 @@ public class DefaultMessageService implements MessageService {
         this.messageDAO = messageDAO;
     }
 
+    public DefaultMessageService() {
+
+    }
+
     @Override
     public void saveMessage(Message message, User user) {
         if (message.getContent().isEmpty()) {
