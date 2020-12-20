@@ -49,13 +49,13 @@ public class DefaultMessageServiceTest {
     public void checkIfEmptyMessageThrowException() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
         message.setContent("");
-        messageService.addMessage(message, user);
+        messageService.saveMessage(message, user);
     }
 
     @Test
     public void checkIfMessageCanBeSaved() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
-        messageService.addMessage(message, user);
+        messageService.saveMessage(message, user);
         ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
         Mockito.verify(messageDAO, Mockito.atLeastOnce()).save(messageCaptor.capture());
         Message capturedMessage = messageCaptor.getValue();
@@ -78,7 +78,7 @@ public class DefaultMessageServiceTest {
         message.setContent(newContent);
         Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
         ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
-        messageService.addMessage(message, user);
+        messageService.saveMessage(message, user);
         Mockito.verify(messageDAO, Mockito.atLeastOnce()).save(messageCaptor.capture());
         Message capturedMessage = messageCaptor.getValue();
         assertEquals(newContent, capturedMessage.getContent());

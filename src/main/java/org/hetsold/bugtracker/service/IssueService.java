@@ -18,9 +18,9 @@ public interface IssueService {
     //issue - selected issue to change State
     //newState - new issue state
     //assignedTo - user to who issue will be assigned
-    void changeIssueState(Issue issue, State newState, User assignedTo);
+    void changeIssueState(Issue issue, State newState, User assignedTo, User user);
 
-    void addIssueMessage(Issue issue, Message message);
+    void addIssueMessage(Issue issue, Message message, User user);
 
     void createIssue(Issue issue, User user);
 

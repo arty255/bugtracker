@@ -10,7 +10,11 @@ public class Message extends AbstractIdentity {
     @JoinColumn(name = "messageCreator")
     private User messageCreator;
     private String content;
-    private Date messageDate;
+    private Date createDate;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "messageEditor")
+    private User messageEditor;
+    private Date editDate;
 
     public Message() {
     }
@@ -36,11 +40,27 @@ public class Message extends AbstractIdentity {
         this.content = content;
     }
 
-    public Date getMessageDate() {
-        return messageDate;
+    public Date getCreateDate() {
+        return createDate;
     }
 
-    public void setMessageDate(Date date) {
-        this.messageDate = date;
+    public void setCreateDate(Date date) {
+        this.createDate = date;
+    }
+
+    public User getMessageEditor() {
+        return messageEditor;
+    }
+
+    public void setMessageEditor(User messageEditor) {
+        this.messageEditor = messageEditor;
+    }
+
+    public Date getEditDate() {
+        return editDate;
+    }
+
+    public void setEditDate(Date editDate) {
+        this.editDate = editDate;
     }
 }

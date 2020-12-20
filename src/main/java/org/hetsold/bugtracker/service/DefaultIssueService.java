@@ -68,7 +68,7 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
-    public void changeIssueState(Issue issue, State newState, User assignedTo) {
+    public void changeIssueState(Issue issue, State newState, User assignedTo, User user) {
         if (issue == null || issueDAO.getIssueById(issue.getUuid()) == null) {
             throw new IllegalArgumentException("issue not exists");
         }
@@ -87,9 +87,7 @@ public class DefaultIssueService implements IssueService {
         HistoryIssueStateChangeEvent event = new HistoryIssueStateChangeEvent();
         event.setEventDate(new Date());
         event.setIssue(issue);
-        //get current security context user;
-        //todo: change after spring security integration
-        //event.setRedactor(user);
+        event.setRedactor(user);
         event.setState(newState);
         issue.setCurrentState(newState);
         historyEventDAO.saveStateChange(event);
@@ -97,23 +95,25 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
-    public void addIssueMessage(Issue issue, Message message) {
+    public void addIssueMessage(Issue issue, Message message, User user) {
         if (issueDAO.getIssueById(issue.getUuid()) == null) {
             throw new IllegalArgumentException("issue not exist");
         }
         if (message == null || message.getContent().isEmpty()) {
             throw new IllegalArgumentException("message is empty");
         }
-        User user;
-        if ((user = message.getMessageCreator()) == null || (user = userDAO.getUserById(user.getUuid())) == null) {
+        if (user == null || (user = userDAO.getUserById(user.getUuid())) == null) {
             throw new IllegalArgumentException("user not exist");
         }
-        messageService.addMessage(message, user);
-        HistoryIssueMessageEvent messageEvent = new HistoryIssueMessageEvent();
-        messageEvent.setMessage(message);
-        messageEvent.setIssue(issue);
-        messageEvent.setEventDate(new Date());
-        historyEventDAO.saveIssueMessage(messageEvent);
+        boolean messageNotExists = messageService.getMessageById(message) == null;
+        messageService.saveMessage(message, user);
+        if (messageNotExists) {
+            HistoryIssueMessageEvent messageEvent = new HistoryIssueMessageEvent();
+            messageEvent.setMessage(message);
+            messageEvent.setIssue(issue);
+            messageEvent.setEventDate(new Date());
+            historyEventDAO.saveIssueMessage(messageEvent);
+        }
     }
 
     @Override

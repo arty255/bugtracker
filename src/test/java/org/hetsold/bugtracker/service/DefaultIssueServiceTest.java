@@ -19,6 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.validateMockitoUsage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -116,7 +117,7 @@ public class DefaultIssueServiceTest {
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
         issue.setCurrentState(null);
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
-        issueService.changeIssueState(issue, null, null);
+        issueService.changeIssueState(issue, null, user, user);
         Mockito.verify(issueDAO, Mockito.never()).save(issue);
     }
 
@@ -126,18 +127,17 @@ public class DefaultIssueServiceTest {
         Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
         issue.setAssignedTo(null);
-        issueService.changeIssueState(issue, State.ASSIGNED, user);
+        issueService.changeIssueState(issue, State.ASSIGNED, null, user);
         Mockito.verify(issueDAO, Mockito.never()).save(issue);
     }
 
     @Test
-    //@Sql(value = {"/test_db_data.sql"})
     public void checkIfIssueStateChangingCorrectly() {
         State newState = State.REOPENED;
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
         Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
-        issueService.changeIssueState(issue, newState, user);
+        issueService.changeIssueState(issue, newState, user, user);
         Mockito.verify(userDAO).getUserById(user.getUuid());
         Mockito.verify(issueDAO).save(issue);
     }
@@ -146,7 +146,7 @@ public class DefaultIssueServiceTest {
     public void checkIfEmptyMessageThrowException() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.IncorrectNullContentMessage);
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
-        issueService.addIssueMessage(issue, message);
+        issueService.addIssueMessage(issue, message, user);
         Mockito.verify(issueDAO, Mockito.never()).save(Mockito.any());
     }
 
@@ -154,8 +154,7 @@ public class DefaultIssueServiceTest {
     public void checkIfMessageWithNotExistedUserThrowException() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.IncorrectNullCreator);
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
-        //Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(null);
-        issueService.addIssueMessage(issue, message);
+        issueService.addIssueMessage(issue, message, user);
         Mockito.verify(issueDAO, Mockito.never()).save(issue);
     }
 
@@ -165,7 +164,7 @@ public class DefaultIssueServiceTest {
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
         Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(null);
-        issueService.addIssueMessage(issue, message);
+        issueService.addIssueMessage(issue, message, user);
         Mockito.verify(issueDAO, Mockito.never()).save(issue);
     }
 
@@ -175,7 +174,7 @@ public class DefaultIssueServiceTest {
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
         Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
-        issueService.addIssueMessage(issue, message);
+        issueService.addIssueMessage(issue, message, user);
         Mockito.verify(historyEventDAO).saveIssueMessage(Mockito.any());
     }
 
@@ -192,4 +191,6 @@ public class DefaultIssueServiceTest {
         assertEquals(user, savedIssue.getReportedBy());
         assertEquals(ticket, savedIssue.getTicket());
     }
+
+
 }
