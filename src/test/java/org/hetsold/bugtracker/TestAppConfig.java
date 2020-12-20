@@ -1,14 +1,7 @@
 package org.hetsold.bugtracker;
 
-import org.hetsold.bugtracker.dao.*;
-import org.hetsold.bugtracker.service.DefaultMessageService;
-import org.hetsold.bugtracker.service.DefaultTicketService;
-import org.hetsold.bugtracker.service.MessageService;
-import org.hetsold.bugtracker.service.TicketService;
-import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
@@ -26,53 +19,4 @@ public class TestAppConfig {
         dataSource.setPassword("OnHG8^nnP");
         return dataSource;
     }
-
-    @Bean
-    @Primary
-    @Profile("mock")
-    public UserDAO getUserDAOMockBean() {
-        return Mockito.mock(UserHibernateDAO.class);
-    }
-
-    @Bean
-    @Primary
-    @Profile("mock")
-    public IssueDAO gIssueDAOMockBean() {
-        return Mockito.mock(IssueHibernateDAO.class);
-    }
-
-    @Bean
-    @Primary
-    @Profile("mock")
-    public HistoryEventDAO getHistoryEventMockDAO() {
-        return Mockito.mock(HistoryEventHibernateDAO.class);
-    }
-
-    @Bean
-    @Primary
-    @Profile("mock")
-    public MessageDAO getMessageMockDAO() {
-        return Mockito.mock(MessageHibernateDAO.class);
-    }
-
-    @Bean
-    @Primary
-    @Profile("mock")
-    public TicketDAO getTicketHibernateDao() {
-        return Mockito.mock(TicketHibernateDAO.class);
-    }
-
-    @Bean
-    @Primary
-    @Profile("mock")
-    public MessageService getMessageService() {
-        return Mockito.mock(DefaultMessageService.class);
-    }
-
-    /*@Bean
-    @Primary
-    @Profile("mock")
-    public TicketService getTicketService(){
-        return Mockito.mock(DefaultTicketService.class);
-    }*/
 }

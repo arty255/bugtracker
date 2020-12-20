@@ -11,7 +11,7 @@ public interface IssueService {
 
     void deleteIssue(Issue issue);
 
-    List<Issue> findIssueByCriteria(Issue issue);
+    List<Issue> findIssueByFilter(Issue issue);
 
     Issue getIssueForViewById(String uuid);
 

@@ -44,7 +44,7 @@ public class SimpleIssueFacade implements IssueFacade {
 
     @Override
     public List<IssueShortDTO> getIssue(IssueShortDTO issueShortDTO) {
-        return issueService.findIssueByCriteria(issueConverter.getIssue(issueShortDTO)).stream().map(issueConverter::getIssueShortDTO).collect(Collectors.toList());
+        return issueService.findIssueByFilter(issueConverter.getIssue(issueShortDTO)).stream().map(issueConverter::getIssueShortDTO).collect(Collectors.toList());
     }
 
     @Override
