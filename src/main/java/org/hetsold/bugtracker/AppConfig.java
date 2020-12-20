@@ -94,8 +94,8 @@ public class AppConfig {
 
     @Bean
     @Autowired
-    public TicketService getTicketService(TicketDAO ticketDAO, UserDAO userDAO) {
-        return new DefaultTicketService(ticketDAO, userDAO);
+    public TicketService getTicketService(TicketDAO ticketDAO, UserDAO userDAO, MessageService messageService) {
+        return new DefaultTicketService(ticketDAO, userDAO, messageService);
     }
 
     @Bean

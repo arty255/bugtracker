@@ -4,12 +4,8 @@ import org.hetsold.bugtracker.AppConfig;
 import org.hetsold.bugtracker.TestAppConfig;
 import org.hetsold.bugtracker.dao.TicketDAO;
 import org.hetsold.bugtracker.dao.UserDAO;
-import org.hetsold.bugtracker.model.Ticket;
-import org.hetsold.bugtracker.model.TicketResolveState;
-import org.hetsold.bugtracker.model.TicketVerificationState;
-import org.hetsold.bugtracker.model.User;
-import org.hetsold.bugtracker.util.TicketFactory;
-import org.hetsold.bugtracker.util.TicketFactoryTicketType;
+import org.hetsold.bugtracker.model.*;
+import org.hetsold.bugtracker.util.*;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.validateMockitoUsage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,9 +30,12 @@ public class DefaultTicketServiceTest {
     private UserDAO userDAO;
     @Autowired
     private TicketDAO ticketDao;
+    @Autowired
+    private MessageService messageService;
 
     private final User user = new User("First Name", "Last Name");
     private final TicketFactory ticketFactory = new TicketFactory(user);
+    private MessageFactory messageFactory = new MessageFactory(user);
 
     @After
     public void validate() {
@@ -90,4 +90,28 @@ public class DefaultTicketServiceTest {
         assertEquals(TicketResolveState.Resolving, transformedTicket.getResolveState());
         assertEquals(TicketVerificationState.Verified, transformedTicket.getVerificationState());
     }
+
+    @Test
+    //mockito for some reason cannot verify transactional call - probably aop proxy - for now unwrap
+    public void checkIfCorrectTicketMessageWillBeAdded() {
+        try {
+            messageService = (MessageService) SpringAOPUnWrapper.unwrapProxy(messageService);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
+        Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
+        Mockito.when(ticketDao.getTicketById(ticket.getUuid())).thenReturn(ticket);
+        ticketService.addMessage(ticket, message, user);
+        Mockito.verify(messageService).saveMessage(message, user);
+        Mockito.verify(ticketDao, atLeastOnce()).save(ticket);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkIfTicketMessageWithEmptyTicketThroeException() {
+        Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
+        ticketService.addMessage(null, message, user);
+    }
+
+
 }

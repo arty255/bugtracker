@@ -17,7 +17,7 @@ public class MessageFactory {
     public synchronized Message getMessage(MessageFactoryCreatedMessageType createdMessageType) {
         Message message = new Message();
         message.setContent("correct content");
-        message.setMessageDate(new Date());
+        message.setCreateDate(new Date());
         message.setMessageCreator(user);
         switch (createdMessageType) {
             case IncorrectNullMessage:
@@ -30,16 +30,16 @@ public class MessageFactory {
                 message.setMessageCreator(null);
                 break;
             case IncorrectNullDateMessage:
-                message.setMessageDate(null);
+                message.setCreateDate(null);
             case CorrectMessage:
                 break;
             case CorrectMessageNow:
                 break;
             case CorrectMessageMinusTwoDays:
-                message.setMessageDate(Date.from(LocalDateTime.now().minusDays(2).atZone(ZoneId.systemDefault()).toInstant()));
+                message.setCreateDate(Date.from(LocalDateTime.now().minusDays(2).atZone(ZoneId.systemDefault()).toInstant()));
                 break;
             case CorrectMessageMinusFiveDays:
-                message.setMessageDate(Date.from(LocalDateTime.now().minusDays(5).atZone(ZoneId.systemDefault()).toInstant()));
+                message.setCreateDate(Date.from(LocalDateTime.now().minusDays(5).atZone(ZoneId.systemDefault()).toInstant()));
                 break;
         }
         return message;

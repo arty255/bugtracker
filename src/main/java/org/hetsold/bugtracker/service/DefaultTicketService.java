@@ -2,9 +2,7 @@ package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dao.TicketDAO;
 import org.hetsold.bugtracker.dao.UserDAO;
-import org.hetsold.bugtracker.model.Ticket;
-import org.hetsold.bugtracker.model.TicketResolveState;
-import org.hetsold.bugtracker.model.TicketVerificationState;
+import org.hetsold.bugtracker.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +14,12 @@ import java.util.List;
 public class DefaultTicketService implements TicketService {
     private TicketDAO ticketDao;
     private UserDAO userDAO;
+    private MessageService messageService;
 
-    public DefaultTicketService(TicketDAO ticketDao, UserDAO userDAO) {
+    public DefaultTicketService(TicketDAO ticketDao, UserDAO userDAO, MessageService messageService) {
         this.ticketDao = ticketDao;
         this.userDAO = userDAO;
+        this.messageService = messageService;
     }
 
     @Override
@@ -48,6 +48,16 @@ public class DefaultTicketService implements TicketService {
     public void applyForIssue(Ticket ticket) {
         ticket.setVerificationState(TicketVerificationState.Verified);
         ticket.setResolveState(TicketResolveState.Resolving);
+        ticketDao.save(ticket);
+    }
+
+    @Override
+    public void addMessage(Ticket ticket, Message message, User user) {
+        if (ticket == null || (ticket = ticketDao.getTicketById(ticket.getUuid())) == null) {
+            throw new IllegalArgumentException("ticket cannot be empty");
+        }
+        messageService.saveMessage(message, user);
+        ticket.getMessageList().add(message);
         ticketDao.save(ticket);
     }
 }
