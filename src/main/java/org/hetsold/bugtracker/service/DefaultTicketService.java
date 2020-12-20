@@ -22,6 +22,10 @@ public class DefaultTicketService implements TicketService {
         this.userDAO = userDAO;
     }
 
+    public DefaultTicketService() {
+
+    }
+
     @Override
     public void save(Ticket ticket) {
         if (ticket.getDescription().isEmpty()) {
