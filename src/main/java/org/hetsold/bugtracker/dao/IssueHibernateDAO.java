@@ -45,11 +45,7 @@ public class IssueHibernateDAO implements IssueDAO {
             query.select(criteriaBuilder.count(root));
             return session.createQuery(query).getSingleResult();
         });
-        if (count != null) {
-            return count;
-        } else {
-            return 0;
-        }
+        return count != null ? count : 0;
     }
 
     @Override
@@ -60,6 +56,9 @@ public class IssueHibernateDAO implements IssueDAO {
     @Override
     public List<Issue> getIssueByCriteria(Issue issue) {
         return hibernateTemplate.execute(session -> {
+            EntityGraph<Issue> issueEntityGraph = session.createEntityGraph(Issue.class);
+            issueEntityGraph.addAttributeNodes("uuid");
+            issueEntityGraph.addSubgraph("reportedBy").addAttributeNodes("firstName", "lastName");
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Issue> query = criteriaBuilder.createQuery(Issue.class);
             Root<Issue> root = query.from(Issue.class);
@@ -70,37 +69,39 @@ public class IssueHibernateDAO implements IssueDAO {
             } else {
                 query.where(predicates);
             }
-            return session.createQuery(query).getResultList();
+            TypedQuery<Issue> typedQuery = session.createQuery(query);
+            typedQuery.setHint("javax.persistence.fetchgraph", issueEntityGraph);
+            return typedQuery.getResultList();
         });
     }
 
     @Override
     public Issue getIssueToDetailedViewById(String uuid) {
         return hibernateTemplate.execute(session -> {
-            EntityGraph issueEntityGraph = session.getEntityGraph("IssueEntityGraphToDetailedView");
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Issue> query = criteriaBuilder.createQuery(Issue.class);
             Root<Issue> root = query.from(Issue.class);
             query.where(criteriaBuilder.equal(root.get("uuid"), uuid));
             TypedQuery<Issue> typedQuery = session.createQuery(query);
-            typedQuery.setHint("javax.persistence.loadgraph", issueEntityGraph);
             return typedQuery.getSingleResult();
         });
     }
 
     private Predicate[] getPredicates(Issue issue, Root<Issue> root, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicateList = new ArrayList<>();
-        if (issue.getCurrentState() != null) {
-            predicateList.add(criteriaBuilder.equal(root.get(Issue_.currentState), issue.getCurrentState()));
-        }
-        if (issue.getDescription() != null) {
-            predicateList.add(criteriaBuilder.like(root.get(Issue_.description), issue.getDescription()));
-        }
-        if (issue.getCreationTime() != null) {
-            predicateList.add(criteriaBuilder.lessThan(root.get(Issue_.creationTime), issue.getCreationTime()));
-        }
-        if (issue.getReportedBy() != null) {
-            predicateList.add(criteriaBuilder.equal(root.get(Issue_.reportedBy), issue.getReportedBy()));
+        if (issue != null) {
+            if (issue.getCurrentState() != null) {
+                predicateList.add(criteriaBuilder.equal(root.get(Issue_.currentState), issue.getCurrentState()));
+            }
+            if (issue.getDescription() != null) {
+                predicateList.add(criteriaBuilder.like(root.get(Issue_.description), issue.getDescription()));
+            }
+            if (issue.getCreationTime() != null) {
+                predicateList.add(criteriaBuilder.lessThan(root.get(Issue_.creationTime), issue.getCreationTime()));
+            }
+            if (issue.getReportedBy() != null) {
+                predicateList.add(criteriaBuilder.equal(root.get(Issue_.reportedBy), issue.getReportedBy()));
+            }
         }
         return predicateList.toArray(new Predicate[0]);
     }

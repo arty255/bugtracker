@@ -60,6 +60,8 @@ public class DefaultIssueService implements IssueService {
         }
         Issue issue = new Issue();
         issue.setReportedBy(user);
+        issue.setCreationTime(new Date());
+        issue.setDescription("description" + random.nextInt());
         issueDAO.save(issue);
     }
 
@@ -81,6 +83,10 @@ public class DefaultIssueService implements IssueService {
 
     @Override
     public List<Issue> findIssueByFilter(Issue issue) {
+        if (issue == null) {
+            issue = new Issue();
+            issue.setUuid("");
+        }
         return issueDAO.getIssueByCriteria(issue);
     }
 

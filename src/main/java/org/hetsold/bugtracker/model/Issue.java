@@ -45,6 +45,22 @@ import java.util.List;
         }
 )
 
+@NamedEntityGraph(
+        name = "IssueEntityGraphToShortView",
+        attributeNodes = {
+                @NamedAttributeNode(value = "uuid"),
+                @NamedAttributeNode(value = "reportedBy", subgraph = "reportedBySubGraph")
+        },
+        subgraphs = {
+                @NamedSubgraph(name = "reportedBySubGraph",
+                        attributeNodes = {
+                                @NamedAttributeNode("firstName"),
+                                @NamedAttributeNode("lastName")
+                        }
+                )
+        }
+)
+
 @Entity
 @Table(name = "issue")
 public class Issue extends AbstractIdentity {

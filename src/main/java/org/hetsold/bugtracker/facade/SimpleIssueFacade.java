@@ -27,6 +27,16 @@ public class SimpleIssueFacade implements IssueFacade {
     }
 
     @Override
+    public void generateRandomIssue() {
+        issueService.generateAndSaveIssue();
+    }
+
+    @Override
+    public IssueShortDTO getIssue(String issueUUID) {
+        return issueConverter.getIssueShortDTO(issueService.getIssueById(issueUUID));
+    }
+
+    @Override
     public void createIssue(IssueDTO issueDTO, UserDTO userDTO) {
         Issue issue = issueConverter.getIssue(issueDTO);
         issueService.createNewIssue(issue, userConvertor.getUser(userDTO));
@@ -44,7 +54,7 @@ public class SimpleIssueFacade implements IssueFacade {
     }
 
     @Override
-    public List<IssueShortDTO> getIssue(IssueShortDTO issueShortDTO) {
+    public List<IssueShortDTO> getIssueList(IssueShortDTO issueShortDTO) {
         return issueService.findIssueByFilter(issueConverter.getIssue(issueShortDTO)).stream().map(issueConverter::getIssueShortDTO).collect(Collectors.toList());
     }
 
