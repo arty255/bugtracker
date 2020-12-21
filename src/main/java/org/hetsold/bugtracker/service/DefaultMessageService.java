@@ -20,20 +20,32 @@ public class DefaultMessageService implements MessageService {
     }
 
     public DefaultMessageService() {
-
     }
 
     @Override
-    public void addMessage(Message message, User user) {
-        if (message.getContent().isEmpty()) {
+    public void saveMessage(Message message, User user) {
+        if (message == null || message.getContent().isEmpty()) {
             throw new IllegalArgumentException("message content can not be empty");
         }
+        String newMessageContent = message.getContent();
+        message = getMessageById(message);
         if (user == null) {
             throw new IllegalArgumentException("user not exists");
         }
-        message.setMessageCreator(user);
-        message.setMessageDate(new Date());
-        messageDAO.save(message);
+        if (message == null) {
+            message = new Message();
+            message.setMessageCreator(user);
+            message.setCreateDate(new Date());
+            messageDAO.save(message);
+        } else {
+            message.setContent(newMessageContent);
+            message.setMessageEditor(user);
+            message.setEditDate(new Date());
+        }
+    }
+
+    public Message getMessageById(Message message) {
+        return messageDAO.getMessageById(message.getUuid());
     }
 
     @Override

@@ -1,25 +1,21 @@
 package org.hetsold.bugtracker.facade;
 
-import org.hetsold.bugtracker.dao.UserDAO;
 import org.hetsold.bugtracker.model.User;
 import org.hetsold.bugtracker.model.UserDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserConvertor {
-    private UserDAO userDAO;
-
-    @Autowired
-    public UserConvertor(UserDAO userDAO) {
-        this.userDAO = userDAO;
-    }
 
     public User getUser(UserDTO userDTO) {
-        if (userDTO != null && !userDTO.getUuid().isEmpty()) {
-            return userDAO.getUserById(userDTO.getUuid());
+        User user = null;
+        if (userDTO != null) {
+            user = new User();
+            user.setUuid(userDTO.getUuid());
+            user.setFirstName(user.getFirstName());
+            user.setLastName(user.getLastName());
         }
-        return null;
+        return user;
     }
 
     public UserDTO geUserDTO(User user) {

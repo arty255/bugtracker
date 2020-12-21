@@ -53,17 +53,28 @@ public class DefaultMessageServiceTest {
     public void checkIfEmptyMessageThrowException() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
         message.setContent("");
-        messageService.addMessage(message, user);
+        messageService.saveMessage(message, user);
     }
 
     @Test
     public void checkIfMessageCanBeSaved() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
-        messageService.addMessage(message, user);
+        Mockito.when(messageDAO.getMessageById(message.getUuid())).thenReturn(null);
+        messageService.saveMessage(message, user);
         ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
         Mockito.verify(messageDAO, Mockito.atLeastOnce()).save(messageCaptor.capture());
         Message capturedMessage = messageCaptor.getValue();
         assertEquals(capturedMessage.getMessageCreator(), user);
+    }
+
+    @Test
+    public void checkIfMessageCanBeUpdated() {
+        Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
+        Mockito.when(messageDAO.getMessageById(message.getUuid())).thenReturn(message);
+        String newMessageContent = "new Content";
+        message.setContent(newMessageContent);
+        messageService.saveMessage(message, user);
+        assertEquals(newMessageContent, message.getContent());
     }
 
     @Test
@@ -73,19 +84,4 @@ public class DefaultMessageServiceTest {
         messageService.deleteMessage(message);
         Mockito.verify(messageDAO, Mockito.atLeastOnce()).delete(message);
     }
-
-    @Test
-    public void checkIfMessageContentCanBeUpdated() {
-        userDAO.save(user);
-        Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
-        String newContent = "new content";
-        message.setContent(newContent);
-        Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
-        ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
-        messageService.addMessage(message, user);
-        Mockito.verify(messageDAO, Mockito.atLeastOnce()).save(messageCaptor.capture());
-        Message capturedMessage = messageCaptor.getValue();
-        assertEquals(newContent, capturedMessage.getContent());
-    }
-
 }

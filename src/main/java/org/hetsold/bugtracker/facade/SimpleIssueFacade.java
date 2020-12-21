@@ -28,8 +28,8 @@ public class SimpleIssueFacade implements IssueFacade {
 
     @Override
     public void createIssue(IssueDTO issueDTO, UserDTO userDTO) {
-        Issue issue = issueConverter.getUnsavedIssue(issueDTO);
-        issueService.createIssue(issue, userConvertor.getUser(userDTO));
+        Issue issue = issueConverter.getIssue(issueDTO);
+        issueService.createNewIssue(issue, userConvertor.getUser(userDTO));
     }
 
     @Override

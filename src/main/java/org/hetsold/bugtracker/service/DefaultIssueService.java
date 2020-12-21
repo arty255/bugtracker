@@ -30,16 +30,15 @@ public class DefaultIssueService implements IssueService {
         this.ticketService = ticketService;
     }
 
-    @Override
     public void save(Issue issue) {
-        if (issue.getCreationTime() == null || issue.getCreationTime().getTime() > System.currentTimeMillis()) {
-            throw new IllegalArgumentException("wrong ticketCreationTime");
+        if (issue.getCreationTime() == null) {
+            throw new IllegalArgumentException("issue creationTime can not be null");
         }
         if (issue.getReportedBy() == null || userDAO.getUserById(issue.getReportedBy().getUuid()) == null) {
-            throw new IllegalArgumentException("wrong issueReporter");
+            throw new IllegalArgumentException("issueReporter argument can not be null or not persisted");
         }
         if (issue.getDescription().isEmpty()) {
-            throw new IllegalArgumentException("issue description and short description is null");
+            throw new IllegalArgumentException("issue description description can not be empty");
         }
         issueDAO.save(issue);
     }
@@ -47,7 +46,7 @@ public class DefaultIssueService implements IssueService {
     @Override
     public Issue getIssueById(String uuid) {
         if (uuid == null || uuid.isEmpty()) {
-            throw new IllegalArgumentException("uuid cannot be empty");
+            throw new IllegalArgumentException("uuid argument can not be empty");
         }
         return issueDAO.getIssueById(uuid);
     }
@@ -71,76 +70,103 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
-    public void changeIssueState(Issue issue, State newState, User assignedTo) {
-        if (issue == null || issueDAO.getIssueById(issue.getUuid()) == null) {
-            throw new IllegalArgumentException("issue not exists");
+    public void changeIssueState(Issue issue, State newState, User user) {
+        if (issue == null || (issue = issueDAO.getIssueById(issue.getUuid())) == null) {
+            throw new IllegalArgumentException("issue argument can not be null or not persisted");
         }
         if (newState == null) {
-            throw new IllegalArgumentException("incompatible newState");
+            throw new IllegalArgumentException("newState argument can not be null");
         }
-        if (assignedTo == null || (assignedTo = userDAO.getUserById(assignedTo.getUuid())) == null) {
-            throw new IllegalArgumentException("non existed user");
+        if (newState == State.ASSIGNED && issue.getAssignedTo() == null) {
+            throw new IllegalArgumentException("cannot change State to assigned with unassigned User. use changeIssueAssignedUser");
         }
-        if (newState == State.ASSIGNED && (issue.getAssignedTo() == null || userDAO.getUserById(issue.getAssignedTo().getUuid()) == null)) {
-            throw new IllegalArgumentException("issue can be assigned to existed user");
+        if (issue.getCurrentState() != newState) {
+            issue.setCurrentState(newState);
+            HistoryIssueStateChangeEvent event = new HistoryIssueStateChangeEvent();
+            event.setEventDate(new Date());
+            event.setIssue(issue);
+            event.setRedactor(user);
+            event.setState(newState);
+            issue.setCurrentState(newState);
+            historyEventDAO.saveStateChange(event);
         }
-        issue = issueDAO.getIssueById(issue.getUuid());
-        issue.setCurrentState(newState);
+    }
+
+    public void changeIssueAssignedUser(Issue issue, User assignedTo, User user) {
+        if (assignedTo == null || (userDAO.getUserById(assignedTo.getUuid())) == null) {
+            throw new IllegalArgumentException("assignedUser argument can not be null or not persisted");
+        }
+        issue = getIssueById(issue.getUuid());
+        if (issue == null) {
+            throw new IllegalArgumentException("issue argument can not be null or not persisted");
+        }
         issue.setAssignedTo(assignedTo);
-        HistoryIssueStateChangeEvent event = new HistoryIssueStateChangeEvent();
-        event.setEventDate(new Date());
-        event.setIssue(issue);
-        //get current security context user;
-        //todo: change after spring security integration
-        //event.setRedactor(user);
-        event.setState(newState);
-        issue.setCurrentState(newState);
-        historyEventDAO.saveStateChange(event);
-        issueDAO.save(issue);
+        if (issue.getCurrentState() != State.ASSIGNED) {
+            changeIssueState(issue, State.ASSIGNED, user);
+        }
     }
 
     @Override
-    public void addIssueMessage(Issue issue, Message message) {
-        if  (issueDAO.getIssueById(issue.getUuid()) == null) {
-            throw new IllegalArgumentException("issue not exist");
+    public void addIssueMessage(Issue issue, Message message, User user) {
+        if (issue == null || (issue = getIssueById(issue.getUuid())) == null) {
+            throw new IllegalArgumentException("issue argument can not be null or not persisted");
         }
         if (message == null || message.getContent().isEmpty()) {
-            throw new IllegalArgumentException("message is empty");
+            throw new IllegalArgumentException("message can not be null or with empty content ");
         }
-        User user;
-        if ((user = message.getMessageCreator()) == null || (user = userDAO.getUserById(user.getUuid())) == null) {
-            throw new IllegalArgumentException("user not exist");
+        if (user == null || (user = userDAO.getUserById(user.getUuid())) == null) {
+            throw new IllegalArgumentException("user argument can not be null or not persisted");
         }
-        messageService.addMessage(message, user);
-        HistoryIssueMessageEvent messageEvent = new HistoryIssueMessageEvent();
-        messageEvent.setMessage(message);
-        messageEvent.setIssue(issue);
-        messageEvent.setEventDate(new Date());
-        historyEventDAO.saveIssueMessage(messageEvent);
+        boolean messageNotExists = messageService.getMessageById(message) == null;
+        if (messageNotExists) {
+            messageService.saveMessage(message, user);
+            HistoryIssueMessageEvent messageEvent = new HistoryIssueMessageEvent();
+            messageEvent.setMessage(message);
+            messageEvent.setIssue(issue);
+            messageEvent.setEventDate(new Date());
+            historyEventDAO.saveIssueMessage(messageEvent);
+        }
     }
 
     @Override
-    public void createIssue(Issue issue, User user) {
+    public void createNewIssue(Issue issue, User user) {
+        if (getIssueById(issue.getUuid()) != null) {
+            throw new IllegalArgumentException("new issue wit this id can not be created");
+        }
+        if (user == null || (user = userDAO.getUserById(user.getUuid())) == null) {
+            throw new IllegalArgumentException("user argument can not be null or not persisted");
+        }
         issue.setCreationTime(new Date());
         issue.setReportedBy(user);
-        this.save(issue);
+        save(issue);
     }
 
     @Override
     public void createIssueFromTicket(Ticket ticket, User user) {
-        if(user == null){
-            throw new IllegalArgumentException("user cannot be null");
+        if (ticket == null || (ticket = ticketService.getTicketById(ticket.getUuid())) == null) {
+            throw new IllegalArgumentException("ticket argument can not be null");
         }
-        Issue issue = ticketToIssueTransfer(ticket);
-        issue.setReportedBy(user);
+        if (user == null) {
+            throw new IllegalArgumentException("user argument can not be null or not persisted");
+        }
+        Issue issue = buildIssueFromTicket(ticket);
+        createNewIssue(issue, user);
         issue.setTicket(ticket);
-        issueDAO.save(issue);
         ticketService.applyForIssue(ticket);
+    }
+
+    private Issue buildIssueFromTicket(Ticket ticket) {
+        return new Issue.Builder()
+                .withIssueNumber("")
+                .withReproduceSteps(ticket.getReproduceSteps())
+                .withProductVersion(ticket.getProductVersion())
+                .withCreationTime(new Date())
+                .withDescription(ticket.getDescription()).build();
     }
 
     @Override
     public void updateIssueState(Issue issue, User user) {
-        Issue oldIssue = this.getIssueById(issue.getUuid());
+        Issue oldIssue = getIssueById(issue.getUuid());
         if (oldIssue.getAssignedTo() != issue.getAssignedTo() || oldIssue.getSeverity() != issue.getSeverity() || !oldIssue.getFixVersion().equals(issue.getFixVersion())) {
             HistoryIssueStateChangeEvent stateChangeEvent = new HistoryIssueStateChangeEvent();
             stateChangeEvent.setState(issue.getCurrentState());
@@ -148,14 +174,5 @@ public class DefaultIssueService implements IssueService {
             stateChangeEvent.setExpectedFixVersion(issue.getFixVersion());
             stateChangeEvent.setEventDate(new Date());
         }
-    }
-
-    private Issue ticketToIssueTransfer(Ticket ticket) {
-        return new Issue.Builder()
-                .withIssueNumber("")
-                .withReproduceSteps(ticket.getReproduceSteps())
-                .withProductVersion(ticket.getProductVersion())
-                .withCreationTime(new Date())
-                .withDescription(ticket.getDescription()).build();
     }
 }

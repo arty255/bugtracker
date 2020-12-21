@@ -13,13 +13,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.atLeastOnce;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.validateMockitoUsage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -86,13 +89,11 @@ public class DefaultTicketServiceTest {
 
     @Test
     public void checkIfTicketApplyForIssue() {
-        ArgumentCaptor<Ticket> ticketArgumentCaptor = ArgumentCaptor.forClass(Ticket.class);
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
+        Mockito.when(ticketDao.getTicketById(ticket.getUuid())).thenReturn(ticket);
         ticketService.applyForIssue(ticket);
-        Mockito.verify(ticketDao, Mockito.atLeastOnce()).save(ticketArgumentCaptor.capture());
-        Ticket transformedTicket = ticketArgumentCaptor.getValue();
-        assertEquals(TicketResolveState.Resolving, transformedTicket.getResolveState());
-        assertEquals(TicketVerificationState.Verified, transformedTicket.getVerificationState());
+        assertEquals(TicketResolveState.Resolving, ticket.getResolveState());
+        assertEquals(TicketVerificationState.Verified, ticket.getVerificationState());
     }
 
     @Test
@@ -100,14 +101,14 @@ public class DefaultTicketServiceTest {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
         Mockito.when(ticketDao.getTicketById(ticket.getUuid())).thenReturn(ticket);
-        ticketService.addMessage(ticket, message, user);
+        ticketService.addTicketMessage(ticket, message, user);
         Mockito.verify(messageService).saveMessage(message, user);
-        Mockito.verify(ticketDao, atLeastOnce()).save(ticket);
+        assertTrue(ticket.getMessageList().contains(message));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkIfTicketMessageWithEmptyTicketThroeException() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
-        ticketService.addMessage(null, message, user);
+        ticketService.addTicketMessage(null, message, user);
     }
 }

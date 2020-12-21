@@ -2,9 +2,7 @@ package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dao.TicketDAO;
 import org.hetsold.bugtracker.dao.UserDAO;
-import org.hetsold.bugtracker.model.Ticket;
-import org.hetsold.bugtracker.model.TicketResolveState;
-import org.hetsold.bugtracker.model.TicketVerificationState;
+import org.hetsold.bugtracker.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +14,12 @@ import java.util.List;
 public class DefaultTicketService implements TicketService {
     private TicketDAO ticketDao;
     private UserDAO userDAO;
+    private MessageService messageService;
 
-    public DefaultTicketService(TicketDAO ticketDao, UserDAO userDAO) {
+    public DefaultTicketService(TicketDAO ticketDao, UserDAO userDAO, MessageService messageService) {
         this.ticketDao = ticketDao;
         this.userDAO = userDAO;
+        this.messageService = messageService;
     }
 
     public DefaultTicketService() {
@@ -29,10 +29,10 @@ public class DefaultTicketService implements TicketService {
     @Override
     public void save(Ticket ticket) {
         if (ticket.getDescription().isEmpty()) {
-            throw new IllegalArgumentException("description cannot be empty");
+            throw new IllegalArgumentException("description can not be empty");
         }
         if (ticket.getCreatedBy() == null || userDAO.getUserById(ticket.getCreatedBy().getUuid()) == null) {
-            throw new IllegalArgumentException("user not exist");
+            throw new IllegalArgumentException("user in ticket can not be empty");
         }
         ticket.setCreationTime(new Date());
         ticketDao.save(ticket);
@@ -48,10 +48,25 @@ public class DefaultTicketService implements TicketService {
         ticketDao.delete(ticket);
     }
 
+    public Ticket getTicketById(String uuid) {
+        return ticketDao.getTicketById(uuid);
+    }
+
     @Override
     public void applyForIssue(Ticket ticket) {
+        if (ticket == null || (ticket = getTicketById(ticket.getUuid())) == null) {
+            throw new IllegalArgumentException("ticket can not be empty");
+        }
         ticket.setVerificationState(TicketVerificationState.Verified);
         ticket.setResolveState(TicketResolveState.Resolving);
-        ticketDao.save(ticket);
+    }
+
+    @Override
+    public void addTicketMessage(Ticket ticket, Message message, User user) {
+        if (ticket == null || (ticket = ticketDao.getTicketById(ticket.getUuid())) == null) {
+            throw new IllegalArgumentException("ticket can not be empty");
+        }
+        messageService.saveMessage(message, user);
+        ticket.getMessageList().add(message);
     }
 }
