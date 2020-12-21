@@ -10,6 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.validateMockitoUsage;
 @ActiveProfiles(profiles = {"test", "mock"})
 public class DefaultUserServiceTest {
     private static User user;
-    @Autowired
+    @Mock
     private UserDAO userDAO;
 
     @InjectMocks

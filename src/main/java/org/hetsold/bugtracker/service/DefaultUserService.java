@@ -26,10 +26,6 @@ public class DefaultUserService implements UserService {
         userDAO.save(user);
     }
 
-    public User getUser(String userId) {
-        return userDAO.getUserById(userId);
-    }
-
     @Override
     public User getUserById(User user) {
         if (user == null || user.getUuid().isEmpty()) {
@@ -42,6 +38,4 @@ public class DefaultUserService implements UserService {
     public void delete(User user) {
         userDAO.delete(user);
     }
-
-
 }

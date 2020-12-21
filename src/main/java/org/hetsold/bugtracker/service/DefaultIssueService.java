@@ -2,7 +2,6 @@ package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dao.HistoryEventDAO;
 import org.hetsold.bugtracker.dao.IssueDAO;
-import org.hetsold.bugtracker.dao.MessageDAO;
 import org.hetsold.bugtracker.dao.UserDAO;
 import org.hetsold.bugtracker.model.*;
 import org.springframework.stereotype.Service;
@@ -68,7 +67,7 @@ public class DefaultIssueService implements IssueService {
     @Override
     public Issue getIssueById(String uuid) {
         if (uuid == null || uuid.isEmpty()) {
-            throw new IllegalArgumentException("uuid cannot be empty");
+            throw new IllegalArgumentException("uuid argument can not be empty");
         }
         return issueDAO.getIssueById(uuid);
     }
@@ -76,7 +75,7 @@ public class DefaultIssueService implements IssueService {
     @Override
     public void deleteIssue(Issue issue) {
         if (issue == null || issue.getUuid().isEmpty()) {
-            throw new IllegalArgumentException("issue and uuid cannot be empty");
+            throw new IllegalArgumentException("issue and uuid can not be empty");
         }
         issueDAO.delete(issue);
     }
@@ -84,8 +83,7 @@ public class DefaultIssueService implements IssueService {
     @Override
     public List<Issue> findIssueByFilter(Issue issue) {
         if (issue == null) {
-            issue = new Issue();
-            issue.setUuid("");
+            throw new IllegalArgumentException("issue can not be empty");
         }
         return issueDAO.getIssueByCriteria(issue);
     }

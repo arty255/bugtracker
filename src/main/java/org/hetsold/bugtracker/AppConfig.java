@@ -49,25 +49,25 @@ public class AppConfig {
 
     @Bean
     @Autowired
-    public IssueDAO getIssueDAOBean(SessionFactory sessionFactory) {
+    public IssueDAO getIssueDAO(SessionFactory sessionFactory) {
         return new IssueHibernateDAO(sessionFactory);
     }
 
     @Bean
     @Autowired
-    public UserDAO getUserDao(SessionFactory sessionFactory) {
+    public UserDAO getUserDAO(SessionFactory sessionFactory) {
         return new UserHibernateDAO(sessionFactory);
     }
 
     @Bean
     @Autowired
-    public HistoryEventDAO getHistoryEventDAOBean(SessionFactory sessionFactory) {
+    public HistoryEventDAO getHistoryEventDAO(SessionFactory sessionFactory) {
         return new HistoryEventHibernateDAO(sessionFactory);
     }
 
     @Bean
     @Autowired
-    public MessageDAO getMessageDAOBean(SessionFactory sessionFactory) {
+    public MessageDAO getMessageDAO(SessionFactory sessionFactory) {
         return new MessageHibernateDAO(sessionFactory);
     }
 

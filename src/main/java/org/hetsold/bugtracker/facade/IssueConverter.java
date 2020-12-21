@@ -42,19 +42,6 @@ public class IssueConverter {
         return issue;
     }
 
-    public Issue getUnsavedIssue(IssueDTO issueDTO) {
-        return new Issue.Builder()
-                .withIssueNumber(issueDTO.getIssueNumber())
-                .withDescription(issueDTO.getDescription())
-                .withCreationTime(issueDTO.getCreationTime())
-                .withReproduceSteps(issueDTO.getReproduceSteps())
-                .withIssueExistedResult(issueDTO.getExistedResult())
-                .withIssueExpectedResult(issueDTO.getExpectedResult())
-                .withIssueState(issueDTO.getCurrentState())
-                .withIssueSeverity(issueDTO.getSeverity())
-                .build();
-    }
-
     public IssueDTO getIssueDTO(Issue issue) {
         return new IssueDTO(issue);
     }
