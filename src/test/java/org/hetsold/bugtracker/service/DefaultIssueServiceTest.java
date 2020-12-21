@@ -56,7 +56,7 @@ public class DefaultIssueServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void checkIncorrectIssueDatesSaveThrowException() {
+    public void checkIncorrectIssueDateSaveThrowException() {
         Issue factoryIssue = issueFactory.getIssue(IssueFactoryCreatedIssueType.InvalidCreationDateIssue);
         issueService.save(factoryIssue);
     }
@@ -114,28 +114,45 @@ public class DefaultIssueServiceTest {
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
         issue.setCurrentState(null);
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
-        issueService.changeIssueState(issue, null, user, user);
+        issueService.changeIssueState(issue, null, user);
         Mockito.verify(issueDAO, Mockito.never()).save(issue);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void checkIfIssueAssignedStateAndEmptyAssignedUserTrowException() {
-        Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
-        Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
-        Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
-        issue.setAssignedTo(null);
-        issueService.changeIssueState(issue, State.ASSIGNED, null, user);
-    }
-
     @Test
-    public void checkIfIssueStateStateChangeToCorrectPreform() {
+    public void checkIfIssueStateChangeToCorrectCanBePreform() {
         State newState = State.REOPENED;
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
         Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
-        issueService.changeIssueState(issue, newState, user, user);
-        Mockito.verify(userDAO).getUserById(user.getUuid());
-        Mockito.verify(issueDAO).save(issue);
+        issueService.changeIssueState(issue, newState, user);
+        assertEquals(issue.getCurrentState(), newState);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkIfIssueAssignStateThrowException() {
+        State newState = State.ASSIGNED;
+        Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
+        Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
+        Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
+        issueService.changeIssueState(issue, newState, user);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkIfWrongAssignedUserThrowException() {
+        Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
+        Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(null);
+        Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
+        issueService.changeIssueAssignedUser(issue, user, user);
+    }
+
+    @Test
+    public void checkIfAssignedUserAlsoChangeIssueSate() {
+        Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
+        Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
+        Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
+        issueService.changeIssueAssignedUser(issue, user, user);
+        assertEquals(issue.getCurrentState(), State.ASSIGNED);
+        assertEquals(issue.getAssignedTo(), user);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -173,10 +190,12 @@ public class DefaultIssueServiceTest {
     }
 
     @Test
-    public void checkIfIssueFromTicketTransferDataCorrect() {
+    public void checkIfIssueCanBeCreatedFromTicket() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
         ArgumentCaptor<Issue> issueArgumentCaptor = ArgumentCaptor.forClass(Issue.class);
-        issueService.createIssueFromTicket(ticket, ticket.getCreatedBy());
+        Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
+        Mockito.when(ticketService.getTicketById(ticket.getUuid())).thenReturn(ticket);
+        issueService.createIssueFromTicket(ticket, user);
         Mockito.verify(issueDAO, Mockito.atLeastOnce()).save(issueArgumentCaptor.capture());
         Issue savedIssue = issueArgumentCaptor.getValue();
         assertEquals(ticket.getDescription(), savedIssue.getDescription());

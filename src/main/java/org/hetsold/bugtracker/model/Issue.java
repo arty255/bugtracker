@@ -202,6 +202,11 @@ public class Issue extends AbstractIdentity {
             newIssue = new Issue();
         }
 
+        public Builder withIssueUuid(String issueUuid) {
+            newIssue.setUuid(issueUuid);
+            return this;
+        }
+
         public Builder withIssueNumber(String issueNumber) {
             newIssue.setIssueNumber(issueNumber);
             return this;
@@ -244,6 +249,11 @@ public class Issue extends AbstractIdentity {
 
         public Builder withIssueSeverity(Severity issueSeverity) {
             newIssue.setSeverity(issueSeverity);
+            return this;
+        }
+
+        public Builder withFixVersion(String fixVersion) {
+            newIssue.setFixVersion(fixVersion);
             return this;
         }
 

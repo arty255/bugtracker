@@ -1,5 +1,7 @@
 package org.hetsold.bugtracker.dao;
 
+import org.hetsold.bugtracker.AppConfig;
+import org.hetsold.bugtracker.TestAppConfig;
 import org.hetsold.bugtracker.model.Issue;
 import org.hetsold.bugtracker.model.User;
 import org.hetsold.bugtracker.util.IssueFactory;
@@ -25,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {org.hetsold.bugtracker.TestAppConfig.class, org.hetsold.bugtracker.AppConfig.class})
+@ContextConfiguration(classes = {TestAppConfig.class, AppConfig.class})
 @ActiveProfiles("test")
 @Transactional
 public class IssueHibernateDAOTest {

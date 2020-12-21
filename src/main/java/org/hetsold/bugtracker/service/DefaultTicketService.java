@@ -29,10 +29,10 @@ public class DefaultTicketService implements TicketService {
     @Override
     public void save(Ticket ticket) {
         if (ticket.getDescription().isEmpty()) {
-            throw new IllegalArgumentException("description cannot be empty");
+            throw new IllegalArgumentException("description can not be empty");
         }
         if (ticket.getCreatedBy() == null || userDAO.getUserById(ticket.getCreatedBy().getUuid()) == null) {
-            throw new IllegalArgumentException("user not exist");
+            throw new IllegalArgumentException("user in ticket can not be empty");
         }
         ticket.setCreationTime(new Date());
         ticketDao.save(ticket);
@@ -48,20 +48,25 @@ public class DefaultTicketService implements TicketService {
         ticketDao.delete(ticket);
     }
 
-    @Override
-    public void applyForIssue(Ticket ticket) {
-        ticket.setVerificationState(TicketVerificationState.Verified);
-        ticket.setResolveState(TicketResolveState.Resolving);
-        ticketDao.save(ticket);
+    public Ticket getTicketById(String uuid) {
+        return ticketDao.getTicketById(uuid);
     }
 
     @Override
-    public void addMessage(Ticket ticket, Message message, User user) {
+    public void applyForIssue(Ticket ticket) {
+        if (ticket == null || (ticket = getTicketById(ticket.getUuid())) == null) {
+            throw new IllegalArgumentException("ticket can not be empty");
+        }
+        ticket.setVerificationState(TicketVerificationState.Verified);
+        ticket.setResolveState(TicketResolveState.Resolving);
+    }
+
+    @Override
+    public void addTicketMessage(Ticket ticket, Message message, User user) {
         if (ticket == null || (ticket = ticketDao.getTicketById(ticket.getUuid())) == null) {
-            throw new IllegalArgumentException("ticket cannot be empty");
+            throw new IllegalArgumentException("ticket can not be empty");
         }
         messageService.saveMessage(message, user);
         ticket.getMessageList().add(message);
-        ticketDao.save(ticket);
     }
 }

@@ -13,9 +13,11 @@ public interface TicketService {
 
     List<Ticket> getTickets();
 
+    Ticket getTicketById(String uuid);
+
     void delete(Ticket ticket);
 
     void applyForIssue(Ticket ticket);
 
-    void addMessage(Ticket ticket, Message message, User user);
+    void addTicketMessage(Ticket ticket, Message message, User user);
 }

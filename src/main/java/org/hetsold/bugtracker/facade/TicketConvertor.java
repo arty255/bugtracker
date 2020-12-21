@@ -1,25 +1,25 @@
 package org.hetsold.bugtracker.facade;
 
-import org.hetsold.bugtracker.dao.TicketDAO;
 import org.hetsold.bugtracker.model.Ticket;
 import org.hetsold.bugtracker.model.TicketDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TicketConvertor {
-    private TicketDAO ticketDAO;
-
-    @Autowired
-    public TicketConvertor(TicketDAO ticketDAO) {
-        this.ticketDAO = ticketDAO;
-    }
 
     public Ticket getTicket(TicketDTO ticketDTO) {
-        if (ticketDTO != null && !ticketDTO.getUuid().isEmpty()) {
-            return ticketDAO.getTicketById(ticketDTO.getUuid());
+        Ticket ticket = null;
+        if (ticketDTO != null) {
+            ticket = new Ticket();
+            ticket.setUuid(ticketDTO.getUuid());
+            ticket.setDescription(ticketDTO.getDescription());
+            ticket.setReproduceSteps(ticketDTO.getReproduceSteps());
+            ticket.setProductVersion(ticketDTO.getProductVersion());
+            ticket.setCreationTime(ticketDTO.getCreationTime());
+            ticket.setVerificationState(ticketDTO.getVerificationState());
+            ticket.setResolveState(ticketDTO.getResolveState());
         }
-        return null;
+        return ticket;
     }
 
     public TicketDTO getTicketDTO(Ticket ticket) {
