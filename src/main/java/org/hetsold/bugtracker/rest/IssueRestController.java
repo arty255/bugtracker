@@ -10,21 +10,24 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v0.1")
 public class IssueRestController {
-    private IssueFacade issueService;
+    private IssueFacade issueFacade;
+
+    public IssueRestController() {
+    }
 
     @Autowired
-    public IssueRestController(IssueFacade issueService) {
-        this.issueService = issueService;
+    public IssueRestController(IssueFacade issueFacade) {
+        this.issueFacade = issueFacade;
     }
 
     @GetMapping("/issue")
     public List<IssueShortDTO> getIssueSimpleDTOList() {
-        return issueService.getIssueList(null);
+        return issueFacade.getIssueList(null);
     }
 
     @GetMapping("/issue/{uuid}")
     public IssueShortDTO getIssueSimpleDTO(@PathVariable String uuid) {
-        return issueService.getIssue(uuid);
+        return issueFacade.getIssue(uuid);
     }
 
     @PostMapping("/issue")
@@ -33,11 +36,11 @@ public class IssueRestController {
 
     @PostMapping("/issue/generate")
     public void generateAnSaveIssue() {
-        issueService.generateRandomIssue();
+        issueFacade.generateRandomIssue();
     }
 
     @DeleteMapping("/{uuid}")
     private void deleteIssue(@PathVariable String uuid) {
-        issueService.deleteIssue(uuid, false);
+        issueFacade.deleteIssue(uuid, false);
     }
 }

@@ -1,6 +1,7 @@
 package org.hetsold.bugtracker;
 
 import org.hetsold.bugtracker.dao.*;
+import org.hetsold.bugtracker.facade.*;
 import org.hetsold.bugtracker.service.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,19 +10,17 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@EnableWebMvc
+
 @EnableTransactionManagement
-@ComponentScan(basePackages = {"org.hetsold.bugtracker.rest"})
 public class AppConfig {
     @Bean()
     @Primary
-    @Profile("prod")
+    @Profile("dev")
     public DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl("jdbc:mysql://localhost:3306/h_bugtracker");
@@ -93,6 +92,27 @@ public class AppConfig {
     @Autowired
     public TicketService getTicketService(TicketDAO ticketDAO, UserDAO userDAO, MessageService messageService) {
         return new DefaultTicketService(ticketDAO, userDAO, messageService);
+    }
+
+    @Bean
+    public IssueConverter getIssueConverter() {
+        return new IssueConverter();
+    }
+
+    @Bean
+    public UserConvertor getUserConvertor() {
+        return new UserConvertor();
+    }
+
+    @Bean
+    public TicketConvertor getTicketConvertor() {
+        return new TicketConvertor();
+    }
+
+    @Bean
+    @Autowired
+    public IssueFacade getIssueFacade(IssueService issueService, TicketService ticketService, IssueConverter issueConverter, UserConvertor userConvertor, TicketConvertor ticketConvertor) {
+        return new SimpleIssueFacade(issueService, ticketService, issueConverter, userConvertor, ticketConvertor);
     }
 
     @Bean
