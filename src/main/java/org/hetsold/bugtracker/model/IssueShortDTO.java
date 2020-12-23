@@ -20,13 +20,19 @@ public class IssueShortDTO {
         this.creationTime = issue.getCreationTime();
         this.currentState = issue.getCurrentState();
         this.severity = issue.getSeverity();
-        this.reportedBy = new UserDTO(issue.getReportedBy());
+        if (issue.getAssignedTo() != null) {
+            this.reportedBy = new UserDTO(issue.getReportedBy());
+        }
         if (issue.getAssignedTo() != null) {
             this.assignedTo = new UserDTO(issue.getAssignedTo());
         }
         if (issue.getTicket() != null) {
             this.ticketId = issue.getTicket().getUuid();
         }
+    }
+
+    public IssueShortDTO() {
+        this("");
     }
 
     public IssueShortDTO(String uuid) {

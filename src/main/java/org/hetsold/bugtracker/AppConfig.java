@@ -1,8 +1,5 @@
 package org.hetsold.bugtracker;
 
-import org.hetsold.bugtracker.dao.*;
-import org.hetsold.bugtracker.facade.*;
-import org.hetsold.bugtracker.service.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
@@ -15,8 +12,14 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-
 @EnableTransactionManagement
+@ComponentScan(
+        basePackages = {
+                "org.hetsold.bugtracker.dao",
+                "org.hetsold.bugtracker.service",
+                "org.hetsold.bugtracker.facade"
+        }
+)
 public class AppConfig {
     @Bean()
     @Primary
@@ -40,80 +43,6 @@ public class AppConfig {
         return sessionFactory;
     }
 
-    @Bean
-    @Autowired
-    public IssueDAO getIssueDAO(SessionFactory sessionFactory) {
-        return new IssueHibernateDAO(sessionFactory);
-    }
-
-    @Bean
-    @Autowired
-    public UserDAO getUserDAO(SessionFactory sessionFactory) {
-        return new UserHibernateDAO(sessionFactory);
-    }
-
-    @Bean
-    @Autowired
-    public HistoryEventDAO getHistoryEventDAO(SessionFactory sessionFactory) {
-        return new HistoryEventHibernateDAO(sessionFactory);
-    }
-
-    @Bean
-    @Autowired
-    public MessageDAO getMessageDAO(SessionFactory sessionFactory) {
-        return new MessageHibernateDAO(sessionFactory);
-    }
-
-    @Bean
-    @Autowired
-    public TicketDAO getTicketDAO(SessionFactory sessionFactory) {
-        return new TicketHibernateDAO(sessionFactory);
-    }
-
-    @Bean
-    @Autowired
-    public UserService getUserService(UserDAO userDAO) {
-        return new DefaultUserService(userDAO);
-    }
-
-    @Bean
-    @Autowired
-    public MessageService getMessageService(MessageDAO messageDAO) {
-        return new DefaultMessageService(messageDAO);
-    }
-
-    @Bean
-    @Autowired
-    public IssueService getIssueService(IssueDAO issueDAO, UserDAO userDAO, HistoryEventDAO historyEventDAO, MessageService messageService, TicketService ticketService) {
-        return new DefaultIssueService(issueDAO, userDAO, historyEventDAO, messageService, ticketService);
-    }
-
-    @Bean
-    @Autowired
-    public TicketService getTicketService(TicketDAO ticketDAO, UserDAO userDAO, MessageService messageService) {
-        return new DefaultTicketService(ticketDAO, userDAO, messageService);
-    }
-
-    @Bean
-    public IssueConverter getIssueConverter() {
-        return new IssueConverter();
-    }
-
-    @Bean
-    public UserConvertor getUserConvertor() {
-        return new UserConvertor();
-    }
-
-    @Bean
-    public TicketConvertor getTicketConvertor() {
-        return new TicketConvertor();
-    }
-
-    @Bean
-    @Autowired
-    public IssueFacade getIssueFacade(IssueService issueService, TicketService ticketService, IssueConverter issueConverter, UserConvertor userConvertor, TicketConvertor ticketConvertor) {
-        return new SimpleIssueFacade(issueService, ticketService, issueConverter, userConvertor, ticketConvertor);
-    }
 
     @Bean
     public HibernateTransactionManager getDataSourceTransactionManagerBean(@Autowired SessionFactory sessionFactory) {

@@ -2,6 +2,7 @@ package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dao.UserDAO;
 import org.hetsold.bugtracker.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -14,6 +15,7 @@ public class DefaultUserService implements UserService {
     public DefaultUserService() {
     }
 
+    @Autowired
     public DefaultUserService(UserDAO userDAO) {
         this.userDAO = userDAO;
     }

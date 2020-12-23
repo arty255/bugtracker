@@ -1,7 +1,9 @@
 package org.hetsold.bugtracker.rest;
 
 import org.hetsold.bugtracker.facade.IssueFacade;
+import org.hetsold.bugtracker.model.Issue;
 import org.hetsold.bugtracker.model.IssueShortDTO;
+import org.hetsold.bugtracker.rest.exceptions.IssueNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,26 +22,31 @@ public class IssueRestController {
         this.issueFacade = issueFacade;
     }
 
-    @GetMapping("/issue")
-    public List<IssueShortDTO> getIssueSimpleDTOList() {
-        return issueFacade.getIssueList(null);
+    @GetMapping("/issues")
+    public @ResponseBody
+    List<IssueShortDTO> getIssueSimpleDTOList() {
+        return issueFacade.getIssueList(new IssueShortDTO(new Issue.Builder().withIssueEmpty().build()));
     }
 
-    @GetMapping("/issue/{uuid}")
+    @GetMapping("/issues/{uuid}")
     public IssueShortDTO getIssueSimpleDTO(@PathVariable String uuid) {
-        return issueFacade.getIssue(uuid);
+        IssueShortDTO issue = issueFacade.getIssue(uuid);
+        if (issue == null) {
+            throw new IssueNotFoundException();
+        }
+        return issue;
     }
 
-    @PostMapping("/issue")
+    @PostMapping("/issues")
     public void saveIssue(@RequestBody IssueShortDTO issueShortDTO) {
     }
 
-    @PostMapping("/issue/generate")
+    @PostMapping("/issues/generate")
     public void generateAnSaveIssue() {
         issueFacade.generateRandomIssue();
     }
 
-    @DeleteMapping("/{uuid}")
+    @DeleteMapping("issues/{uuid}")
     private void deleteIssue(@PathVariable String uuid) {
         issueFacade.deleteIssue(uuid, false);
     }

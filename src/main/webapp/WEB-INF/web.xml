@@ -11,7 +11,7 @@
     </context-param>
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>org.hetsold.bugtracker.AppConfig,org.hetsold.bugtracker.WebAppConfig</param-value>
+        <param-value>org.hetsold.bugtracker.WebAppConfig</param-value>
     </context-param>
     <context-param>
         <param-name>spring.profiles.active</param-name>

@@ -3,6 +3,7 @@ package org.hetsold.bugtracker.service;
 import org.hetsold.bugtracker.dao.TicketDAO;
 import org.hetsold.bugtracker.dao.UserDAO;
 import org.hetsold.bugtracker.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ public class DefaultTicketService implements TicketService {
     private UserDAO userDAO;
     private MessageService messageService;
 
+    @Autowired
     public DefaultTicketService(TicketDAO ticketDao, UserDAO userDAO, MessageService messageService) {
         this.ticketDao = ticketDao;
         this.userDAO = userDAO;

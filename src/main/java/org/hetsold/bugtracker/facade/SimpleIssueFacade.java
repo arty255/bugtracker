@@ -26,6 +26,9 @@ public class SimpleIssueFacade implements IssueFacade {
         this.ticketConvertor = ticketConvertor;
     }
 
+    public SimpleIssueFacade() {
+    }
+
     @Override
     public void generateRandomIssue() {
         issueService.generateAndSaveIssue();

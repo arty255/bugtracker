@@ -2,7 +2,9 @@ package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.model.*;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -10,9 +12,11 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
+@Repository
 public class HistoryEventHibernateDAO implements HistoryEventDAO {
     private HibernateTemplate hibernateTemplate;
 
+    @Autowired
     public HistoryEventHibernateDAO(SessionFactory sessionFactory) {
         hibernateTemplate = new HibernateTemplate(sessionFactory);
     }
