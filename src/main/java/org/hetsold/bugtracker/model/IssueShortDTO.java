@@ -9,8 +9,8 @@ public class IssueShortDTO {
     private Date creationTime;
     private State currentState;
     private Severity severity;
-    private User reportedBy;
-    private User assignedTo;
+    private UserDTO reportedBy;
+    private UserDTO assignedTo;
     private String ticketId;
 
     public IssueShortDTO(Issue issue) {
@@ -20,11 +20,19 @@ public class IssueShortDTO {
         this.creationTime = issue.getCreationTime();
         this.currentState = issue.getCurrentState();
         this.severity = issue.getSeverity();
-        this.reportedBy = issue.getReportedBy();
-        this.assignedTo = issue.getAssignedTo();
-        if (issue.getTicket().getUuid() != null) {
+        if (issue.getAssignedTo() != null) {
+            this.reportedBy = new UserDTO(issue.getReportedBy());
+        }
+        if (issue.getAssignedTo() != null) {
+            this.assignedTo = new UserDTO(issue.getAssignedTo());
+        }
+        if (issue.getTicket() != null) {
             this.ticketId = issue.getTicket().getUuid();
         }
+    }
+
+    public IssueShortDTO() {
+        this("");
     }
 
     public IssueShortDTO(String uuid) {
@@ -79,19 +87,19 @@ public class IssueShortDTO {
         this.severity = severity;
     }
 
-    public User getReportedBy() {
+    public UserDTO getReportedBy() {
         return reportedBy;
     }
 
-    public void setReportedBy(User reportedBy) {
+    public void setReportedBy(UserDTO reportedBy) {
         this.reportedBy = reportedBy;
     }
 
-    public User getAssignedTo() {
+    public UserDTO getAssignedTo() {
         return assignedTo;
     }
 
-    public void setAssignedTo(User assignedTo) {
+    public void setAssignedTo(UserDTO assignedTo) {
         this.assignedTo = assignedTo;
     }
 

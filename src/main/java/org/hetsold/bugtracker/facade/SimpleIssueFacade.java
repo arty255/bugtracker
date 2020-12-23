@@ -26,6 +26,19 @@ public class SimpleIssueFacade implements IssueFacade {
         this.ticketConvertor = ticketConvertor;
     }
 
+    public SimpleIssueFacade() {
+    }
+
+    @Override
+    public void generateRandomIssue() {
+        issueService.generateAndSaveIssue();
+    }
+
+    @Override
+    public IssueShortDTO getIssue(String issueUUID) {
+        return issueConverter.getIssueShortDTO(issueService.getIssueById(issueUUID));
+    }
+
     @Override
     public void createIssue(IssueDTO issueDTO, UserDTO userDTO) {
         Issue issue = issueConverter.getIssue(issueDTO);

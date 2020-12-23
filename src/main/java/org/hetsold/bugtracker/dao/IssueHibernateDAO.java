@@ -3,6 +3,7 @@ package org.hetsold.bugtracker.dao;
 import org.hetsold.bugtracker.model.Issue;
 import org.hetsold.bugtracker.model.Issue_;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -19,6 +20,7 @@ import java.util.List;
 public class IssueHibernateDAO implements IssueDAO {
     private HibernateTemplate hibernateTemplate;
 
+    @Autowired
     public IssueHibernateDAO(SessionFactory sessionFactory) {
         this.hibernateTemplate = new HibernateTemplate(sessionFactory);
     }

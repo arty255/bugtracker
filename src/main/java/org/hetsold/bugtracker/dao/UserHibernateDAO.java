@@ -2,6 +2,7 @@ package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.model.User;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +15,7 @@ import java.util.List;
 public class UserHibernateDAO implements UserDAO {
     private HibernateTemplate hibernateTemplate;
 
+    @Autowired
     public UserHibernateDAO(SessionFactory sessionFactory) {
         hibernateTemplate = new HibernateTemplate(sessionFactory);
     }

@@ -4,11 +4,13 @@ import org.hetsold.bugtracker.dao.HistoryEventDAO;
 import org.hetsold.bugtracker.dao.IssueDAO;
 import org.hetsold.bugtracker.dao.UserDAO;
 import org.hetsold.bugtracker.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @Transactional
@@ -22,6 +24,7 @@ public class DefaultIssueService implements IssueService {
     public DefaultIssueService() {
     }
 
+    @Autowired
     public DefaultIssueService(IssueDAO issueDAO, UserDAO userDAO, HistoryEventDAO historyEventDAO, MessageService messageService, TicketService ticketService) {
         this.issueDAO = issueDAO;
         this.userDAO = userDAO;
@@ -30,6 +33,7 @@ public class DefaultIssueService implements IssueService {
         this.ticketService = ticketService;
     }
 
+    @Override
     public void save(Issue issue) {
         if (issue.getCreationTime() == null) {
             throw new IllegalArgumentException("issue creationTime can not be null");
@@ -40,6 +44,25 @@ public class DefaultIssueService implements IssueService {
         if (issue.getDescription().isEmpty()) {
             throw new IllegalArgumentException("issue description description can not be empty");
         }
+        issueDAO.save(issue);
+    }
+
+    @Override
+    public void generateAndSaveIssue() {
+        Random random = new Random();
+        User user;
+        List<User> userList = userDAO.listAll();
+        if (userList.size() < 5) {
+            user = new User("user" + random.nextInt(5) + " firsName", "user " + random.nextInt(5) + " lastName");
+            userDAO.save(user);
+            user = userDAO.getUserById(user.getUuid());
+        } else {
+            user = userList.get(random.nextInt(5));
+        }
+        Issue issue = new Issue();
+        issue.setReportedBy(user);
+        issue.setCreationTime(new Date());
+        issue.setDescription("description" + random.nextInt());
         issueDAO.save(issue);
     }
 
@@ -61,7 +84,15 @@ public class DefaultIssueService implements IssueService {
 
     @Override
     public List<Issue> findIssueByFilter(Issue issue) {
+        if (issue == null) {
+            throw new IllegalArgumentException("issue can not be empty");
+        }
         return issueDAO.getIssueByCriteria(issue);
+    }
+
+    @Override
+    public List<Issue> getIssueList() {
+        return issueDAO.listAll();
     }
 
     @Override

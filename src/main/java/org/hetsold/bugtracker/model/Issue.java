@@ -80,7 +80,6 @@ public class Issue extends AbstractIdentity {
 
     public Issue() {
         history = new ArrayList<>();
-        currentState = State.OPEN;
     }
 
     public String getIssueNumber() {
@@ -200,6 +199,11 @@ public class Issue extends AbstractIdentity {
 
         public Builder() {
             newIssue = new Issue();
+        }
+
+        public Builder withIssueEmpty() {
+            newIssue.setUuid("");
+            return this;
         }
 
         public Builder withIssueUuid(String issueUuid) {
