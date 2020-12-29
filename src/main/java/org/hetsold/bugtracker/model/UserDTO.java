@@ -1,5 +1,7 @@
 package org.hetsold.bugtracker.model;
 
+import java.util.Objects;
+
 public class UserDTO {
     private String uuid;
     private String firstName;
@@ -37,5 +39,18 @@ public class UserDTO {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDTO userDTO = (UserDTO) o;
+        return Objects.equals(uuid, userDTO.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid);
     }
 }

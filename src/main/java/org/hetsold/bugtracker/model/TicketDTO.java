@@ -1,6 +1,7 @@
 package org.hetsold.bugtracker.model;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class TicketDTO {
     private String uuid;
@@ -10,6 +11,7 @@ public class TicketDTO {
     private Date creationTime;
     private TicketVerificationState verificationState;
     private TicketResolveState resolveState;
+    private UserDTO user;
 
     public TicketDTO(Ticket ticket) {
         this.uuid = ticket.getUuid();
@@ -19,6 +21,7 @@ public class TicketDTO {
         this.productVersion = ticket.getProductVersion();
         this.verificationState = ticket.getVerificationState();
         this.resolveState = ticket.getResolveState();
+        this.user = new UserDTO(ticket.getCreatedBy());
     }
 
     public TicketDTO(String uuid) {
@@ -79,5 +82,26 @@ public class TicketDTO {
 
     public void setResolveState(TicketResolveState resolveState) {
         this.resolveState = resolveState;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserDTO user) {
+        this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TicketDTO ticketDTO = (TicketDTO) o;
+        return Objects.equals(uuid, ticketDTO.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid);
     }
 }
