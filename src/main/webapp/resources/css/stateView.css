@@ -1,0 +1,25 @@
+.stateContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.stateIndicator {
+    border-radius: 50%;
+    width: 1em;
+    height: 1em;
+    margin-right: 0.5em;
+}
+
+.red {
+    background-color: #ff0000;
+}
+
+.gray {
+    background-color: #808080;
+}
+
+.green {
+    background-color: #008000;
+}

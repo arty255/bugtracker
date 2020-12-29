@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xml:lang="en" lang="en">
+<composite:interface>
+    <composite:attribute name="state" type="org.hetsold.bugtracker.model.TicketResolveState" required="true"/>
+</composite:interface>
+<composite:implementation>
+    <h:outputStylesheet library="css" name="stateView.css"/>
+    <h:panelGroup layout="block" styleClass="stateContainer">
+        <div class="stateIndicator #{cc.attrs.state == 'NotResolved' ? 'red' :
+        (cc.attrs.state == 'Resolved' ? 'green': 'gray')}"></div>
+        <h:outputText value="#{cc.attrs.state}"/>
+    </h:panelGroup>
+</composite:implementation>
+</html>

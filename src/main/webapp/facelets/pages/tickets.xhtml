@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:view="http://java.sun.com/jsf/composite/stateView"
+      xmlns:user="http://java.sun.com/jsf/composite/minifiedUserView"
+      xml:lang="en" lang="en">
+<ui:composition template="../templates/simpleTemplate.xhtml">
+    <ui:define name="title">Ticket List</ui:define>
+    <ui:define name="headArea">
+        <h:outputStylesheet name="tickets.css" library="css"/>
+    </ui:define>
+    <ui:define name="content">
+        <p:dataView var="ticket" value="#{ticketListBean.ticketDTOList}"
+                    gridIcon="pi pi-th-large" listIcon="pi pi-bars" styleClass="ticketDataView">
+            <p:dataViewListItem>
+                <h:panelGrid columns="3" style="width:100%" columnClasses="info,description">
+                    <p:outputPanel>
+                        <h:panelGrid columns="1">
+                            <h:outputText value="Ticket:"/>
+                            <h:outputText value="#{ticket.uuid}"/>
+
+                            <view:stateView state="#{ticket.resolveState}"/>
+                        </h:panelGrid>
+                    </p:outputPanel>
+
+                    <p:outputPanel>
+                        <h:panelGrid columns="1">
+                            <h:outputText value="Description:"/>
+                            <h:outputText value="#{ticket.description}" style="font-weight: bold"/>
+
+                            <h:outputText value="Reproduce steps:" style="margin-top: 2em"/>
+                            <h:outputText value="#{ticket.reproduceSteps}"/>
+                        </h:panelGrid>
+                    </p:outputPanel>
+
+                    <p:outputPanel>
+                        <h:panelGrid columns="2">
+                            <h:outputText value="Reported by:"/>
+                            <user:minifiedUserView user="#{ticket.user}"/>
+
+                            <h:outputText value="Creation date:"/>
+                            <h:outputText value="#{ticket.creationTime}">
+                                <f:convertDateTime type="both" pattern="dd-MM-yyyy HH:mm"/>
+                            </h:outputText>
+
+                        </h:panelGrid>
+                    </p:outputPanel>
+                </h:panelGrid>
+            </p:dataViewListItem>
+
+
+            <p:dataViewGridItem>
+                <p:panel header="#{ticket.uuid}" styleClass="ticket">
+                    <p:panelGrid columns="2" style="width: 100%" columnClasses="minimalWidthColumn,autoWidthColumn">
+                        <h:outputText value="Resolve state:"/>
+                        <view:stateView state="#{ticket.resolveState}"/>
+
+                        <h:outputText value="Description:"/>
+                        <h:outputText value="#{ticket.description}"/>
+
+                        <h:outputText value="Verification:"/>
+                        <h:outputText value="#{ticket.verificationState}"/>
+
+                        <h:outputText value="Creation date:"/>
+                        <h:outputText value="#{ticket.creationTime}">
+                            <f:convertDateTime type="both" pattern="dd-MM-yyyy HH:mm"/>
+                        </h:outputText>
+
+                        <h:outputText value="Reported by:"/>
+                        <user:minifiedUserView user="#{ticket.user}"/>
+                    </p:panelGrid>
+                    <p:fieldset legend="Reproduce steps:"
+                                toggleable="true" collapsed="true"
+                                toggleSpeed="500" styleClass="tickedFieldset">
+                        <h:outputText value="#{ticket.reproduceSteps}"/>
+                    </p:fieldset>
+                </p:panel>
+            </p:dataViewGridItem>
+        </p:dataView>
+    </ui:define>
+</ui:composition>
+</html>
