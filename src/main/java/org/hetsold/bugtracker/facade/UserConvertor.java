@@ -4,10 +4,9 @@ import org.hetsold.bugtracker.model.User;
 import org.hetsold.bugtracker.model.UserDTO;
 import org.springframework.stereotype.Component;
 
-@Component
 public class UserConvertor {
 
-    public User getUser(UserDTO userDTO) {
+    public static User getUser(UserDTO userDTO) {
         User user = null;
         if (userDTO != null) {
             user = new User();
@@ -18,7 +17,7 @@ public class UserConvertor {
         return user;
     }
 
-    public UserDTO geUserDTO(User user) {
+    public static UserDTO geUserDTO(User user) {
         return new UserDTO(user);
     }
 }

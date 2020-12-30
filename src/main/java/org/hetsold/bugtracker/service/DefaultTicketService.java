@@ -1,26 +1,28 @@
 package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dao.TicketDAO;
-import org.hetsold.bugtracker.dao.UserDAO;
+import org.hetsold.bugtracker.facade.TicketConvertor;
 import org.hetsold.bugtracker.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class DefaultTicketService implements TicketService {
     private TicketDAO ticketDao;
-    private UserDAO userDAO;
+    private UserService userService;
     private MessageService messageService;
 
     @Autowired
-    public DefaultTicketService(TicketDAO ticketDao, UserDAO userDAO, MessageService messageService) {
+    public DefaultTicketService(TicketDAO ticketDao, UserService userService, MessageService messageService) {
         this.ticketDao = ticketDao;
-        this.userDAO = userDAO;
+        this.userService = userService;
         this.messageService = messageService;
     }
 
@@ -29,20 +31,49 @@ public class DefaultTicketService implements TicketService {
     }
 
     @Override
-    public void save(Ticket ticket) {
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void save(Ticket ticket, User user) {
         if (ticket.getDescription().isEmpty()) {
             throw new IllegalArgumentException("description can not be empty");
         }
-        if (ticket.getCreatedBy() == null || userDAO.getUserById(ticket.getCreatedBy().getUuid()) == null) {
+        if (user == null || (user = userService.getUserById(user)) == null) {
             throw new IllegalArgumentException("user in ticket can not be empty");
         }
         ticket.setCreationTime(new Date());
+        ticket.setCreatedBy(user);
         ticketDao.save(ticket);
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void addNewTicket(TicketDTO ticketDTO, UserDTO userDTO) {
+        save(produceNewTicketFromDto(ticketDTO), userService.getUserById(new User(userDTO.getUuid())));
+    }
+
+    private Ticket produceNewTicketFromDto(TicketDTO ticketDTO) {
+        Ticket ticket = TicketConvertor.getTicket(ticketDTO);
+        if (ticket.getUuid() == null || ticket.getUuid().isEmpty()) {
+            ticket.setUuid(java.util.UUID.randomUUID().toString());
+        }
+        if (ticket.getResolveState() == null) {
+            ticket.setResolveState(TicketResolveState.NotResolved);
+        }
+        if (ticket.getVerificationState() == null) {
+            ticket.setVerificationState(TicketVerificationState.NotVerified);
+        }
+        return ticket;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Ticket> getTickets() {
         return ticketDao.loadAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TicketDTO> getTicketDtoList() {
+        return getTickets().stream().map(TicketConvertor::getTicketDTO).collect(Collectors.toList());
     }
 
     @Override
@@ -71,4 +102,6 @@ public class DefaultTicketService implements TicketService {
         messageService.saveMessage(message, user);
         ticket.getMessageList().add(message);
     }
+
+
 }

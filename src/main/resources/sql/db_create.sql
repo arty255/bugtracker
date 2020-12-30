@@ -23,7 +23,7 @@ create table if not exists message
 drop table if exists ticket;
 create table if not exists ticket
 (
-    uuid              varchar(40) not null,
+    uuid              varchar(40) not null check (uuid <> ''),
     version           int,
     description       varchar(1200),
     reproduceSteps    varchar(1500),
