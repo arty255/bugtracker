@@ -81,6 +81,11 @@ public class DefaultTicketService implements TicketService {
         ticketDao.delete(ticket);
     }
 
+    @Override
+    public void delete(String uuid) {
+        ticketDao.delete(ticketDao.getTicketById(uuid));
+    }
+
     public Ticket getTicketById(String uuid) {
         return ticketDao.getTicketById(uuid);
     }

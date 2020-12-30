@@ -19,6 +19,8 @@ public interface TicketService {
 
     void delete(Ticket ticket);
 
+    void delete(String uuid);
+
     void applyForIssue(Ticket ticket);
 
     void addTicketMessage(Ticket ticket, Message message, User user);
