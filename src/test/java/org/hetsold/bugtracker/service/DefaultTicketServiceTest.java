@@ -55,20 +55,20 @@ public class DefaultTicketServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void checkIfTicketWithNoDescriptionCanBeSaved() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.IncorrectTicketEmptyDescription);
-        ticketService.save(ticket);
+        ticketService.save(ticket, user);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkIfTicketWithEmptyUserCantBeSaved() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.IncorrectTicketNullCreator);
-        ticketService.save(ticket);
+        ticketService.save(ticket, user);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkIfTicketWithNotExistedUserCantBeSaved() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
         Mockito.when(userDAO.getUserById(ticket.getCreatedBy().getUuid())).thenReturn(null);
-        ticketService.save(ticket);
+        ticketService.save(ticket, user);
         Mockito.verify(ticketDao, Mockito.times(1)).getTicketById(ticket.getUuid());
     }
 
@@ -76,7 +76,7 @@ public class DefaultTicketServiceTest {
     public void checkIfCorrectTicketCanBeSaved() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
         Mockito.when(userDAO.getUserById(ticket.getCreatedBy().getUuid())).thenReturn(ticket.getCreatedBy());
-        ticketService.save(ticket);
+        ticketService.save(ticket, user);
         Mockito.verify(ticketDao).save(ticket);
     }
 

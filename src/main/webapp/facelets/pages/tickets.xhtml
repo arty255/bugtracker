@@ -16,7 +16,11 @@
         <h:outputStylesheet name="tickets.css" library="css"/>
     </ui:define>
     <ui:define name="content">
-        <p:dataView var="ticket" value="#{ticketListBean.ticketDTOList}"
+        <p:commandButton value="Add Ticket" icon="pi pi-plus"
+                         style="margin-bottom: 0.5em;"
+                         onclick="PF('PFAddTicketDialog').show()"/>
+        <p:dataView id="ticketsDataView"
+                    var="ticket" value="#{ticketListBean.ticketDTOList}"
                     gridIcon="pi pi-th-large" listIcon="pi pi-bars" styleClass="ticketDataView">
             <p:dataViewListItem>
                 <h:panelGrid columns="3" style="width:100%" columnClasses="info,description">
@@ -31,10 +35,10 @@
 
                     <p:outputPanel>
                         <h:panelGrid columns="1">
-                            <h:outputText value="Description:"/>
-                            <h:outputText value="#{ticket.description}" style="font-weight: bold"/>
+                            <h:outputText value="Description:" style="font-weight: bold"/>
+                            <h:outputText value="#{ticket.description}"/>
 
-                            <h:outputText value="Reproduce steps:" style="margin-top: 2em"/>
+                            <h:outputText value="Reproduce steps:" style="margin-top: 2em; font-weight: bold"/>
                             <h:outputText value="#{ticket.reproduceSteps}"/>
                         </h:panelGrid>
                     </p:outputPanel>
@@ -83,6 +87,39 @@
                 </p:panel>
             </p:dataViewGridItem>
         </p:dataView>
+
+        <p:dialog header="Add new Ticket" widgetVar="PFAddTicketDialog">
+            <h:form>
+                <p:panel id="ticketPanel" styleClass="ticketPanel">
+                    <h:panelGrid columns="1" style="width: 100%">
+                        <p:outputLabel value="Product version:"/>
+                        <p:inputText value="#{addTicketBean.ticket.productVersion}"/>
+
+                        <p:outputLabel value="Description:"/>
+                        <p:inputTextarea value="#{addTicketBean.ticket.description}"/>
+
+                        <p:outputLabel value="Reproduce steps:"/>
+                        <p:inputTextarea value="#{addTicketBean.ticket.reproduceSteps}"/>
+
+                        <h:panelGroup layout="block">
+                            <div style="overflow: auto; width: 100%; margin-top: 0.2em">
+                                <p:commandButton value="Save" actionListener="#{addTicketBean.addTicket}"
+                                                 style="float: right;"
+                                                 update=":ticketsDataView ticketPanel"
+                                                 process="@form"
+                                                 onsuccess="PF('PFAddTicketDialog').hide()"/>
+                                <p:commandButton value="Cancel" actionListener="#{addTicketBean.clearTicket}"
+                                                 style="float: right; margin-right: 0.5em"
+                                                 update="ticketPanel" onclick="PF('PFAddTicketDialog').hide()"/>
+                                <p:commandButton value="Clear" style="float: left;"
+                                                 actionListener="#{addTicketBean.clearTicket}"
+                                                 update="ticketPanel"/>
+                            </div>
+                        </h:panelGroup>
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>
+        </p:dialog>
     </ui:define>
 </ui:composition>
 </html>

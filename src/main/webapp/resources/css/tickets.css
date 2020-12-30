@@ -36,6 +36,14 @@
     border-bottom-color: var(--input-border-color, #A8A8A8) !important;
 }
 
-.ticketDataView .ui-dataview-row tr{
+.ticketDataView .ui-dataview-row tr {
     vertical-align: top;
+}
+
+.ticketPanel {
+    min-width: 500px;
+}
+
+.ticketPanel textarea{
+    width: 100%;
 }

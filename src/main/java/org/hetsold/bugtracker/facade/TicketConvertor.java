@@ -4,11 +4,10 @@ import org.hetsold.bugtracker.model.Ticket;
 import org.hetsold.bugtracker.model.TicketDTO;
 import org.springframework.stereotype.Component;
 
-@Component
 public class TicketConvertor {
 
-    public Ticket getTicket(TicketDTO ticketDTO) {
-        Ticket ticket = null;
+    public static Ticket getTicket(TicketDTO ticketDTO) {
+        Ticket ticket = new Ticket();
         if (ticketDTO != null) {
             ticket = new Ticket();
             ticket.setUuid(ticketDTO.getUuid());
@@ -22,7 +21,7 @@ public class TicketConvertor {
         return ticket;
     }
 
-    public TicketDTO getTicketDTO(Ticket ticket) {
+    public static TicketDTO getTicketDTO(Ticket ticket) {
         return new TicketDTO(ticket);
     }
 }

@@ -4,16 +4,21 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xml:lang="en" lang="en">
 <ui:component>
     <h:form>
-        <p:menubar style="text-align: right;">
+        <p:menubar style="text-align: left; padding: 0.2em">
             <p:menuitem value="Tickets" url="#" icon="pi pi-ticket"/>
             <p:menuitem value="Issues" url="#"  icon="pi-tags"/>
             <p:menuitem value="Users" url="#" icon="pi-users"/>
             <p:menuitem value="Options" url="#" icon="pi-cog"/>
+            <f:facet name="options">
+                <h:outputText value="Hi. user"/>
+                <p:commandButton type="button" value="Logout" icon="pi pi-home" style="margin-left: 1em"/>
+            </f:facet>
         </p:menubar>
     </h:form>
 </ui:component>

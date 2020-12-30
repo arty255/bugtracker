@@ -14,16 +14,12 @@ public class SimpleIssueFacade implements IssueFacade {
     private IssueService issueService;
     private TicketService ticketService;
     private IssueConverter issueConverter;
-    private UserConvertor userConvertor;
-    private TicketConvertor ticketConvertor;
 
     @Autowired
-    public SimpleIssueFacade(IssueService issueService, TicketService ticketService, IssueConverter issueConverter, UserConvertor userConvertor, TicketConvertor ticketConvertor) {
+    public SimpleIssueFacade(IssueService issueService, TicketService ticketService, IssueConverter issueConverter) {
         this.issueService = issueService;
         this.ticketService = ticketService;
         this.issueConverter = issueConverter;
-        this.userConvertor = userConvertor;
-        this.ticketConvertor = ticketConvertor;
     }
 
     public SimpleIssueFacade() {
@@ -42,17 +38,17 @@ public class SimpleIssueFacade implements IssueFacade {
     @Override
     public void createIssue(IssueDTO issueDTO, UserDTO userDTO) {
         Issue issue = issueConverter.getIssue(issueDTO);
-        issueService.createNewIssue(issue, userConvertor.getUser(userDTO));
+        issueService.createNewIssue(issue, UserConvertor.getUser(userDTO));
     }
 
     @Override
     public void createIssueFromTicket(TicketDTO ticketDTO, UserDTO userDTO) {
-        issueService.createIssueFromTicket(ticketConvertor.getTicket(ticketDTO), userConvertor.getUser(userDTO));
+        issueService.createIssueFromTicket(TicketConvertor.getTicket(ticketDTO), UserConvertor.getUser(userDTO));
     }
 
     @Override
     public void updateIssue(IssueShortDTO issueShortDTO, UserDTO userDTO) {
-        issueService.updateIssueState(issueConverter.getIssue(issueShortDTO), userConvertor.getUser(userDTO));
+        issueService.updateIssueState(issueConverter.getIssue(issueShortDTO), UserConvertor.getUser(userDTO));
     }
 
     @Override

@@ -30,6 +30,10 @@ public class User extends AbstractIdentity {
         this.lastName = lastName;
     }
 
+    public User(String uuid) {
+        this.setUuid(uuid);
+    }
+
     public String getFirstName() {
         return firstName;
     }

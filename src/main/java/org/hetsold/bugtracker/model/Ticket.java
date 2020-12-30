@@ -27,7 +27,6 @@ public class Ticket extends AbstractIdentity {
     private List<Message> messageList;
 
     {
-        verificationState = TicketVerificationState.NotVerified;
         messageList = new ArrayList<>();
     }
 
