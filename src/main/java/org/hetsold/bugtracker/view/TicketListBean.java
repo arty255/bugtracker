@@ -26,6 +26,11 @@ public class TicketListBean {
         updateTicketsList();
     }
 
+    public void deleteTicket(String uuid) {
+        ticketService.delete(uuid);
+        updateTicketsList();
+    }
+
     public void updateTicketsList() {
         ticketDTOList = ticketService.getTicketDtoList();
     }

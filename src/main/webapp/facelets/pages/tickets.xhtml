@@ -16,80 +16,86 @@
         <h:outputStylesheet name="tickets.css" library="css"/>
     </ui:define>
     <ui:define name="content">
+        <h:form id="viewForm">
         <p:commandButton value="Add Ticket" icon="pi pi-plus"
                          style="margin-bottom: 0.5em;"
                          onclick="PF('PFAddTicketDialog').show()"/>
-        <p:dataView id="ticketsDataView"
-                    var="ticket" value="#{ticketListBean.ticketDTOList}"
-                    gridIcon="pi pi-th-large" listIcon="pi pi-bars" styleClass="ticketDataView">
-            <p:dataViewListItem>
-                <h:panelGrid columns="3" style="width:100%" columnClasses="info,description">
-                    <p:outputPanel>
-                        <h:panelGrid columns="1">
-                            <h:outputText value="Ticket:"/>
-                            <h:outputText value="#{ticket.uuid}"/>
+            <p:dataView id="ticketsDataView"
+                        var="ticket" value="#{ticketListBean.ticketDTOList}"
+                        gridIcon="pi pi-th-large" listIcon="pi pi-bars" styleClass="ticketDataView">
+                <p:dataViewListItem>
+                    <h:panelGrid columns="3" style="width:100%" columnClasses="info,description">
+                        <p:outputPanel>
+                            <h:panelGrid columns="1">
+                                <h:outputText value="Ticket:"/>
+                                <h:outputText value="#{ticket.uuid}"/>
 
+                                <view:stateView state="#{ticket.resolveState}"/>
+                            </h:panelGrid>
+                        </p:outputPanel>
+
+                        <p:outputPanel>
+                            <h:panelGrid columns="1">
+                                <h:outputText value="Description:" style="font-weight: bold"/>
+                                <h:outputText value="#{ticket.description}"/>
+
+                                <h:outputText value="Reproduce steps:" style="margin-top: 2em; font-weight: bold"/>
+                                <h:outputText value="#{ticket.reproduceSteps}"/>
+                            </h:panelGrid>
+                        </p:outputPanel>
+
+                        <p:outputPanel>
+                            <p:commandButton icon="pi pi-trash"
+                                             actionListener="#{ticketListBean.deleteTicket(ticket.uuid)}"
+                                             process="@this"
+                                             update=":viewForm:ticketsDataView"/>
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Reported by:"/>
+                                <user:minifiedUserView user="#{ticket.user}"/>
+
+                                <h:outputText value="Creation date:"/>
+                                <h:outputText value="#{ticket.creationTime}">
+                                    <f:convertDateTime type="both" pattern="dd-MM-yyyy HH:mm"/>
+                                </h:outputText>
+
+                            </h:panelGrid>
+                        </p:outputPanel>
+                    </h:panelGrid>
+                </p:dataViewListItem>
+
+
+                <p:dataViewGridItem>
+                    <p:panel header="#{ticket.uuid}" styleClass="ticket">
+                        <p:panelGrid columns="2" style="width: 100%" columnClasses="minimalWidthColumn,autoWidthColumn">
+                            <h:outputText value="Resolve state:"/>
                             <view:stateView state="#{ticket.resolveState}"/>
-                        </h:panelGrid>
-                    </p:outputPanel>
 
-                    <p:outputPanel>
-                        <h:panelGrid columns="1">
-                            <h:outputText value="Description:" style="font-weight: bold"/>
+                            <h:outputText value="Description:"/>
                             <h:outputText value="#{ticket.description}"/>
 
-                            <h:outputText value="Reproduce steps:" style="margin-top: 2em; font-weight: bold"/>
-                            <h:outputText value="#{ticket.reproduceSteps}"/>
-                        </h:panelGrid>
-                    </p:outputPanel>
-
-                    <p:outputPanel>
-                        <h:panelGrid columns="2">
-                            <h:outputText value="Reported by:"/>
-                            <user:minifiedUserView user="#{ticket.user}"/>
+                            <h:outputText value="Verification:"/>
+                            <h:outputText value="#{ticket.verificationState}"/>
 
                             <h:outputText value="Creation date:"/>
                             <h:outputText value="#{ticket.creationTime}">
                                 <f:convertDateTime type="both" pattern="dd-MM-yyyy HH:mm"/>
                             </h:outputText>
 
-                        </h:panelGrid>
-                    </p:outputPanel>
-                </h:panelGrid>
-            </p:dataViewListItem>
-
-
-            <p:dataViewGridItem>
-                <p:panel header="#{ticket.uuid}" styleClass="ticket">
-                    <p:panelGrid columns="2" style="width: 100%" columnClasses="minimalWidthColumn,autoWidthColumn">
-                        <h:outputText value="Resolve state:"/>
-                        <view:stateView state="#{ticket.resolveState}"/>
-
-                        <h:outputText value="Description:"/>
-                        <h:outputText value="#{ticket.description}"/>
-
-                        <h:outputText value="Verification:"/>
-                        <h:outputText value="#{ticket.verificationState}"/>
-
-                        <h:outputText value="Creation date:"/>
-                        <h:outputText value="#{ticket.creationTime}">
-                            <f:convertDateTime type="both" pattern="dd-MM-yyyy HH:mm"/>
-                        </h:outputText>
-
-                        <h:outputText value="Reported by:"/>
-                        <user:minifiedUserView user="#{ticket.user}"/>
-                    </p:panelGrid>
-                    <p:fieldset legend="Reproduce steps:"
-                                toggleable="true" collapsed="true"
-                                toggleSpeed="500" styleClass="tickedFieldset">
-                        <h:outputText value="#{ticket.reproduceSteps}"/>
-                    </p:fieldset>
-                </p:panel>
-            </p:dataViewGridItem>
-        </p:dataView>
+                            <h:outputText value="Reported by:"/>
+                            <user:minifiedUserView user="#{ticket.user}"/>
+                        </p:panelGrid>
+                        <p:fieldset legend="Reproduce steps:"
+                                    toggleable="true" collapsed="true"
+                                    toggleSpeed="500" styleClass="tickedFieldset">
+                            <h:outputText value="#{ticket.reproduceSteps}"/>
+                        </p:fieldset>
+                    </p:panel>
+                </p:dataViewGridItem>
+            </p:dataView>
+        </h:form>
 
         <p:dialog header="Add new Ticket" widgetVar="PFAddTicketDialog">
-            <h:form>
+            <h:form id="dialogForm">
                 <p:panel id="ticketPanel" styleClass="ticketPanel">
                     <h:panelGrid columns="1" style="width: 100%">
                         <p:outputLabel value="Product version:"/>
@@ -105,7 +111,7 @@
                             <div style="overflow: auto; width: 100%; margin-top: 0.2em">
                                 <p:commandButton value="Save" actionListener="#{addTicketBean.addTicket}"
                                                  style="float: right;"
-                                                 update=":ticketsDataView ticketPanel"
+                                                 update=":viewForm:ticketsDataView ticketPanel"
                                                  process="@form"
                                                  onsuccess="PF('PFAddTicketDialog').hide()"/>
                                 <p:commandButton value="Cancel" actionListener="#{addTicketBean.clearTicket}"
