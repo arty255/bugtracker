@@ -1,17 +1,19 @@
 package org.hetsold.bugtracker.service;
 
 
-import org.hetsold.bugtracker.model.Message;
-import org.hetsold.bugtracker.model.Ticket;
-import org.hetsold.bugtracker.model.User;
+import org.hetsold.bugtracker.model.*;
 
 import java.util.List;
 
 public interface TicketService {
 
-    void save(Ticket ticket);
+    void save(Ticket ticket, User user);
+
+    void addNewTicket(TicketDTO ticketDTO, UserDTO userDTO);
 
     List<Ticket> getTickets();
+
+    List<TicketDTO> getTicketDtoList();
 
     Ticket getTicketById(String uuid);
 

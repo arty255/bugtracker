@@ -13,27 +13,23 @@ import java.util.stream.Collectors;
 @Component
 public class SimplyTicketFacade implements TicketFacade {
     private TicketService ticketService;
-    private TicketConvertor ticketConvertor;
-    private UserConvertor userConvertor;
     private Ticket ticket;
 
     @Autowired
-    public SimplyTicketFacade(TicketService ticketService, TicketConvertor ticketConvertor, UserConvertor userConvertor) {
+    public SimplyTicketFacade(TicketService ticketService) {
         this.ticketService = ticketService;
-        this.ticketConvertor = ticketConvertor;
-        this.userConvertor = userConvertor;
     }
 
     @Override
     public void createTicket(TicketDTO ticketDTO, UserDTO userDTO) {
-        ticket = ticketConvertor.getTicket(ticketDTO);
-        ticket.setCreatedBy(userConvertor.getUser(userDTO));
-        ticketService.save(ticket);
+        ticket = TicketConvertor.getTicket(ticketDTO);
+        ticket.setCreatedBy(UserConvertor.getUser(userDTO));
+        ticketService.save(ticket, UserConvertor.getUser(userDTO));
     }
 
     @Override
     public void deleteTicket(String ticketId) {
-        ticketService.delete(ticketConvertor.getTicket(new TicketDTO(ticketId)));
+        ticketService.delete(TicketConvertor.getTicket(new TicketDTO(ticketId)));
     }
 
     @Override
@@ -43,6 +39,6 @@ public class SimplyTicketFacade implements TicketFacade {
 
     @Override
     public List<TicketDTO> getTicketList() {
-        return ticketService.getTickets().stream().map(ticketConvertor::getTicketDTO).collect(Collectors.toList());
+        return ticketService.getTickets().stream().map(TicketConvertor::getTicketDTO).collect(Collectors.toList());
     }
 }
