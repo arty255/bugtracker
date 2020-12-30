@@ -32,11 +32,11 @@ public class DefaultTicketServiceTest {
     @InjectMocks
     private TicketService ticketService = new DefaultTicketService();
     @Mock
-    private UserDAO userDAO;
-    @Mock
     private TicketDAO ticketDao;
     @Mock
     private MessageService messageService;
+    @Mock
+    private UserService userService;
 
     private final User user = new User("First Name", "Last Name");
     private final TicketFactory ticketFactory = new TicketFactory(user);
@@ -67,7 +67,7 @@ public class DefaultTicketServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void checkIfTicketWithNotExistedUserCantBeSaved() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
-        Mockito.when(userDAO.getUserById(ticket.getCreatedBy().getUuid())).thenReturn(null);
+        Mockito.when(userService.getUserById(ticket.getCreatedBy().getUuid())).thenReturn(null);
         ticketService.save(ticket, user);
         Mockito.verify(ticketDao, Mockito.times(1)).getTicketById(ticket.getUuid());
     }
@@ -75,7 +75,7 @@ public class DefaultTicketServiceTest {
     @Test
     public void checkIfCorrectTicketCanBeSaved() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
-        Mockito.when(userDAO.getUserById(ticket.getCreatedBy().getUuid())).thenReturn(ticket.getCreatedBy());
+        Mockito.when(userService.getUserById(ticket.getCreatedBy())).thenReturn(ticket.getCreatedBy());
         ticketService.save(ticket, user);
         Mockito.verify(ticketDao).save(ticket);
     }
