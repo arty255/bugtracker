@@ -86,8 +86,16 @@ public class DefaultTicketService implements TicketService {
         ticketDao.delete(ticketDao.getTicketById(uuid));
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public Ticket getTicketById(String uuid) {
         return ticketDao.getTicketById(uuid);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TicketDTO getTicketDTO(String uuid) {
+        return TicketConvertor.getTicketDTO(getTicketById(uuid));
     }
 
     @Override
@@ -108,5 +116,15 @@ public class DefaultTicketService implements TicketService {
         ticket.getMessageList().add(message);
     }
 
-
+    @Override
+    public List<MessageDTO> getTicketMessages(TicketDTO ticketDTO, int fromIndex, int limitIndex) {
+        Ticket ticket;
+        if (ticketDTO == null || (ticket = ticketDao.getTicketById(ticketDTO.getUuid())) == null) {
+            throw new IllegalArgumentException("ticket can not be empty");
+        }
+        if (fromIndex + limitIndex >= ticket.getMessageList().size()) {
+            limitIndex = ticket.getMessageList().size();
+        }
+        return ticket.getMessageList().subList(fromIndex, limitIndex).stream().map(MessageDTO::new).collect(Collectors.toList());
+    }
 }
