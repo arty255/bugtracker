@@ -1,19 +1,33 @@
 .userViewContainer {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    max-width: 550px;
+}
+
+.imageWrapper {
+    flex-grow: 1;
+}
+
+.imageWrapper > img {
+    width: 100%;
+}
+
+.userViewContainer div {
+    width: 10%;
 }
 
 .userIdRecord {
+    flex-grow: 3;
     padding-left: 0.5em;
     display: flex;
     flex-direction: column;
 }
 
-.userViewContainer img {
-    width: 20%;
+@media only screen and (max-width: 450px) {
+    .userViewContainer div {
+        width: auto !important;
+    }
 }
-
-.child {
-    margin-right: 1em;
-}
-

@@ -6,4 +6,13 @@
     <application>
         <el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
     </application>
+
+    <navigation-rule>
+        <display-name>ticketDetail</display-name>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>ticketDetail</from-outcome>
+            <to-view-id>/facelets/pages/ticketDetail.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
 </faces-config>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:view="http://java.sun.com/jsf/composite/stateView"
+      xmlns:user="http://java.sun.com/jsf/composite/minifiedUserView"
+      xml:lang="en" lang="en">
+<ui:composition template="../templates/simpleTemplate.xhtml">
+    <ui:define name="title">Ticket: #{detailedTicketBean.selectedTicketDTO.uuid}</ui:define>
+    <ui:define name="headArea">
+        <h:outputStylesheet library="css" name="tickets.css"/>
+        <f:metadata>
+            <f:viewParam name="uuid" value="#{detailedTicketBean.uuid}"/>
+            <f:event type="preRenderView" listener="#{detailedTicketBean.preInitData}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="content">
+        <h:form>
+            <p:panel header="Ticket: #{detailedTicketBean.selectedTicketDTO.uuid}" styleClass="ticket">
+                <p:panelGrid columns="2" style="width: 100%" columnClasses="minimalWidthColumn,autoWidthColumn">
+                    <h:outputText value="Resolve state:"/>
+                    <h:panelGroup layout="block">
+                        <p:inplace style="float: left" styleClass="stateInplace" editor="true" effectSpeed="fast">
+                            <f:facet name="output">
+                                <view:stateView state="#{detailedTicketBean.selectedTicketDTO.resolveState}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:selectOneMenu value="#{detailedTicketBean.selectedTicketDTO.resolveState}">
+                                    <f:selectItems var="item" value="#{appUtilBean.ticketResolveStates}"
+                                                   itemLabel="#{item.label}" itemValue="#{item}"/>
+                                </p:selectOneMenu>
+                            </f:facet>
+                        </p:inplace>
+                        <p:commandButton value="Create issue" icon="pi pi-tags"
+                                         style="float: right; margin-right: 0.5em"
+                                         actionListener="#{detailedTicketBean.createIssueFromTicket}"/>
+                    </h:panelGroup>
+
+                    <h:outputText value="Description:"/>
+                    <p:inplace id="deInplace" styleClass="ticketDescriptionInplace" effectSpeed="fast" editor="true">
+                        <f:facet name="output">
+                            <h:outputText id="description" value="#{detailedTicketBean.selectedTicketDTO.description}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:editor value="#{detailedTicketBean.selectedTicketDTO.description}"
+                                      style="width: 100%"/>
+                        </f:facet>
+                    </p:inplace>
+
+                    <h:outputText value="Reproduce steps:"/>
+                    <p:inplace editor="true">
+                        <f:facet name="output">
+                            <h:outputText value="#{detailedTicketBean.selectedTicketDTO.reproduceSteps}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputTextarea value="#{detailedTicketBean.selectedTicketDTO.reproduceSteps}"
+                                             style="width: 100%"/>
+                        </f:facet>
+                    </p:inplace>
+
+                    <h:outputText value="Verification:"/>
+                    <p:inplace editor="true" effectSpeed="fast">
+                        <f:facet name="output">
+                            <h:outputText value="#{detailedTicketBean.selectedTicketDTO.verificationState}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:selectOneMenu value="#{detailedTicketBean.selectedTicketDTO.verificationState}">
+                                <f:selectItems var="item" value="#{appUtilBean.ticketVerificationStates}"
+                                               itemLabel="#{item.label}" itemValue="#{item}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                    </p:inplace>
+
+                    <h:outputText value="Creation date:"/>
+                    <h:outputText value="#{detailedTicketBean.selectedTicketDTO.creationTime}">
+                        <f:convertDateTime type="both" pattern="dd-MM-yyyy HH:mm"/>
+                    </h:outputText>
+
+                    <h:outputText value="Reported by:"/>
+                    <user:minifiedUserView user="#{detailedTicketBean.selectedTicketDTO.user}"/>
+                </p:panelGrid>
+                <div>
+                    <p:dataList var="message" value="#{detailedTicketBean.ticketMessages}">
+                        <p:panel header="#{message.uuid}">
+                            <h:panelGrid columns="2">
+                                <h:panelGroup layout="block">
+                                    <user:minifiedUserView user="#{message.creator}"/>
+                                </h:panelGroup>
+                                <h:panelGroup layout="block">
+                                    <h:outputText value="#{message.content}"/>
+                                    <user:minifiedUserView user="#{message.editor}"
+                                                           rendered="#{message.editor ne null}"/>
+                                </h:panelGroup>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:dataList>
+
+                    <p:tabView id="messageTabView">
+                        <p:tab title="Write">
+                            <div>
+                                <p:textEditor secure="false" height="200"/>
+                                <p:commandButton value="Comment"/>
+                            </div>
+                        </p:tab>
+                        <p:tab title="Preview">
+                            <div>
+                                <p:textEditor secure="false" readonly="true"/>
+                                <p:commandButton value="Comment"/>
+                            </div>
+                        </p:tab>
+                    </p:tabView>
+
+                </div>
+
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

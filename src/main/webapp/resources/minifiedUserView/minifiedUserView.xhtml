@@ -12,8 +12,10 @@
 <composite:implementation>
     <h:outputStylesheet library="css" name="minifiedUserView.css"/>
     <h:panelGroup layout="block" styleClass="userViewContainer">
-        <p:graphicImage library="images" name="no_image.jpg" rendered="#{false}"/>
-        <p:graphicImage library="images" name="no_image.jpg" rendered="#{true}"/>
+        <div class="imageWrapper">
+            <p:graphicImage library="images" name="no_image.jpg" rendered="#{false}"/>
+            <p:graphicImage library="images" name="no_image.jpg" rendered="#{true}"/>
+        </div>
         <div class="userIdRecord">
             <p:link value="#{cc.attrs.user.uuid}"/>
             <h:outputText value="#{cc.attrs.user.firstName}" styleClass="child"/>

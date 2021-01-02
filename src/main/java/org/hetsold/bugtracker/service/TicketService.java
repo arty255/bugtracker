@@ -17,6 +17,8 @@ public interface TicketService {
 
     Ticket getTicketById(String uuid);
 
+    TicketDTO getTicketDTO(String uuid);
+
     void delete(Ticket ticket);
 
     void delete(String uuid);
@@ -24,4 +26,6 @@ public interface TicketService {
     void applyForIssue(Ticket ticket);
 
     void addTicketMessage(Ticket ticket, Message message, User user);
+
+    List<MessageDTO> getTicketMessages(TicketDTO ticket, int fromIndex, int size);
 }

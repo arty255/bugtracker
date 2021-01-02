@@ -11,7 +11,8 @@
 }
 
 .minimalWidthColumn {
-    width: 1% !important;
+    width: 10% !important;
+    vertical-align: top !important;
 }
 
 .autoWidthColumn {
@@ -44,6 +45,23 @@
     min-width: 500px;
 }
 
-.ticketPanel textarea{
+.ticketPanel textarea {
     width: 100%;
+}
+
+.ui-inplace-content {
+    display: flex;
+    align-items: center;
+}
+
+.stateInplace .ui-inplace-display {
+    padding: 0 !important;
+}
+
+.ticketDescriptionInplace{
+
+}
+
+.ticketDescriptionInplace > span{
+    align-items: flex-start;
 }
