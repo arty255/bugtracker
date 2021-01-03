@@ -32,7 +32,7 @@ public class DefaultTicketServiceTest {
     @InjectMocks
     private TicketService ticketService = new DefaultTicketService();
     @Mock
-    private UserDAO userDAO;
+    private UserService userService;
     @Mock
     private TicketDAO ticketDao;
     @Mock
@@ -55,29 +55,29 @@ public class DefaultTicketServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void checkIfTicketWithNoDescriptionCanBeSaved() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.IncorrectTicketEmptyDescription);
-        ticketService.save(ticket);
+        ticketService.save(ticket, user);
         Mockito.verify(ticketDao, Mockito.never()).save(ticket);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkIfTicketWithEmptyUserCantBeSaved() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.IncorrectTicketNullCreator);
-        ticketService.save(ticket);
+        ticketService.save(ticket, user);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkIfTicketWithNotExistedUserCantBeSaved() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
-        Mockito.when(userDAO.getUserById(ticket.getCreatedBy().getUuid())).thenReturn(null);
-        ticketService.save(ticket);
+        Mockito.when(userService.getUserById(ticket.getCreatedBy().getUuid())).thenReturn(null);
+        ticketService.save(ticket, user);
         Mockito.verify(ticketDao, Mockito.times(1)).getTicketById(ticket.getUuid());
     }
 
     @Test
     public void checkIfCorrectTicketCanBeSaved() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
-        Mockito.when(userDAO.getUserById(ticket.getCreatedBy().getUuid())).thenReturn(ticket.getCreatedBy());
-        ticketService.save(ticket);
+        Mockito.when(userService.getUserById(ticket.getCreatedBy())).thenReturn(ticket.getCreatedBy());
+        ticketService.save(ticket, user);
         Mockito.verify(ticketDao).save(ticket);
     }
 
