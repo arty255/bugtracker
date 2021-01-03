@@ -33,7 +33,7 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
 
     @Override
     public HistoryIssueMessageEvent getMessageEventById(String uuid) {
-        return hibernateTemplate.load(HistoryIssueMessageEvent.class, uuid);
+        return hibernateTemplate.get(HistoryIssueMessageEvent.class, uuid);
     }
 
     @Override

@@ -93,18 +93,31 @@
                                 <p:ajax event="tabChange" process="newMessageContent" update="renderedPreview"/>
                                 <p:tab title="Write">
                                     <div style="overflow: auto">
-                                        <p:inputTextarea id="newMessageContent" widgetVar="messageContentWidget"
-                                                         value="#{detailedTicketBean.messageContent}"
-                                                         counter="display" maxlength="1000"
-                                                         counterTemplate="{0} characters remaining."
-                                                         rows="5" style="width: 100%"/>
+                                        <p:outputPanel layout="block">
+                                            <p:outputPanel layout="block" styleClass="editMarker">
+                                                <h:outputText
+                                                        value="You editing #{detailedTicketBean.selectedMessage.creator.firstName} #{detailedTicketBean.selectedMessage.creator.lastName} message!"
+                                                        rendered="#{not empty detailedTicketBean.selectedMessage.uuid}"/>
+                                                <p:commandLink action="#{detailedTicketBean.initMessage}"
+                                                               process="@this"
+                                                               update="@(.editMarker) newMessageContent"
+                                                               rendered="#{not empty detailedTicketBean.selectedMessage.uuid}">
+                                                    Cancel
+                                                </p:commandLink>
+                                            </p:outputPanel>
+                                            <p:inputTextarea id="newMessageContent" widgetVar="messageContentWidget"
+                                                             value="#{detailedTicketBean.selectedMessage.content}"
+                                                             counter="display" maxlength="1000"
+                                                             counterTemplate="{0} characters remaining."
+                                                             rows="5" style="width: 100%"/>
+                                        </p:outputPanel>
                                         <h:outputText id="display"/>
                                         <div style="overflow: auto; padding-top: 0.5em">
                                             <p:commandButton value="Hide coment window" style="float: left"
                                                              onclick="PF('CommentAccordionWidget').unselect(0);"/>
                                             <p:commandButton value="Comment" style="float: right"
                                                              actionListener="#{detailedTicketBean.addMessageToTicket}"
-                                                             update="@form:ticketMessages newMessageContent"
+                                                             update="@form:ticketMessages newMessageContent @(.editMarker)"
                                                              process="@this newMessageContent"
                                                              onsuccess="PF('CommentAccordionWidget').unselect(0);"/>
                                             <p:commandButton value="Clear" style="float: right; margin-right: 1em"
@@ -115,7 +128,7 @@
                                 <p:tab title="Preview">
                                     <div>
                                         <h:outputText id="renderedPreview"
-                                                      value="#{detailedTicketBean.messageContent}"/>
+                                                      value="#{detailedTicketBean.selectedMessage.content}"/>
                                         <div style="overflow: auto; padding-top: 0.5em">
                                             <p:commandButton value="Hide coment window" style="float: left"
                                                              onclick="PF('CommentAccordionWidget').unselect(0);"/>
@@ -140,16 +153,19 @@
                                 <p:commandLink
                                         styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
                                         rendered="#{true}" process="@this" update="@form:ticketMessages"
-                                        action="#{detailedTicketBean.deleteMessage}">
-                                    <f:setPropertyActionListener value="#{message}"
-                                                                 target="#{detailedTicketBean.selectedMessage}"/>
+                                        action="#{detailedTicketBean.deleteMessage(message)}">
                                     <h:outputText styleClass="ui-icon pi pi-trash"/>
                                 </p:commandLink>
-                                <h:commandLink
+                                <p:commandLink
                                         styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
-                                        rendered="#{true}">
+                                        rendered="#{true}" process="@this"
+                                        update="@widgetVar(messageContentWidget) @(.editMarker)"
+                                        onclick="PF('CommentAccordionWidget').select(0)"
+                                        style="margin-right: 0.5em;">
+                                    <f:setPropertyActionListener value="#{message}"
+                                                                 target="#{detailedTicketBean.selectedMessage}"/>
                                     <h:outputText styleClass="ui-icon pi pi-pencil"/>
-                                </h:commandLink>
+                                </p:commandLink>
                             </f:facet>
                             <h:panelGrid columns="2" columnClasses="messageInfo,messageContent"
                                          styleClass="messageTable">

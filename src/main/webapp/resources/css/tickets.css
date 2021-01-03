@@ -165,3 +165,17 @@ body .ui-accordion .ui-accordion-header.ui-state-active:hover, body .ui-accordio
     font-size: 2em;
     font-weight: bold;
 }
+
+.editMarker {
+    display: flex;
+    flex-direction: row;
+    /*align-content: space-between;*/
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.2em 0.1em;
+    font-style: italic;
+}
+
+.editMarker a {
+    font-style: normal;
+}

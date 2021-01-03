@@ -24,6 +24,7 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void save(User user) {
         if (user == null || user.getUuid().isEmpty()) {
             throw new IllegalArgumentException("incorrect user");

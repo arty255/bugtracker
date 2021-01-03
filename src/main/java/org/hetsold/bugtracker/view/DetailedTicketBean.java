@@ -28,7 +28,6 @@ public class DetailedTicketBean implements Serializable {
 
     private List<MessageDTO> ticketMessages;
 
-    private String messageContent;
     private MessageDTO selectedMessage;
 
     @Autowired
@@ -73,35 +72,29 @@ public class DetailedTicketBean implements Serializable {
     public void addMessageToTicket() {
         /*todo: getUser FromSecurityContext*/
         UserDTO user = userService.getUserById("19f0a834-4324-419a-8828-50494c2353e4");
-        ticketService.addTicketMessage(selectedTicketDTO, new MessageDTO(messageContent), user);
+        //ticketService.addTicketMessage(selectedTicketDTO, new MessageDTO(messageContent), user);
+        ticketService.addTicketMessage(selectedTicketDTO, selectedMessage, user);
         initMessage();
         initMessageList();
     }
 
-    public void deleteMessage() {
-        messageService.deleteMessage(selectedMessage);
-        initMessage();
+    public void deleteMessage(MessageDTO message) {
+        messageService.deleteMessage(message);
         initMessageList();
     }
+
 
     public void initMessageList() {
         ticketMessages = ticketService.getTicketMessages(selectedTicketDTO, 0, 99);
     }
 
     public void initMessage() {
-        messageContent = "";
+        selectedMessage = new MessageDTO("");
+        //messageContent = "";
     }
 
     public List<MessageDTO> getTicketMessages() {
         return ticketMessages;
-    }
-
-    public String getMessageContent() {
-        return messageContent;
-    }
-
-    public void setMessageContent(String messageContent) {
-        this.messageContent = messageContent;
     }
 
     public MessageDTO getSelectedMessage() {
