@@ -15,6 +15,10 @@ public class MessageDTO implements Serializable {
     public MessageDTO() {
     }
 
+    public MessageDTO(String content) {
+        this.content = content;
+    }
+
     public MessageDTO(Message message) {
         this.uuid = message.getUuid();
         this.content = message.getContent();

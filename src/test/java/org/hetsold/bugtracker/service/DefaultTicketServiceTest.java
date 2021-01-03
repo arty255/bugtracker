@@ -102,6 +102,7 @@ public class DefaultTicketServiceTest {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
         Mockito.when(ticketDao.getTicketById(ticket.getUuid())).thenReturn(ticket);
+        Mockito.when(messageService.saveMessage(message, user)).thenReturn(message);
         ticketService.addTicketMessage(ticket, message, user);
         Mockito.verify(messageService).saveMessage(message, user);
         assertTrue(ticket.getMessageList().contains(message));
