@@ -24,6 +24,7 @@ public class Ticket extends AbstractIdentity {
     @JoinTable(name = "ticket_message",
             joinColumns = @JoinColumn(name = "ticketId", referencedColumnName = "uuid"),
             inverseJoinColumns = @JoinColumn(name = "messageId", referencedColumnName = "uuid"))
+    @OrderBy("createDate desc")
     private List<Message> messageList;
 
     {

@@ -58,10 +58,110 @@
     padding: 0 !important;
 }
 
-.ticketDescriptionInplace{
+.ticketDescriptionInplace {
 
 }
 
-.ticketDescriptionInplace > span{
+.ticketDescriptionInplace > span {
     align-items: flex-start;
+}
+
+.messageTable tr td {
+    height: 1px;
+}
+
+.messageInfo {
+    width: 20%;
+}
+
+.messageContent {
+    width: 80%;
+    vertical-align: top;
+}
+
+.messageArea {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.messageInfoArea {
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+.messageInfoArea div {
+    width: 50%;
+}
+
+.createDate {
+    width: 100%;
+    border-top: 1px solid #A8A8A8;
+    padding: 0.2em 0.5em;
+    border-top-color: var(--input-border-color, #A8A8A8);
+}
+
+.messageContentArea {
+    justify-content: space-between;
+    height: 100%;
+}
+
+.messageEditorWrapper {
+    border-top: 1px solid #A8A8A8;
+    padding: 0.2em 0.5em;
+    border-top-color: var(--input-border-color, #A8A8A8);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.messageEditorWrapper > label {
+    margin-right: 0.5em;
+}
+
+body .ui-accordion .ui-accordion-header.ui-state-active {
+    border: 1px solid #c8c8c8;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+body .ui-accordion .ui-accordion-header {
+    border: 1px solid #007ad9;
+    background-color: #007ad9;
+    color: #fff;
+}
+
+body .ui-accordion .ui-accordion-header.ui-state-hover, body .ui-accordion .ui-accordion-header.ui-tabs-outline {
+    outline: 0 none;
+    border: 1px solid #116fbf;
+    background-color: #116fbf;
+    color: #fff;
+}
+
+body .ui-accordion .ui-accordion-header.ui-state-active:hover, body .ui-accordion .ui-accordion-header.ui-state-active.ui-tabs-outline {
+    outline: 0 none;
+    border: 1px solid #dbdbdb;
+    background-color: #dbdbdb;
+    color: #333;
+}
+
+
+.ticketMessages {
+    padding: 0;
+}
+
+.ticketMessages ul {
+    margin: 0.1em;
+    list-style: none;
+    padding-inline-start: 0
+}
+
+.ticketMessages .ui-datalist-item {
+    padding: 0.3em 0;
+}
+
+.ticketMessages .ui-datalist-empty-message {
+    text-align: center;
+    font-size: 2em;
+    font-weight: bold;
 }

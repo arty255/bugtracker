@@ -13,6 +13,7 @@
         <navigation-case>
             <from-outcome>ticketDetail</from-outcome>
             <to-view-id>/facelets/pages/ticketDetail.xhtml</to-view-id>
+            <redirect/>
         </navigation-case>
     </navigation-rule>
 </faces-config>

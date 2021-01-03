@@ -9,11 +9,12 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import java.io.Serializable;
 import java.util.List;
 
 @ManagedBean
 @ViewScoped
-public class TicketListBean {
+public class TicketListBean implements Serializable {
     private List<TicketDTO> ticketDTOList;
     @Autowired
     private TicketService ticketService;

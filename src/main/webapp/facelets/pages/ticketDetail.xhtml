@@ -14,6 +14,7 @@
     <ui:define name="title">Ticket: #{detailedTicketBean.selectedTicketDTO.uuid}</ui:define>
     <ui:define name="headArea">
         <h:outputStylesheet library="css" name="tickets.css"/>
+        <h:outputScript library="js" name="ticket.js"/>
         <f:metadata>
             <f:viewParam name="uuid" value="#{detailedTicketBean.uuid}"/>
             <f:event type="preRenderView" listener="#{detailedTicketBean.preInitData}"/>
@@ -116,7 +117,6 @@
                     </p:tabView>
 
                 </div>
-
             </p:panel>
         </h:form>
     </ui:define>

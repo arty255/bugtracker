@@ -28,7 +28,7 @@
                         <p:outputPanel>
                             <h:panelGrid columns="1">
                                 <h:outputText value="Ticket:"/>
-                                <h:link outcome="ticketDetail?faces-redirec=true" includeViewParams="true">
+                                <h:link outcome="ticketDetail" includeViewParams="true">
                                     <h:outputText value="#{ticket.uuid}"/>
                                     <f:param name="uuid" value="#{ticket.uuid}"/>
                                 </h:link>
