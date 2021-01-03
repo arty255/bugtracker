@@ -89,18 +89,19 @@ public class DefaultTicketService implements TicketService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public Ticket getTicketById(String uuid) {
         return ticketDao.getTicketById(uuid);
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public TicketDTO getTicketDTO(String uuid) {
         return TicketConvertor.getTicketDTO(getTicketById(uuid));
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void applyForIssue(Ticket ticket) {
         if (ticket == null || (ticket = getTicketById(ticket.getUuid())) == null) {
             throw new IllegalArgumentException("ticket can not be empty");
@@ -122,7 +123,9 @@ public class DefaultTicketService implements TicketService {
             throw new IllegalArgumentException("ticket can not be empty");
         }
         message = messageService.saveMessage(message, user);
-        ticket.getMessageList().add(message);
+        if (!ticket.getMessageList().contains(message)) {
+            ticket.getMessageList().add(message);
+        }
     }
 
     @Override

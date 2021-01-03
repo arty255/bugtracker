@@ -34,7 +34,7 @@ public class DefaultMessageService implements MessageService {
             throw new IllegalArgumentException("message content can not be empty");
         }
         String newMessageContent = message.getContent();
-        message = getMessageById(message);
+        message = messageDAO.getMessageById(message.getUuid());
         if ((user = userService.getUserById(user)) == null) {
             throw new IllegalArgumentException("user not exists");
         }
@@ -52,7 +52,7 @@ public class DefaultMessageService implements MessageService {
         return message;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public Message getMessageById(Message message) {
         if (message == null || message.getUuid() == null || message.getUuid().isEmpty()) {
             return null;
