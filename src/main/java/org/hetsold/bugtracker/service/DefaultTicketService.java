@@ -1,7 +1,9 @@
 package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dao.TicketDAO;
+import org.hetsold.bugtracker.facade.MessageConvertor;
 import org.hetsold.bugtracker.facade.TicketConvertor;
+import org.hetsold.bugtracker.facade.UserConvertor;
 import org.hetsold.bugtracker.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -108,11 +110,18 @@ public class DefaultTicketService implements TicketService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void addTicketMessage(TicketDTO ticketDTO, MessageDTO messageDTO, UserDTO userDTO) {
+        addTicketMessage(TicketConvertor.getTicket(ticketDTO), MessageConvertor.getMessage(messageDTO), UserConvertor.getUser(userDTO));
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void addTicketMessage(Ticket ticket, Message message, User user) {
         if (ticket == null || (ticket = ticketDao.getTicketById(ticket.getUuid())) == null) {
             throw new IllegalArgumentException("ticket can not be empty");
         }
-        messageService.saveMessage(message, user);
+        message = messageService.saveMessage(message, user);
         ticket.getMessageList().add(message);
     }
 
