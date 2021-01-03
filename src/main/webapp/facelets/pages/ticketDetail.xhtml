@@ -14,6 +14,7 @@
     <ui:define name="title">Ticket: #{detailedTicketBean.selectedTicketDTO.uuid}</ui:define>
     <ui:define name="headArea">
         <h:outputStylesheet library="css" name="tickets.css"/>
+        <h:outputScript library="js" name="ticket.js"/>
         <f:metadata>
             <f:viewParam name="uuid" value="#{detailedTicketBean.uuid}"/>
             <f:event type="preRenderView" listener="#{detailedTicketBean.preInitData}"/>
@@ -85,38 +86,101 @@
                     <user:minifiedUserView user="#{detailedTicketBean.selectedTicketDTO.user}"/>
                 </p:panelGrid>
                 <div>
-                    <p:dataList var="message" value="#{detailedTicketBean.ticketMessages}">
+                    <p:accordionPanel widgetVar="CommentAccordionWidget" style="width: 100%; padding: 0.5em 0;"
+                                      activeIndex="-1">
+                        <p:tab title="Start Commenting">
+                            <p:tabView id="messageTabView">
+                                <p:ajax event="tabChange" process="newMessageContent" update="renderedPreview"/>
+                                <p:tab title="Write">
+                                    <div style="overflow: auto">
+                                        <p:inputTextarea id="newMessageContent" widgetVar="messageContentWidget"
+                                                         value="#{detailedTicketBean.messageContent}"
+                                                         counter="display" maxlength="1000"
+                                                         counterTemplate="{0} characters remaining."
+                                                         rows="5" style="width: 100%"/>
+                                        <h:outputText id="display"/>
+                                        <div style="overflow: auto; padding-top: 0.5em">
+                                            <p:commandButton value="Hide coment window" style="float: left"
+                                                             onclick="PF('CommentAccordionWidget').unselect(0);"/>
+                                            <p:commandButton value="Comment" style="float: right"
+                                                             actionListener="#{detailedTicketBean.addMessageToTicket}"
+                                                             update="@form:ticketMessages newMessageContent"
+                                                             process="@this newMessageContent"
+                                                             onsuccess="PF('CommentAccordionWidget').unselect(0);"/>
+                                            <p:commandButton value="Clear" style="float: right; margin-right: 1em"
+                                                             onclick="PF('messageContentWidget').clear();"/>
+                                        </div>
+                                    </div>
+                                </p:tab>
+                                <p:tab title="Preview">
+                                    <div>
+                                        <h:outputText id="renderedPreview"
+                                                      value="#{detailedTicketBean.messageContent}"/>
+                                        <div style="overflow: auto; padding-top: 0.5em">
+                                            <p:commandButton value="Hide coment window" style="float: left"
+                                                             onclick="PF('CommentAccordionWidget').unselect(0);"/>
+                                            <p:commandButton value="Comment" style="float: right"
+                                                             actionListener="#{detailedTicketBean.addMessageToTicket}"
+                                                             update="@form:ticketMessages"
+                                                             process="@this newMessageContent"/>
+                                        </div>
+                                    </div>
+                                </p:tab>
+                            </p:tabView>
+                        </p:tab>
+                    </p:accordionPanel>
+                    <p:dataList id="ticketMessages" var="message" value="#{detailedTicketBean.ticketMessages}"
+                                emptyMessage="Discussion not started yet." styleClass="ticketMessages">
+                        <f:facet name="header">
+                            Messages
+                        </f:facet>
                         <p:panel header="#{message.uuid}">
-                            <h:panelGrid columns="2">
-                                <h:panelGroup layout="block">
+                            <f:facet name="actions">
+                                <!--todo: rendered rules for spring security integration-->
+                                <p:commandLink
+                                        styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
+                                        rendered="#{true}" process="@this" update="@form:ticketMessages"
+                                        action="#{detailedTicketBean.deleteMessage}">
+                                    <f:setPropertyActionListener value="#{message}"
+                                                                 target="#{detailedTicketBean.selectedMessage}"/>
+                                    <h:outputText styleClass="ui-icon pi pi-trash"/>
+                                </p:commandLink>
+                                <h:commandLink
+                                        styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
+                                        rendered="#{true}">
+                                    <h:outputText styleClass="ui-icon pi pi-pencil"/>
+                                </h:commandLink>
+                            </f:facet>
+                            <h:panelGrid columns="2" columnClasses="messageInfo,messageContent"
+                                         styleClass="messageTable">
+                                <h:panelGroup layout="block" style="width: 100%; padding: 0.5em"
+                                              styleClass="messageArea">
                                     <user:minifiedUserView user="#{message.creator}"/>
+                                    <div class="createDate">
+                                        <p:outputLabel value="#{message.createDate}">
+                                            <f:convertDateTime type="both" pattern="dd-MM-yyyy HH:mm"/>
+                                        </p:outputLabel>
+                                    </div>
                                 </h:panelGroup>
-                                <h:panelGroup layout="block">
-                                    <h:outputText value="#{message.content}"/>
-                                    <user:minifiedUserView user="#{message.editor}"
-                                                           rendered="#{message.editor ne null}"/>
+                                <h:panelGroup layout="block" style="width: 100%; padding: 0.5em"
+                                              styleClass="messageArea messageContentArea">
+                                    <div>
+                                        <h:outputText value="#{message.content}"/>
+                                    </div>
+                                    <h:panelGroup class="messageEditorWrapper" layout="block"
+                                                  rendered="#{message.editor ne null}">
+                                        <p:outputLabel value="Edited by:"/>
+                                        <p:outputLabel
+                                                value="#{message.editor.firstName} #{message.editor.lastName}"/>
+                                        <p:outputLabel value="#{message.editDate}">
+                                            <f:convertDateTime type="both" pattern="dd-MM-yyyy HH:mm"/>
+                                        </p:outputLabel>
+                                    </h:panelGroup>
                                 </h:panelGroup>
                             </h:panelGrid>
                         </p:panel>
                     </p:dataList>
-
-                    <p:tabView id="messageTabView">
-                        <p:tab title="Write">
-                            <div>
-                                <p:textEditor secure="false" height="200"/>
-                                <p:commandButton value="Comment"/>
-                            </div>
-                        </p:tab>
-                        <p:tab title="Preview">
-                            <div>
-                                <p:textEditor secure="false" readonly="true"/>
-                                <p:commandButton value="Comment"/>
-                            </div>
-                        </p:tab>
-                    </p:tabView>
-
                 </div>
-
             </p:panel>
         </h:form>
     </ui:define>

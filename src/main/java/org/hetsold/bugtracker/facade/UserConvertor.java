@@ -17,7 +17,7 @@ public class UserConvertor {
         return user;
     }
 
-    public static UserDTO geUserDTO(User user) {
+    public static UserDTO getUserDTO(User user) {
         return new UserDTO(user);
     }
 }

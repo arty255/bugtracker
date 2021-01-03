@@ -25,6 +25,8 @@ public interface TicketService {
 
     void applyForIssue(Ticket ticket);
 
+    void addTicketMessage(TicketDTO ticketDTO, MessageDTO messageDTO, UserDTO userDTO);
+
     void addTicketMessage(Ticket ticket, Message message, User user);
 
     List<MessageDTO> getTicketMessages(TicketDTO ticket, int fromIndex, int size);

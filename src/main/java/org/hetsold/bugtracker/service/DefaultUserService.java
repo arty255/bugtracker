@@ -46,7 +46,7 @@ public class DefaultUserService implements UserService {
         if (uuid.isEmpty()) {
             throw new IllegalArgumentException("incorrect user");
         }
-        return UserConvertor.geUserDTO(getUserById(new User(uuid)));
+        return UserConvertor.getUserDTO(getUserById(new User(uuid)));
     }
 
     @Override
