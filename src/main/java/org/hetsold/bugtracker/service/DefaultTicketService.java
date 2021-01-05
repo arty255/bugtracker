@@ -139,4 +139,18 @@ public class DefaultTicketService implements TicketService {
         }
         return ticket.getMessageList().subList(fromIndex, limitIndex).stream().map(MessageDTO::new).collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void updateTicket(TicketDTO ticketDTO, UserDTO user) {
+        Ticket ticket;
+        if (ticketDTO == null || (ticket = ticketDao.getTicketById(ticketDTO.getUuid())) == null) {
+            throw new IllegalArgumentException("ticket can not be empty");
+        }
+        ticket.setVerificationState(ticketDTO.getVerificationState());
+        ticket.setDescription(ticketDTO.getDescription());
+        ticket.setProductVersion(ticketDTO.getProductVersion());
+        ticket.setReproduceSteps(ticketDTO.getReproduceSteps());
+        ticket.setResolveState(ticketDTO.getResolveState());
+    }
 }
