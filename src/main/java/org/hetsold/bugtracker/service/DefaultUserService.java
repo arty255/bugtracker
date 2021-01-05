@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 @Transactional
@@ -53,5 +56,20 @@ public class DefaultUserService implements UserService {
     @Override
     public void delete(User user) {
         userDAO.delete(user);
+    }
+
+    @Override
+    public List<UserDTO> getAllUsers() {
+        return userDAO.listAll().stream().map(UserDTO::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserDTO> getUsers(int first, int count) {
+        return userDAO.getUsers(first, count).stream().map(UserConvertor::getUserDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public long getUserCount() {
+        return userDAO.getUsersCount();
     }
 }

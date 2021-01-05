@@ -1,6 +1,7 @@
 package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.model.User;
+import org.hetsold.bugtracker.model.UserDTO;
 
 import java.util.List;
 
@@ -14,4 +15,6 @@ public interface UserDAO {
     User getUserById(String uuid);
 
     long getUsersCount();
+
+    List<User> getUsers(int first, int count);
 }

@@ -3,6 +3,8 @@ package org.hetsold.bugtracker.service;
 import org.hetsold.bugtracker.model.User;
 import org.hetsold.bugtracker.model.UserDTO;
 
+import java.util.List;
+
 public interface UserService {
     void save(User user);
 
@@ -11,4 +13,10 @@ public interface UserService {
     UserDTO getUserById(String id);
 
     void delete(User user);
+
+    List<UserDTO> getAllUsers();
+
+    List<UserDTO> getUsers(int first, int count);
+
+    long getUserCount();
 }
