@@ -5,10 +5,9 @@ import org.hetsold.bugtracker.model.IssueDTO;
 import org.hetsold.bugtracker.model.IssueShortDTO;
 import org.springframework.stereotype.Component;
 
-@Component
 public class IssueConverter {
 
-    public Issue getIssue(IssueDTO issueDTO) {
+    public static Issue getIssue(IssueDTO issueDTO) {
         Issue issue = null;
         if (issueDTO != null) {
             issue = new Issue.Builder()
@@ -27,7 +26,7 @@ public class IssueConverter {
         return issue;
     }
 
-    public Issue getIssue(IssueShortDTO issueShortDTO) {
+    public static Issue getIssue(IssueShortDTO issueShortDTO) {
         Issue issue = null;
         if (issueShortDTO != null) {
             issue = new Issue.Builder()
@@ -42,11 +41,11 @@ public class IssueConverter {
         return issue;
     }
 
-    public IssueDTO getIssueDTO(Issue issue) {
+    public static IssueDTO getIssueDTO(Issue issue) {
         return new IssueDTO(issue);
     }
 
-    public IssueShortDTO getIssueShortDTO(Issue issue) {
+    public static IssueShortDTO getIssueShortDTO(Issue issue) {
         return new IssueShortDTO(issue);
     }
 }

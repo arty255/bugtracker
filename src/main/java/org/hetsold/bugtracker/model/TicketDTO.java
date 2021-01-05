@@ -12,6 +12,7 @@ public class TicketDTO {
     private TicketVerificationState verificationState;
     private TicketResolveState resolveState;
     private UserDTO user;
+    private String issueID;
 
     public TicketDTO(Ticket ticket) {
         this.uuid = ticket.getUuid();
@@ -22,6 +23,9 @@ public class TicketDTO {
         this.verificationState = ticket.getVerificationState();
         this.resolveState = ticket.getResolveState();
         this.user = new UserDTO(ticket.getCreatedBy());
+        if (ticket.getIssue() != null) {
+            this.issueID = ticket.getIssue().getUuid();
+        }
     }
 
     public TicketDTO(String uuid) {
@@ -90,6 +94,14 @@ public class TicketDTO {
 
     public void setUser(UserDTO user) {
         this.user = user;
+    }
+
+    public String getIssueID() {
+        return issueID;
+    }
+
+    public void setIssueID(String issueID) {
+        this.issueID = issueID;
     }
 
     @Override
