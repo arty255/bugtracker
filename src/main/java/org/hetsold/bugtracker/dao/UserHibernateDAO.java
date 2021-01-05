@@ -54,4 +54,15 @@ public class UserHibernateDAO implements UserDAO {
         }
         return 0;
     }
+
+    @Override
+    public List<User> getUsers(int first, int count) {
+        return hibernateTemplate.execute(session -> {
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<User> query = builder.createQuery(User.class);
+            Root<User> root = query.from(User.class);
+            query.select(root);
+            return session.createQuery(query).setFirstResult(first).setMaxResults(count).getResultList();
+        });
+    }
 }

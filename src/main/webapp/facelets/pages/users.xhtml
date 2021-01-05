@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/html"
+      xml:lang="en" lang="en">
+<ui:composition template="../templates/simpleTemplate.xhtml">
+    <ui:define name="title">
+        Users
+    </ui:define>
+    <ui:define name="content">
+        <f:form>
+            <p:dataTable var="user" value="#{userListBean.usersLazyDataModel}" lazy="true"
+                         paginator="true" rowsPerPageTemplate="10,25,50" rows="10"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                         selectionMode="single" selection="#{userListBean.selectedUserDTO}">
+                <p:column headerText="#ID">
+                    <h:outputText value="#{user.uuid}"/>
+                </p:column>
+                <p:column headerText="First name">
+                    <h:outputText value="#{user.firstName}"/>
+                </p:column>
+                <p:column headerText="Last name">
+                    <h:outputText value="#{user.lastName}"/>
+                </p:column>
+            </p:dataTable>
+        </f:form>
+    </ui:define>
+</ui:composition>
+</html>
