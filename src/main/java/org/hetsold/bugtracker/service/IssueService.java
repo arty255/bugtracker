@@ -30,7 +30,9 @@ public interface IssueService {
 
     void createNewIssue(Issue issue, User user);
 
-    void createIssueFromTicket(Ticket ticket, User user);
+    Issue createIssueFromTicket(Ticket ticket, User user);
+
+    IssueShortDTO createIssueFromTicket(TicketDTO selectedTicketDTO, UserDTO user);
 
     void updateIssueState(Issue issue, User user);
 }

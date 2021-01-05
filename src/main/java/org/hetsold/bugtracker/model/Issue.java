@@ -62,8 +62,8 @@ public class Issue extends AbstractIdentity {
     private User reportedBy;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "issue_assigned",
-            joinColumns = @JoinColumn(name = "issueId"),
-            inverseJoinColumns = @JoinColumn(name = "userId"))
+            joinColumns = @JoinColumn(name = "issueId", referencedColumnName = "uuid"),
+            inverseJoinColumns = @JoinColumn(name = "userId", referencedColumnName = "uuid"))
     private User assignedTo;
     private Severity severity;
     private String fixVersion;

@@ -40,7 +40,8 @@
                         </p:inplace>
                         <p:commandButton value="Create issue" icon="pi pi-tags"
                                          style="float: right; margin-right: 0.5em"
-                                         actionListener="#{detailedTicketBean.createIssueFromTicket}"/>
+                                         actionListener="#{detailedTicketBean.createIssueFromTicket}"
+                                         onsuccess="PF('issueCreatedDialog').show();"/>
                     </h:panelGroup>
 
                     <h:outputText value="Description:"/>
@@ -210,6 +211,16 @@
                     </p:dataList>
                 </div>
             </p:panel>
+            <p:dialog widgetVar="issueCreatedDialog" dynamic="true" onHide="">
+                <p:ajax event="close" update="@this" process="@this"
+                        listener="#{detailedTicketBean.onCloseCreatedIssueDialog}"/>
+                <p:panel header="New Issue created" rendered="#{not empty detailedTicketBean.createdIssue}">
+                    <h:outputText value="Issue with ID: #{detailedTicketBean.createdIssue.uuid} was created"/>
+                </p:panel>
+                <p:panel header="O-U-C-H!!!" rendered="#{empty detailedTicketBean.createdIssue}">
+                    <h:outputText value="No issue created"/>
+                </p:panel>
+            </p:dialog>
         </h:form>
     </ui:define>
 </ui:composition>

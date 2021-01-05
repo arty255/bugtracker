@@ -26,6 +26,8 @@ public class Ticket extends AbstractIdentity {
             inverseJoinColumns = @JoinColumn(name = "messageId", referencedColumnName = "uuid"))
     @OrderBy("createDate desc")
     private List<Message> messageList;
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "ticket")
+    private Issue issue;
 
     {
         messageList = new ArrayList<>();
@@ -104,5 +106,13 @@ public class Ticket extends AbstractIdentity {
 
     public void setMessageList(List<Message> messageList) {
         this.messageList = messageList;
+    }
+
+    public Issue getIssue() {
+        return issue;
+    }
+
+    public void setIssue(Issue issue) {
+        this.issue = issue;
     }
 }

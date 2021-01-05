@@ -1,8 +1,10 @@
 package org.hetsold.bugtracker.view;
 
+import org.hetsold.bugtracker.model.IssueShortDTO;
 import org.hetsold.bugtracker.model.MessageDTO;
 import org.hetsold.bugtracker.model.TicketDTO;
 import org.hetsold.bugtracker.model.UserDTO;
+import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.MessageService;
 import org.hetsold.bugtracker.service.TicketService;
 import org.hetsold.bugtracker.service.UserService;
@@ -26,6 +28,7 @@ public class DetailedTicketBean implements Serializable {
     private TicketDTO selectedTicketDTO;
     private List<MessageDTO> ticketMessages;
     private MessageDTO selectedMessage;
+    private IssueShortDTO createdIssue;
 
     @Autowired
     private TicketService ticketService;
@@ -33,6 +36,8 @@ public class DetailedTicketBean implements Serializable {
     private UserService userService;
     @Autowired
     private MessageService messageService;
+    @Autowired
+    private IssueService issueService;
 
     @PostConstruct
     public void init() {
@@ -63,7 +68,13 @@ public class DetailedTicketBean implements Serializable {
     }
 
     public void createIssueFromTicket() {
-
+        /*todo: getUser FromSecurityContext*/
+        UserDTO user = userService.getUserById("19f0a834-4324-419a-8828-50494c2353e4");
+        try {
+            createdIssue = issueService.createIssueFromTicket(selectedTicketDTO, user);
+        } catch (IllegalArgumentException e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No issue created", "Probably issue already exists"));
+        }
     }
 
     public void updateTicket() {
@@ -108,5 +119,13 @@ public class DetailedTicketBean implements Serializable {
 
     public void setSelectedMessage(MessageDTO selectedMessage) {
         this.selectedMessage = selectedMessage;
+    }
+
+    public IssueShortDTO getCreatedIssue() {
+        return createdIssue;
+    }
+
+    public void onCloseCreatedIssueDialog() {
+        createdIssue = null;
     }
 }
