@@ -179,3 +179,25 @@ body .ui-accordion .ui-accordion-header.ui-state-active:hover, body .ui-accordio
 .editMarker a {
     font-style: normal;
 }
+
+.saveControls {
+    overflow: auto;
+    padding: 0.5em 0;
+    display: flex;
+    align-items: stretch;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.saveControls .ui-messages {
+    margin: 0 !important;
+}
+
+.saveControls .ui-messages-warn{
+    padding: 0.5em 0.2em;
+}
+
+.saveControls button{
+    padding-left: 1em;
+    padding-right: 1em;
+}

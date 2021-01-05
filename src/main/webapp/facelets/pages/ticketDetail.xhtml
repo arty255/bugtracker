@@ -31,7 +31,8 @@
                                 <view:stateView state="#{detailedTicketBean.selectedTicketDTO.resolveState}"/>
                             </f:facet>
                             <f:facet name="input">
-                                <p:selectOneMenu value="#{detailedTicketBean.selectedTicketDTO.resolveState}">
+                                <p:selectOneMenu value="#{detailedTicketBean.selectedTicketDTO.resolveState}"
+                                                 valueChangeListener="#{detailedTicketBean.tickedChangedListener}">
                                     <f:selectItems var="item" value="#{appUtilBean.ticketResolveStates}"
                                                    itemLabel="#{item.label}" itemValue="#{item}"/>
                                 </p:selectOneMenu>
@@ -49,6 +50,7 @@
                         </f:facet>
                         <f:facet name="input">
                             <p:editor value="#{detailedTicketBean.selectedTicketDTO.description}"
+                                      valueChangeListener="#{detailedTicketBean.tickedChangedListener}"
                                       style="width: 100%"/>
                         </f:facet>
                     </p:inplace>
@@ -60,6 +62,7 @@
                         </f:facet>
                         <f:facet name="input">
                             <p:inputTextarea value="#{detailedTicketBean.selectedTicketDTO.reproduceSteps}"
+                                             valueChangeListener="#{detailedTicketBean.tickedChangedListener}"
                                              style="width: 100%"/>
                         </f:facet>
                     </p:inplace>
@@ -70,7 +73,8 @@
                             <h:outputText value="#{detailedTicketBean.selectedTicketDTO.verificationState}"/>
                         </f:facet>
                         <f:facet name="input">
-                            <p:selectOneMenu value="#{detailedTicketBean.selectedTicketDTO.verificationState}">
+                            <p:selectOneMenu value="#{detailedTicketBean.selectedTicketDTO.verificationState}"
+                                             valueChangeListener="#{detailedTicketBean.tickedChangedListener}">
                                 <f:selectItems var="item" value="#{appUtilBean.ticketVerificationStates}"
                                                itemLabel="#{item.label}" itemValue="#{item}"/>
                             </p:selectOneMenu>
@@ -85,6 +89,14 @@
                     <h:outputText value="Reported by:"/>
                     <user:minifiedUserView user="#{detailedTicketBean.selectedTicketDTO.user}"/>
                 </p:panelGrid>
+                <div class="saveControls">
+                    <div style="flex-basis: 100%; padding-right: 1em;">
+                        <p:messages id="messages" showDetail="true" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                    <p:commandButton value="Save" actionListener="#{detailedTicketBean.updateTicket}"/>
+                </div>
                 <div>
                     <p:accordionPanel widgetVar="CommentAccordionWidget" style="width: 100%; padding: 0.5em 0;"
                                       activeIndex="-1">
