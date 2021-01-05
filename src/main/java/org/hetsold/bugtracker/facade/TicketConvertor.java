@@ -2,7 +2,6 @@ package org.hetsold.bugtracker.facade;
 
 import org.hetsold.bugtracker.model.Ticket;
 import org.hetsold.bugtracker.model.TicketDTO;
-import org.springframework.stereotype.Component;
 
 public class TicketConvertor {
 

@@ -30,4 +30,6 @@ public interface TicketService {
     void addTicketMessage(Ticket ticket, Message message, User user);
 
     List<MessageDTO> getTicketMessages(TicketDTO ticket, int fromIndex, int size);
+
+    void updateTicket(TicketDTO ticketDTO, UserDTO user);
 }

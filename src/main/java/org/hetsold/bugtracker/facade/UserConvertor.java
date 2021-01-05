@@ -2,7 +2,6 @@ package org.hetsold.bugtracker.facade;
 
 import org.hetsold.bugtracker.model.User;
 import org.hetsold.bugtracker.model.UserDTO;
-import org.springframework.stereotype.Component;
 
 public class UserConvertor {
 
