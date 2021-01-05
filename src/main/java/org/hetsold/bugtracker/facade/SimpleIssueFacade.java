@@ -13,13 +13,11 @@ import java.util.stream.Collectors;
 public class SimpleIssueFacade implements IssueFacade {
     private IssueService issueService;
     private TicketService ticketService;
-    private IssueConverter issueConverter;
 
     @Autowired
-    public SimpleIssueFacade(IssueService issueService, TicketService ticketService, IssueConverter issueConverter) {
+    public SimpleIssueFacade(IssueService issueService, TicketService ticketService) {
         this.issueService = issueService;
         this.ticketService = ticketService;
-        this.issueConverter = issueConverter;
     }
 
     public SimpleIssueFacade() {
@@ -32,12 +30,12 @@ public class SimpleIssueFacade implements IssueFacade {
 
     @Override
     public IssueShortDTO getIssue(String issueUUID) {
-        return issueConverter.getIssueShortDTO(issueService.getIssueById(issueUUID));
+        return IssueConverter.getIssueShortDTO(issueService.getIssueById(issueUUID));
     }
 
     @Override
     public void createIssue(IssueDTO issueDTO, UserDTO userDTO) {
-        Issue issue = issueConverter.getIssue(issueDTO);
+        Issue issue = IssueConverter.getIssue(issueDTO);
         issueService.createNewIssue(issue, UserConvertor.getUser(userDTO));
     }
 
@@ -48,17 +46,20 @@ public class SimpleIssueFacade implements IssueFacade {
 
     @Override
     public void updateIssue(IssueShortDTO issueShortDTO, UserDTO userDTO) {
-        issueService.updateIssueState(issueConverter.getIssue(issueShortDTO), UserConvertor.getUser(userDTO));
+        issueService.updateIssueState(IssueConverter.getIssue(issueShortDTO), UserConvertor.getUser(userDTO));
     }
 
     @Override
-    public List<IssueShortDTO> getIssueList(IssueShortDTO issueShortDTO) {
-        return issueService.findIssueByFilter(issueConverter.getIssue(issueShortDTO)).stream().map(issueConverter::getIssueShortDTO).collect(Collectors.toList());
+    public List<IssueShortDTO> getIssue(IssueShortDTO issueShortDTO) {
+        return issueService.findIssueByFilter(IssueConverter.getIssue(issueShortDTO))
+                .stream()
+                .map(IssueConverter::getIssueShortDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public void deleteIssue(String issueUUID, boolean includeTicket) {
-        Issue issue = issueConverter.getIssue(new IssueShortDTO(issueUUID));
+        Issue issue = IssueConverter.getIssue(new IssueShortDTO(issueUUID));
         issueService.deleteIssue(issue);
         if (includeTicket) {
             ticketService.delete(issue.getTicket());

@@ -3,11 +3,15 @@ package org.hetsold.bugtracker.service;
 import org.hetsold.bugtracker.dao.HistoryEventDAO;
 import org.hetsold.bugtracker.dao.IssueDAO;
 import org.hetsold.bugtracker.dao.UserDAO;
+import org.hetsold.bugtracker.facade.IssueConverter;
+import org.hetsold.bugtracker.facade.TicketConvertor;
+import org.hetsold.bugtracker.facade.UserConvertor;
 import org.hetsold.bugtracker.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -67,6 +71,7 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public Issue getIssueById(String uuid) {
         if (uuid == null || uuid.isEmpty()) {
             throw new IllegalArgumentException("uuid argument can not be empty");
@@ -83,6 +88,7 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<Issue> findIssueByFilter(Issue issue) {
         if (issue == null) {
             throw new IllegalArgumentException("issue can not be empty");
@@ -91,11 +97,13 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<Issue> getIssueList() {
         return issueDAO.listAll();
     }
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public Issue getIssueForViewById(String uuid) {
         return issueDAO.getIssueToDetailedViewById(uuid);
     }
@@ -173,17 +181,35 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
-    public void createIssueFromTicket(Ticket ticket, User user) {
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Issue createIssueFromTicket(Ticket ticket, User user) {
         if (ticket == null || (ticket = ticketService.getTicketById(ticket.getUuid())) == null) {
             throw new IllegalArgumentException("ticket argument can not be null");
         }
         if (user == null) {
             throw new IllegalArgumentException("user argument can not be null or not persisted");
         }
+        if (ticket.getIssue() != null) {
+            throw new IllegalArgumentException("issue for this ticket is already created");
+        }
         Issue issue = buildIssueFromTicket(ticket);
         createNewIssue(issue, user);
         issue.setTicket(ticket);
         ticketService.applyForIssue(ticket);
+        return issue;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public IssueShortDTO createIssueFromTicket(TicketDTO ticketDTO, UserDTO userDTO) {
+        if (ticketDTO == null) {
+            throw new IllegalArgumentException("ticket argument can not be null");
+        }
+        if (userDTO == null) {
+            throw new IllegalArgumentException("user argument can not be null or not persisted");
+        }
+        Issue issue = createIssueFromTicket(TicketConvertor.getTicket(ticketDTO), UserConvertor.getUser(userDTO));
+        return IssueConverter.getIssueShortDTO(issue);
     }
 
     private Issue buildIssueFromTicket(Ticket ticket) {
