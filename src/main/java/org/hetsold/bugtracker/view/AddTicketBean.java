@@ -1,6 +1,5 @@
 package org.hetsold.bugtracker.view;
 
-import org.hetsold.bugtracker.facade.TicketConvertor;
 import org.hetsold.bugtracker.model.TicketDTO;
 import org.hetsold.bugtracker.model.TicketResolveState;
 import org.hetsold.bugtracker.model.TicketVerificationState;
