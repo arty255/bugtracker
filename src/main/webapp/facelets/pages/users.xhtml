@@ -5,19 +5,28 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/html"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
       xml:lang="en" lang="en">
 <ui:composition template="../templates/simpleTemplate.xhtml">
     <ui:define name="title">
         Users
     </ui:define>
+    <ui:define name="headArea">
+        <h:outputStylesheet library="css" name="users.css"/>
+    </ui:define>
     <ui:define name="content">
-        <f:form>
-            <p:dataTable var="user" value="#{userListBean.usersLazyDataModel}" lazy="true"
+        <h:form id="usersForm">
+            <p:dataTable id="userDataTable"
+                         var="user" value="#{userListBean.usersLazyDataModel}" lazy="true"
                          paginator="true" rowsPerPageTemplate="10,25,50" rows="10"
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                          selectionMode="single" selection="#{userListBean.selectedUserDTO}">
+                <f:facet name="header">
+                    <p:commandButton value="Add user" icon="pi pi-user-plus"
+                                     onclick="PF('addUserDialog').show();"/>
+                </f:facet>
                 <p:column headerText="#ID">
                     <h:outputText value="#{user.uuid}"/>
                 </p:column>
@@ -28,7 +37,49 @@
                     <h:outputText value="#{user.lastName}"/>
                 </p:column>
             </p:dataTable>
-        </f:form>
+        </h:form>
+
+        <h:form id="dialogForm">
+            <p:dialog widgetVar="addUserDialog" header="Add new User">
+                <p:ajax event="close" update="@this" process="@this"
+                        listener="#{addUserBean.initNewUser}"/>
+                <p:panel id="userPanel" header="New user data">
+                    <p:messages showDetail="true" closable="false" severity="error"/>
+                    <h:panelGrid columns="1" style="width: 100%">
+                        <p:outputLabel value="User first name:"/>
+                        <p:inputText value="#{addUserBean.user.firstName}" style="width: 100%"/>
+
+                        <p:outputLabel value="User last name:"/>
+                        <p:inputText value="#{addUserBean.user.lastName}" style="width: 100%"/>
+
+                        <!--todo: user privilegies-->
+                        <p:outputLabel value="Privileges"/>
+                        <p:selectOneMenu style="width: 100%">
+                            <f:selectItem itemLabel="Simply"/>
+                            <f:selectItem itemLabel="Redactor"/>
+                            <f:selectItem itemLabel="Admin"/>
+                        </p:selectOneMenu>
+
+                        <h:panelGroup layout="block">
+                            <div style="overflow: auto; width: 100%; margin-top: 1em">
+                                <p:commandButton value="Save" actionListener="#{addUserBean.registerUser}"
+                                                 style="float: right;"
+                                                 update=":usersForm:userDataTable dialogForm"
+                                                 process="@form"
+                                                 onsuccess="PF('addUserDialog').hide()"/>
+                                <p:commandButton value="Cancel" actionListener="#{addUserBean.initNewUser}"
+                                                 style="float: right; margin-right: 0.5em"
+                                                 update="userPanel" onclick="PF('addUserDialog').hide()"/>
+                                <p:commandButton value="Clear" style="float: left; margin-right: 1em;"
+                                                 actionListener="#{addUserBean.initNewUser}"
+                                                 update="userPanel"/>
+                            </div>
+                        </h:panelGroup>
+                    </h:panelGrid>
+                </p:panel>
+            </p:dialog>
+        </h:form>
+
     </ui:define>
 </ui:composition>
 </html>

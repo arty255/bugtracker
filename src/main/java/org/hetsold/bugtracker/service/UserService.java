@@ -6,7 +6,9 @@ import org.hetsold.bugtracker.model.UserDTO;
 import java.util.List;
 
 public interface UserService {
-    void save(User user);
+    User save(User user);
+
+    UserDTO registerUser(UserDTO userDTO);
 
     User getUserById(User user);
 

@@ -28,6 +28,10 @@ public class UserListBean implements Serializable {
     public void init() {
         FacesContextUtils.getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
+        updateDataModel();
+    }
+
+    public void updateDataModel() {
         usersLazyDataModel = new UsersLazyDataModel(userService);
     }
 
