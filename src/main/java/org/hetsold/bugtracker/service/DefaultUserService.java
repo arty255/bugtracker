@@ -65,8 +65,19 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void delete(User user) {
+        user = getUserById(user);
         userDAO.delete(user);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void delete(UserDTO userDTO) {
+        if (userDTO == null || userDTO.getUuid().isEmpty()) {
+            throw new IllegalArgumentException("incorrect user: user id cannot be null");
+        }
+        delete(UserConvertor.getUser(userDTO));
     }
 
     @Override
