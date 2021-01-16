@@ -35,6 +35,10 @@ public class UserListBean implements Serializable {
         usersLazyDataModel = new UsersLazyDataModel(userService);
     }
 
+    public void deleteUser(){
+        userService.delete(selectedUserDTO);
+    }
+
     public LazyDataModel<UserDTO> getUsersLazyDataModel() {
         return usersLazyDataModel;
     }

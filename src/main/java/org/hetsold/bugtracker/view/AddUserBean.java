@@ -11,10 +11,11 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import java.io.Serializable;
 
 @ManagedBean
 @ViewScoped
-public class AddUserBean {
+public class AddUserBean implements Serializable {
     private UserDTO user;
     @ManagedProperty("#{userListBean}")
     private UserListBean userListBean;

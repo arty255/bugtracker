@@ -36,6 +36,15 @@
                 <p:column headerText="Last name">
                     <h:outputText value="#{user.lastName}"/>
                 </p:column>
+                <!--todo: change with spring security integration-->
+                <p:column rendered="#{true}">
+                    <p:commandButton icon="pi pi-trash"
+                                     process="@this"
+                                     update=":usersForm:userDataTable"
+                                     action="#{userListBean.deleteUser}">
+                        <f:setPropertyActionListener value="#{user}" target="#{userListBean.selectedUserDTO}"/>
+                    </p:commandButton>
+                </p:column>
             </p:dataTable>
         </h:form>
 

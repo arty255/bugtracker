@@ -16,6 +16,8 @@ public interface UserService {
 
     void delete(User user);
 
+    void delete(UserDTO userDTO);
+
     List<UserDTO> getAllUsers();
 
     List<UserDTO> getUsers(int first, int count);
