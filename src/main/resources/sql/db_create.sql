@@ -35,7 +35,8 @@ create table if not exists ticket
     voteCount         int,
     verificationState tinyint,
     resolveState      tinyint,
-    primary key (uuid)
+    primary key (uuid),
+    foreign key (createdBy) references user (uuid) on delete cascade
 );
 
 drop table if exists ticket_message;
