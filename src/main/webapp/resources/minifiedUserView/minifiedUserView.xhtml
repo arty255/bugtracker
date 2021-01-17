@@ -18,7 +18,7 @@
             <p:graphicImage library="images" name="no_image.jpg" rendered="#{true}"/>
         </div>
         <div class="userIdRecord">
-            <p:link rel="#" includeViewParams="true">
+            <p:link outcome="userProfile" includeViewParams="true">
                 <h:outputText value="#{cc.attrs.user.firstName}" styleClass="child"/>
                 <h:outputText value="#{cc.attrs.user.lastName}"/>
                 <f:param name="user" value="#{cc.attrs.user.uuid}"/>

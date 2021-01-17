@@ -1,0 +1,63 @@
+.tabView > ul {
+    display: flex !important;
+}
+
+.imageWrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.imageWrapper img {
+    margin: 0 auto;
+}
+
+.profileWrapper {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    align-content: stretch;
+    height: 100%;
+}
+
+.profileInfoWrapper {
+    flex: 1 1 auto;
+}
+
+.profileControlsWrapper {
+    flex: 0 1;
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.profileGrid {
+    width: 100%;
+}
+
+.profileGrid td {
+    border: none !important;
+}
+
+
+.profileGrid td:nth-child(1) {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.profileGrid td:nth-child(2) input {
+    width: 100%;
+}
+
+.profileGrid td:nth-child(2) textarea {
+    width: 100%;
+}
+
+.updateButton {
+    margin-top: 0.5em !important;
+    width: 100%;
+}
+
+.messageTitle {
+    margin-right: auto;
+}

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en" lang="en">
+
+<f:metadata>
+    <f:viewParam name="user" value="#{userProfileBean.uuid}" required="true"/>
+    <f:event type="preRenderView" listener="#{userProfileBean.initUserData}"/>
+</f:metadata>
+<ui:composition template="../templates/simpleTemplate.xhtml">
+    <ui:define name="title">
+        <h:outputText value="Profile"/>
+    </ui:define>
+    <ui:define name="headArea">
+        <h:outputStylesheet library="css" name="profile.ccs"/>
+    </ui:define>
+    <ui:define name="content">
+        <h:form>
+            <p:panel>
+                <div style="display: flex; flex-direction: row;">
+                    <div class="imageWrapper">
+                        <p:graphicImage library="images" name="no_image.jpg" rendered="#{true}"/>
+                        <!--todo: upadate with spring security-->
+                        <p:commandButton value="update" icon="pi pi-pencil" rendered="#{true}"
+                                         styleClass="updateButton"/>
+                    </div>
+                    <div style="width: 100%; padding-left: 0.5em;">
+                        <div class="profileWrapper">
+                            <div class="profileInfoWrapper">
+                                <p:panelGrid columns="2" styleClass="profileGrid">
+                                    <p:outputLabel value="First name:"/>
+                                    <p:inplace>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{userProfileBean.user.firstName}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText value="#{userProfileBean.user.lastName}"/>
+                                        </f:facet>
+                                    </p:inplace>
+
+                                    <p:outputLabel value="Last name:"/>
+                                    <p:inplace>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{userProfileBean.user.lastName}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText value="#{userProfileBean.user.lastName}"/>
+                                        </f:facet>
+                                    </p:inplace>
+
+                                    <p:outputLabel value="About:"/>
+                                    <p:inplace>
+                                        <f:facet name="output">
+                                            <h:outputText value="empty"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputTextarea/>
+                                        </f:facet>
+                                    </p:inplace>
+                                </p:panelGrid>
+                            </div>
+                            <!--todo: upadate with spring security-->
+                            <h:panelGroup id="profileControls" layout="block" styleClass="profileControlsWrapper"
+                                          rendered="#{true}">
+                                <p:commandButton value="Cancel" icon="pi pi-times-circle"
+                                                 update="@form"/>
+                                <p:commandButton value="Save" icon="pi pi-save"
+                                                 action="#{userProfileBean.save}"/>
+                            </h:panelGroup>
+                        </div>
+                    </div>
+                </div>
+                <div style="padding: 0.5em 0;">
+                    <p:tabView styleClass="tabView">
+                        <!--todo: upadate with spring security-->
+                        <p:tab title="Reported by me" rendered="#{true}">
+
+                        </p:tab>
+                        <!--todo: upadate with spring security-->
+                        <p:tab title="Assigned to me" rendered="#{true}">
+
+                        </p:tab>
+                        <p:tab title="My messasges" titleStyle="margin-left: auto; margin-right: 0;">
+
+                        </p:tab>
+                    </p:tabView>
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

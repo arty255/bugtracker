@@ -48,7 +48,7 @@ public class DetailedTicketBean implements Serializable {
         initMessage();
     }
 
-    public void preInitData() {
+    public void initData() {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             selectedTicketDTO = ticketService.getTicketDTO(uuid);
             initMessageList();
@@ -69,7 +69,7 @@ public class DetailedTicketBean implements Serializable {
 
     public void createIssueFromTicket() {
         /*todo: getUser FromSecurityContext*/
-        UserDTO user = userService.getUserDTOById("19f0a834-4324-419a-8828-50494c2353e4");
+        UserDTO user = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
         try {
             createdIssue = issueService.createIssueFromTicket(selectedTicketDTO, user);
         } catch (IllegalArgumentException e) {
@@ -79,7 +79,7 @@ public class DetailedTicketBean implements Serializable {
 
     public void updateTicket() {
         /*todo: getUser FromSecurityContext*/
-        UserDTO user = userService.getUserDTOById("19f0a834-4324-419a-8828-50494c2353e4");
+        UserDTO user = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
         ticketService.updateTicket(selectedTicketDTO, user);
     }
 
@@ -89,7 +89,7 @@ public class DetailedTicketBean implements Serializable {
 
     public void addMessageToTicket() {
         /*todo: getUser FromSecurityContext*/
-        UserDTO user = userService.getUserDTOById("19f0a834-4324-419a-8828-50494c2353e4");
+        UserDTO user = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
         ticketService.addTicketMessage(selectedTicketDTO, selectedMessage, user);
         initMessage();
         initMessageList();

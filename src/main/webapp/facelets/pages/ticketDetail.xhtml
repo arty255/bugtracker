@@ -10,15 +10,15 @@
       xmlns:view="http://java.sun.com/jsf/composite/stateView"
       xmlns:user="http://java.sun.com/jsf/composite/minifiedUserView"
       xml:lang="en" lang="en">
+<f:metadata>
+    <f:viewParam name="uuid" value="#{detailedTicketBean.uuid}" required="true"/>
+    <f:event type="preRenderView" listener="#{detailedTicketBean.initData}"/>
+</f:metadata>
 <ui:composition template="../templates/simpleTemplate.xhtml">
     <ui:define name="title">Ticket: #{detailedTicketBean.selectedTicketDTO.uuid}</ui:define>
     <ui:define name="headArea">
         <h:outputStylesheet library="css" name="tickets.css"/>
         <h:outputScript library="js" name="ticket.js"/>
-        <f:metadata>
-            <f:viewParam name="uuid" value="#{detailedTicketBean.uuid}"/>
-            <f:event type="preRenderView" listener="#{detailedTicketBean.preInitData}"/>
-        </f:metadata>
     </ui:define>
     <ui:define name="content">
         <h:form>
