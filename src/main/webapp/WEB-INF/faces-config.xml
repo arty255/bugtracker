@@ -8,7 +8,7 @@
     </application>
 
     <navigation-rule>
-        <display-name>ticketDetail</display-name>
+        <display-name>detailed ticket view</display-name>
         <from-view-id>*</from-view-id>
         <navigation-case>
             <from-outcome>ticketDetail</from-outcome>

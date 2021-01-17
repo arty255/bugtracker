@@ -22,8 +22,11 @@
 .userIdRecord {
     flex-grow: 3;
     padding-left: 0.5em;
+}
+
+.userIdRecord link{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
 
 @media only screen and (max-width: 450px) {
