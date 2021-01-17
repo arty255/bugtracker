@@ -38,7 +38,7 @@ public class DefaultTicketService implements TicketService {
         if (ticket.getDescription().isEmpty()) {
             throw new IllegalArgumentException("description can not be empty");
         }
-        if (user == null || (user = userService.getUserById(user)) == null) {
+        if (user == null || (user = userService.getUserById(user.getUuid())) == null) {
             throw new IllegalArgumentException("user in ticket can not be empty");
         }
         ticket.setCreationTime(new Date());
@@ -49,7 +49,7 @@ public class DefaultTicketService implements TicketService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void addNewTicket(TicketDTO ticketDTO, UserDTO userDTO) {
-        save(produceNewTicketFromDto(ticketDTO), userService.getUserById(new User(userDTO.getUuid())));
+        save(produceNewTicketFromDto(ticketDTO), userService.getUserById(userDTO.getUuid()));
     }
 
     private Ticket produceNewTicketFromDto(TicketDTO ticketDTO) {

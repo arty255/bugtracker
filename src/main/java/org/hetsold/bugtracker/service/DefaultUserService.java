@@ -27,7 +27,6 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
     public User save(User user) {
         if (user == null || user.getUuid().isEmpty()) {
             throw new IllegalArgumentException("incorrect user: user cannot be null");
@@ -47,27 +46,41 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public User getUserById(User user) {
-        if (user == null || user.getUuid().isEmpty()) {
-            throw new IllegalArgumentException("incorrect user");
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void updateUser(UserDTO userDTO) {
+        User updatedUser = UserConvertor.getUser(userDTO);
+        if (userDTO == null || userDTO.getUuid().isEmpty() || updatedUser == null) {
+            throw new IllegalArgumentException("incorrect user: id is empty or user not exists");
         }
-        return userDAO.getUserById(user.getUuid());
+        User user = getUserById(userDTO.getUuid());
+        user.update(updatedUser);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public UserDTO getUserById(String uuid) {
+    public User getUserById(String uuid) {
         if (uuid.isEmpty()) {
             throw new IllegalArgumentException("incorrect user");
         }
-        return UserConvertor.getUserDTO(getUserById(new User(uuid)));
+        return userDAO.getUserById(uuid);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public UserDTO getUserDTOById(String uuid) {
+        if (uuid.isEmpty()) {
+            throw new IllegalArgumentException("incorrect user");
+        }
+        return UserConvertor.getUserDTO(getUserById(uuid));
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void delete(User user) {
-        user = getUserById(user);
+        if (user == null) {
+            throw new IllegalArgumentException("incorrect user: user cannot be null");
+        }
+        user = getUserById(user.getUuid());
         userDAO.delete(user);
     }
 

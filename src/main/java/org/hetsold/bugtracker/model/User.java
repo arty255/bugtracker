@@ -34,6 +34,11 @@ public class User extends AbstractIdentity {
         this.setUuid(uuid);
     }
 
+    public void update(User updatedUser) {
+        this.firstName = updatedUser.getFirstName();
+        this.lastName = updatedUser.getLastName();
+    }
+
     public String getFirstName() {
         return firstName;
     }
