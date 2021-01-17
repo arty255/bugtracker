@@ -59,6 +59,7 @@ public class DefaultUserServiceTest {
 
     @Test
     public void checkIfUserCanBeDeleted() {
+        Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
         userService.delete(user);
         Mockito.verify(userDAO, Mockito.times(1)).delete(user);
     }
@@ -67,6 +68,6 @@ public class DefaultUserServiceTest {
     public void checkIfGetUserWithEmptyIdThrowException() {
         User emptyIdUser = new User("test", "test");
         emptyIdUser.setUuid("");
-        userService.getUserById(emptyIdUser);
+        userService.getUserById(emptyIdUser.getUuid());
     }
 }

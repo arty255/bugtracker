@@ -17,6 +17,7 @@ public class AbstractIdentity {
     private Integer version;
 
     {
+        version = 0;
         uuid = java.util.UUID.randomUUID().toString();
     }
 

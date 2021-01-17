@@ -75,7 +75,7 @@ public class DefaultTicketServiceTest {
     @Test
     public void checkIfCorrectTicketCanBeSaved() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
-        Mockito.when(userService.getUserById(ticket.getCreatedBy())).thenReturn(ticket.getCreatedBy());
+        Mockito.when(userService.getUserById(ticket.getCreatedBy().getUuid())).thenReturn(ticket.getCreatedBy());
         ticketService.save(ticket, user);
         Mockito.verify(ticketDao).save(ticket);
     }

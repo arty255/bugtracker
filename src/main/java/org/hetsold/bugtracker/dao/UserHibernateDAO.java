@@ -22,7 +22,7 @@ public class UserHibernateDAO implements UserDAO {
 
     @Override
     public void save(User user) {
-        hibernateTemplate.save(user);
+        hibernateTemplate.saveOrUpdate(user);
     }
 
     @Override
