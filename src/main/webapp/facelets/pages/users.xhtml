@@ -21,8 +21,7 @@
                          var="user" value="#{userListBean.usersLazyDataModel}" lazy="true"
                          paginator="true" rowsPerPageTemplate="10,25,50" rows="10"
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-                         selectionMode="single" selection="#{userListBean.selectedUserDTO}">
+                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records">
                 <f:facet name="header">
                     <p:commandButton value="Add user" icon="pi pi-user-plus"
                                      onclick="PF('addUserDialog').show();"/>
@@ -38,6 +37,13 @@
                 </p:column>
                 <!--todo: change with spring security integration-->
                 <p:column rendered="#{true}">
+                    <p:commandButton icon="pi pi-pencil" style="margin-right: 0.8em;"
+                                     process="@this"
+                                     update=":dialogForm"
+                                     oncomplete="PF('addUserDialog').show();">
+                        <f:setPropertyActionListener value="#{user}" target="#{addUserBean.user}"/>
+                        <f:setPropertyActionListener value="#{false}" target="#{addUserBean.newUserAction}"/>
+                    </p:commandButton>
                     <p:commandButton icon="pi pi-trash"
                                      process="@this"
                                      update=":usersForm:userDataTable"
@@ -49,10 +55,10 @@
         </h:form>
 
         <h:form id="dialogForm">
-            <p:dialog widgetVar="addUserDialog" header="Add new User">
+            <p:dialog widgetVar="addUserDialog" header="user data">
                 <p:ajax event="close" update="@this" process="@this"
                         listener="#{addUserBean.initNewUser}"/>
-                <p:panel id="userPanel" header="New user data">
+                <h:panelGroup id="userPanel" layout="block">
                     <p:messages showDetail="true" closable="false" severity="error"/>
                     <h:panelGrid columns="1" style="width: 100%">
                         <p:outputLabel value="User first name:"/>
@@ -85,7 +91,7 @@
                             </div>
                         </h:panelGroup>
                     </h:panelGrid>
-                </p:panel>
+                </h:panelGroup>
             </p:dialog>
         </h:form>
 

@@ -56,7 +56,7 @@ public class AddTicketBean implements Serializable {
 
     public void addTicket() {
         //for now get hardcoded user from db, registered user will be obtained after spring security integration
-        UserDTO user = userService.getUserById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
+        UserDTO user = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
         ticket.setCreationTime(new Date());
         ticketService.addNewTicket(ticket, user);
         clearTicket();

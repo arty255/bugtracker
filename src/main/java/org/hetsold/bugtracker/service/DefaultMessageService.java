@@ -35,7 +35,7 @@ public class DefaultMessageService implements MessageService {
         }
         String newMessageContent = message.getContent();
         message = messageDAO.getMessageById(message.getUuid());
-        if ((user = userService.getUserById(user)) == null) {
+        if ((user = userService.getUserById(user.getUuid())) == null) {
             throw new IllegalArgumentException("user not exists");
         }
         if (message == null) {

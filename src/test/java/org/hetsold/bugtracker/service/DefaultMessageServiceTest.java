@@ -60,7 +60,7 @@ public class DefaultMessageServiceTest {
     public void checkIfMessageCanBeSaved() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
         Mockito.when(messageDAO.getMessageById(message.getUuid())).thenReturn(null);
-        Mockito.when(userService.getUserById(user)).thenReturn(user);
+        Mockito.when(userService.getUserById(user.getUuid())).thenReturn(user);
         messageService.saveMessage(message, user);
         ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
         Mockito.verify(messageDAO, Mockito.atLeastOnce()).save(messageCaptor.capture());
@@ -72,7 +72,7 @@ public class DefaultMessageServiceTest {
     public void checkIfMessageCanBeUpdated() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
         Mockito.when(messageDAO.getMessageById(message.getUuid())).thenReturn(message);
-        Mockito.when(userService.getUserById(user)).thenReturn(user);
+        Mockito.when(userService.getUserById(user.getUuid())).thenReturn(user);
         String newMessageContent = "new Content";
         message.setContent(newMessageContent);
         messageService.saveMessage(message, user);

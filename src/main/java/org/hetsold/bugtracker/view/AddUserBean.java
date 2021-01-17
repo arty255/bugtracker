@@ -17,6 +17,8 @@ import java.io.Serializable;
 @ViewScoped
 public class AddUserBean implements Serializable {
     private UserDTO user;
+
+    private boolean isNewUserAction;
     @ManagedProperty("#{userListBean}")
     private UserListBean userListBean;
     @Autowired
@@ -31,11 +33,16 @@ public class AddUserBean implements Serializable {
 
     public void registerUser() {
         try {
-            UserDTO registerUser = userService.registerUser(user);
+            UserDTO actionResultUser = user;
+            if (isNewUserAction) {
+                actionResultUser = userService.registerUser(user);
+            } else {
+                userService.updateUser(user);
+            }
             userListBean.updateDataModel();
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "new user " + registerUser.getUuid() + " added",
-                            "new user " + registerUser.getUuid() + " added"));
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "new user " + actionResultUser.getUuid() + " added",
+                            "new user " + actionResultUser.getUuid() + " added"));
         } catch (IllegalArgumentException e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "no user added", "no user added"));
@@ -44,6 +51,7 @@ public class AddUserBean implements Serializable {
 
     public void initNewUser() {
         user = new UserDTO("");
+        isNewUserAction = true;
     }
 
     public void setUserListBean(UserListBean userListBean) {
@@ -56,5 +64,13 @@ public class AddUserBean implements Serializable {
 
     public void setUser(UserDTO user) {
         this.user = user;
+    }
+
+    public boolean isNewUserAction() {
+        return isNewUserAction;
+    }
+
+    public void setNewUserAction(boolean newUserAction) {
+        isNewUserAction = newUserAction;
     }
 }
