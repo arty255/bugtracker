@@ -5,9 +5,9 @@ import org.hetsold.bugtracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.jsf.FacesContextUtils;
 
-import javax.faces.bean.ManagedBean;
 import javax.annotation.PostConstruct;
-import javax.faces.view.ViewScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 
@@ -27,10 +27,13 @@ public class UserProfileBean implements Serializable {
 
     public void initUserData() {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            user = userService.getUserDTOById(uuid);
+            initUserProfileData();
         }
     }
 
+    public void initUserProfileData() {
+        user = userService.getUserDTOById(uuid);
+    }
 
     public void save() {
         userService.updateUser(user);

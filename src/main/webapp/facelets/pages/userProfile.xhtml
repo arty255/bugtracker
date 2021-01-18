@@ -11,7 +11,7 @@
       xml:lang="en" lang="en">
 
 <f:metadata>
-    <f:viewParam name="user" value="#{userProfileBean.uuid}" required="true"/>
+    <f:viewParam name="user" value="#{userProfileBean.uuid}" required="#{not facesContext.postback}"/>
     <f:event type="preRenderView" listener="#{userProfileBean.initUserData}"/>
 </f:metadata>
 <ui:composition template="../templates/simpleTemplate.xhtml">
@@ -34,35 +34,20 @@
                     <div style="width: 100%; padding-left: 0.5em;">
                         <div class="profileWrapper">
                             <div class="profileInfoWrapper">
-                                <p:panelGrid columns="2" styleClass="profileGrid">
+                                <p:panelGrid id="profileData" columns="2" styleClass="profileGrid">
                                     <p:outputLabel value="First name:"/>
                                     <p:inplace>
-                                        <f:facet name="output">
-                                            <h:outputText value="#{userProfileBean.user.firstName}"/>
-                                        </f:facet>
-                                        <f:facet name="input">
-                                            <p:inputText value="#{userProfileBean.user.lastName}"/>
-                                        </f:facet>
+                                        <p:inputText id="name" value="#{userProfileBean.user.firstName}"/>
                                     </p:inplace>
 
                                     <p:outputLabel value="Last name:"/>
                                     <p:inplace>
-                                        <f:facet name="output">
-                                            <h:outputText value="#{userProfileBean.user.lastName}"/>
-                                        </f:facet>
-                                        <f:facet name="input">
-                                            <p:inputText value="#{userProfileBean.user.lastName}"/>
-                                        </f:facet>
+                                        <p:inputText value="#{userProfileBean.user.lastName}"/>
                                     </p:inplace>
 
                                     <p:outputLabel value="About:"/>
                                     <p:inplace>
-                                        <f:facet name="output">
-                                            <h:outputText value="empty"/>
-                                        </f:facet>
-                                        <f:facet name="input">
-                                            <p:inputTextarea/>
-                                        </f:facet>
+                                        <p:inputTextarea value="empty"/>
                                     </p:inplace>
                                 </p:panelGrid>
                             </div>
@@ -70,9 +55,12 @@
                             <h:panelGroup id="profileControls" layout="block" styleClass="profileControlsWrapper"
                                           rendered="#{true}">
                                 <p:commandButton value="Cancel" icon="pi pi-times-circle"
-                                                 update="@form"/>
+                                                 actionListener="#{userProfileBean.initUserProfileData}"
+                                                 update="profileData"/>
                                 <p:commandButton value="Save" icon="pi pi-save"
-                                                 action="#{userProfileBean.save}"/>
+                                                 process="@this profileData"
+                                                 update="profileData"
+                                                 actionListener="#{userProfileBean.save}"/>
                             </h:panelGroup>
                         </div>
                     </div>

@@ -11,7 +11,7 @@
       xmlns:user="http://java.sun.com/jsf/composite/minifiedUserView"
       xml:lang="en" lang="en">
 <f:metadata>
-    <f:viewParam name="uuid" value="#{detailedTicketBean.uuid}" required="true"/>
+    <f:viewParam name="uuid" value="#{detailedTicketBean.uuid}" required="#{not facesContext.postback}"/>
     <f:event type="preRenderView" listener="#{detailedTicketBean.initData}"/>
 </f:metadata>
 <ui:composition template="../templates/simpleTemplate.xhtml">
