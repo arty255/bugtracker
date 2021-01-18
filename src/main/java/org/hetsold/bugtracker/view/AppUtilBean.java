@@ -18,4 +18,8 @@ public class AppUtilBean implements Serializable {
     public TicketVerificationState[] getTicketVerificationStates() {
         return TicketVerificationState.values();
     }
+
+    public String getDateFormat() {
+        return "dd-MM-yyyy HH:mm";
+    }
 }

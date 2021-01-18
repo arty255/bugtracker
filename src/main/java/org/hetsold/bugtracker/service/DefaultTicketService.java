@@ -79,6 +79,29 @@ public class DefaultTicketService implements TicketService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<TicketDTO> getTicketDtoListReportedByUser(UserDTO userDTO, int startPosition, int limit) {
+        User user;
+        if (userDTO == null || userDTO.getUuid().isEmpty() || (user = userService.getUserById(userDTO.getUuid())) == null) {
+            throw new IllegalArgumentException("incorrect user: user can not be not or unpersisted");
+        }
+        return ticketDao.getTicketListReportedByUser(user, startPosition, limit)
+                .stream()
+                .map(TicketConvertor::getTicketDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long getTicketCountReportedByUser(UserDTO userDTO) {
+        User user;
+        if (userDTO == null || userDTO.getUuid().isEmpty() || (user = userService.getUserById(userDTO.getUuid())) == null) {
+            throw new IllegalArgumentException("incorrect user: user can not be not or unpersisted");
+        }
+        return ticketDao.getTicketCountReportedByUser(user);
+    }
+
+    @Override
     public void delete(Ticket ticket) {
         ticketDao.delete(ticket);
     }

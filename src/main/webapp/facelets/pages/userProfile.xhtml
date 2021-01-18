@@ -7,6 +7,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:view="http://java.sun.com/jsf/composite/stateView"
       xmlns="http://www.w3.org/1999/xhtml"
       xml:lang="en" lang="en">
 
@@ -68,8 +69,28 @@
                 <div style="padding: 0.5em 0;">
                     <p:tabView styleClass="tabView">
                         <!--todo: upadate with spring security-->
-                        <p:tab title="Reported by me" rendered="#{true}">
-
+                        <p:tab title="Reported by me: #{userProfileBean.totalReportedTickets}" rendered="#{true}">
+                            <p:dataTable var="ticket" value="#{userProfileBean.reportedTickets}" lazy="true"
+                                         paginator="true" rowsPerPageTemplate="10,25,50" rows="10"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                                <p:column headerText="ID">
+                                    <h:link outcome="ticketDetail" includeViewParams="true">
+                                        <f:param name="uuid" value="#{ticket.uuid}"/>
+                                        <h:outputText value="#{ticket.uuid}"/>
+                                    </h:link>
+                                </p:column>
+                                <p:column headerText="Resolve Status">
+                                    <view:stateView state="#{ticket.resolveState}"/>
+                                </p:column>
+                                <p:column headerText="Description">
+                                    <h:outputText value="#{ticket.description}"/>
+                                </p:column>
+                                <p:column headerText="Date">
+                                    <h:outputText value="#{ticket.creationTime}">
+                                        <f:convertDateTime pattern="#{appUtilBean.dateFormat}"/>
+                                    </h:outputText>
+                                </p:column>
+                            </p:dataTable>
                         </p:tab>
                         <!--todo: upadate with spring security-->
                         <p:tab title="Assigned to me" rendered="#{true}">

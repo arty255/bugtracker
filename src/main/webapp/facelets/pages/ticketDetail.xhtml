@@ -203,7 +203,7 @@
                                     <user:minifiedUserView user="#{message.creator}"/>
                                     <div class="createDate">
                                         <p:outputLabel value="#{message.createDate}">
-                                            <f:convertDateTime type="both" pattern="dd-MM-yyyy HH:mm"/>
+                                            <f:convertDateTime type="both" pattern="#{appUtilBean.dateFormat}"/>
                                         </p:outputLabel>
                                     </div>
                                 </h:panelGroup>

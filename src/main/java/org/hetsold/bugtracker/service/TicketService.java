@@ -15,6 +15,10 @@ public interface TicketService {
 
     List<TicketDTO> getTicketDtoList();
 
+    List<TicketDTO> getTicketDtoListReportedByUser(UserDTO userDTO, int startPosition, int limit);
+
+    long getTicketCountReportedByUser(UserDTO userDTO);
+
     Ticket getTicketById(String uuid);
 
     TicketDTO getTicketDTO(String uuid);
