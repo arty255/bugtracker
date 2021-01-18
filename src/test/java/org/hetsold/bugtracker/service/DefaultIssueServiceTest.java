@@ -190,7 +190,7 @@ public class DefaultIssueServiceTest {
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
         issueService.addIssueMessage(issue, message, user);
         Mockito.verify(historyEventDAO, Mockito.times(1)).saveIssueMessage(Mockito.any());
-        Mockito.verify(messageService, Mockito.times(1)).saveMessage(message, user);
+        Mockito.verify(messageService, Mockito.times(1)).saveNewMessage(message, user);
     }
 
     @Test

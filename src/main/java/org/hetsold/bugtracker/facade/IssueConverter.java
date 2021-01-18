@@ -3,7 +3,6 @@ package org.hetsold.bugtracker.facade;
 import org.hetsold.bugtracker.model.Issue;
 import org.hetsold.bugtracker.model.IssueDTO;
 import org.hetsold.bugtracker.model.IssueShortDTO;
-import org.springframework.stereotype.Component;
 
 public class IssueConverter {
 

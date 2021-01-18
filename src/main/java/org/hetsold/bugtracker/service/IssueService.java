@@ -26,6 +26,8 @@ public interface IssueService {
 
     void changeIssueAssignedUser(Issue issue, User assignedTo, User user);
 
+    void addIssueMessage(IssueDTO issueDTO, MessageDTO messageDTO, UserDTO userDTO);
+
     void addIssueMessage(Issue issue, Message message, User user);
 
     void createNewIssue(Issue issue, User user);

@@ -101,15 +101,15 @@ public class DefaultTicketServiceTest {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
         Mockito.when(ticketDao.getTicketById(ticket.getUuid())).thenReturn(ticket);
-        Mockito.when(messageService.saveMessage(message, user)).thenReturn(message);
+        Mockito.when(messageService.saveOrUpdateMessage(message, user)).thenReturn(message);
         ticketService.addTicketMessage(ticket, message, user);
-        Mockito.verify(messageService).saveMessage(message, user);
+        Mockito.verify(messageService).saveOrUpdateMessage(message, user);
         assertTrue(ticket.getMessageList().contains(message));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void checkIfTicketMessageWithEmptyTicketThroeException() {
+    public void checkIfTicketMessageWithEmptyTicketThrowException() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
-        ticketService.addTicketMessage(null, message, user);
+        ticketService.addTicketMessage((Ticket) null, message, user);
     }
 }

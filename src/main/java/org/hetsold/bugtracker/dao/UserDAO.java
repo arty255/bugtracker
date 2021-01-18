@@ -1,7 +1,6 @@
 package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.model.User;
-import org.hetsold.bugtracker.model.UserDTO;
 
 import java.util.List;
 

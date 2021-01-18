@@ -122,7 +122,7 @@ public class DefaultTicketService implements TicketService {
         if (ticket == null || (ticket = ticketDao.getTicketById(ticket.getUuid())) == null) {
             throw new IllegalArgumentException("ticket can not be empty");
         }
-        message = messageService.saveMessage(message, user);
+        message = messageService.saveOrUpdateMessage(message, user);
         if (!ticket.getMessageList().contains(message)) {
             ticket.getMessageList().add(message);
         }
