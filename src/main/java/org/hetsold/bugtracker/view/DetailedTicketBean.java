@@ -29,6 +29,7 @@ public class DetailedTicketBean implements Serializable {
     private List<MessageDTO> ticketMessages;
     private MessageDTO selectedMessage;
     private IssueShortDTO createdIssue;
+    private boolean editMode;
 
     @Autowired
     private TicketService ticketService;
@@ -95,9 +96,20 @@ public class DetailedTicketBean implements Serializable {
         initMessageList();
     }
 
+    public void editTicketMessage() {
+        UserDTO user = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
+        messageService.saveOrUpdateMessage(selectedMessage, user);
+        initMessage();
+        initMessageList();
+        editMode = false;
+    }
+
     public void deleteMessage(MessageDTO message) {
         messageService.deleteMessage(message);
         initMessageList();
+        if(message.equals(selectedMessage)){
+            initMessage();
+        }
     }
 
 
@@ -127,5 +139,13 @@ public class DetailedTicketBean implements Serializable {
 
     public void onCloseCreatedIssueDialog() {
         createdIssue = null;
+    }
+
+    public boolean isEditMode() {
+        return editMode;
+    }
+
+    public void setEditMode(boolean editMode) {
+        this.editMode = editMode;
     }
 }

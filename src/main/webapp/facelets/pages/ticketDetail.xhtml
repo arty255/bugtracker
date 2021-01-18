@@ -105,7 +105,7 @@
                             <p:tabView id="messageTabView">
                                 <p:ajax event="tabChange" process="newMessageContent" update="renderedPreview"/>
                                 <p:tab title="Write">
-                                    <div style="overflow: auto">
+                                    <div class="ticketCommentWidgetArea">
                                         <p:outputPanel layout="block">
                                             <p:outputPanel layout="block" styleClass="editMarker">
                                                 <h:outputText
@@ -113,8 +113,10 @@
                                                         rendered="#{not empty detailedTicketBean.selectedMessage.uuid}"/>
                                                 <p:commandLink action="#{detailedTicketBean.initMessage}"
                                                                process="@this"
-                                                               update="@(.editMarker) newMessageContent"
+                                                               update="@(.editMarker),@(.controlButtonsMarker),@widgetVar(messageContentWidget)"
                                                                rendered="#{not empty detailedTicketBean.selectedMessage.uuid}">
+                                                    <f:setPropertyActionListener value="#{false}"
+                                                                                 target="#{detailedTicketBean.editMode}"/>
                                                     Cancel
                                                 </p:commandLink>
                                             </p:outputPanel>
@@ -126,15 +128,24 @@
                                         </p:outputPanel>
                                         <h:outputText id="display"/>
                                         <div style="overflow: auto; padding-top: 0.5em">
-                                            <p:commandButton value="Hide coment window" style="float: left"
-                                                             onclick="PF('CommentAccordionWidget').unselect(0);"/>
-                                            <p:commandButton value="Comment" style="float: right"
-                                                             actionListener="#{detailedTicketBean.addMessageToTicket}"
-                                                             update="@form:ticketMessages newMessageContent @(.editMarker)"
-                                                             process="@this newMessageContent"
-                                                             onsuccess="PF('CommentAccordionWidget').unselect(0);"/>
-                                            <p:commandButton value="Clear" style="float: right; margin-right: 1em"
-                                                             onclick="PF('messageContentWidget').clear();"/>
+                                            <p:outputPanel layout="block" styleClass="controlButtonsMarker">
+                                                <p:commandButton value="Hide coment window" style="float: left"
+                                                                 onclick="PF('CommentAccordionWidget').unselect(0);"/>
+                                                <p:commandButton value="Comment" style="float: right"
+                                                                 rendered="#{not detailedTicketBean.editMode}"
+                                                                 actionListener="#{detailedTicketBean.addMessageToTicket}"
+                                                                 update="@form:ticketMessages,@(.editMarker),newMessageContent"
+                                                                 process="@this newMessageContent"
+                                                                 onsuccess="PF('CommentAccordionWidget').unselect(0);"/>
+                                                <p:commandButton value="Edit" style="float: right"
+                                                                 rendered="#{detailedTicketBean.editMode}"
+                                                                 actionListener="#{detailedTicketBean.editTicketMessage}"
+                                                                 update="@form:ticketMessages,@(.editMarker),newMessageContent"
+                                                                 process="@this newMessageContent"/>
+                                                <p:commandButton value="Clear" style="float: right; margin-right: 1em"
+                                                                 onclick="PF('messageContentWidget').clear();">
+                                                </p:commandButton>
+                                            </p:outputPanel>
                                         </div>
                                     </div>
                                 </p:tab>
@@ -147,7 +158,7 @@
                                                              onclick="PF('CommentAccordionWidget').unselect(0);"/>
                                             <p:commandButton value="Comment" style="float: right"
                                                              actionListener="#{detailedTicketBean.addMessageToTicket}"
-                                                             update="@form:ticketMessages"
+                                                             update="@form:ticketMessages,newMessageContent"
                                                              process="@this newMessageContent"/>
                                         </div>
                                     </div>
@@ -165,18 +176,23 @@
                                 <!--todo: rendered rules for spring security integration-->
                                 <p:commandLink
                                         styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
-                                        rendered="#{true}" process="@this" update="@form:ticketMessages"
+                                        rendered="#{true}"
+                                        process="@this"
+                                        update="@form:ticketMessages,@(.editMarker),@(.controlButtonsMarker),@widgetVar(messageContentWidget)"
                                         action="#{detailedTicketBean.deleteMessage(message)}">
                                     <h:outputText styleClass="ui-icon pi pi-trash"/>
                                 </p:commandLink>
                                 <p:commandLink
                                         styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
-                                        rendered="#{true}" process="@this"
-                                        update="@widgetVar(messageContentWidget) @(.editMarker)"
-                                        onclick="PF('CommentAccordionWidget').select(0)"
+                                        rendered="#{true}"
+                                        process="@this"
+                                        update="@(.editMarker),@(.controlButtonsMarker),@widgetVar(messageContentWidget)"
+                                        onclick="selectIfUnselected()"
                                         style="margin-right: 0.5em;">
                                     <f:setPropertyActionListener value="#{message}"
                                                                  target="#{detailedTicketBean.selectedMessage}"/>
+                                    <f:setPropertyActionListener value="#{true}"
+                                                                 target="#{detailedTicketBean.editMode}"/>
                                     <h:outputText styleClass="ui-icon pi pi-pencil"/>
                                 </p:commandLink>
                             </f:facet>
