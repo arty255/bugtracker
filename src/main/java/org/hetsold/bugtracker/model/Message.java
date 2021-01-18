@@ -24,6 +24,21 @@ public class Message extends AbstractIdentity {
         this.content = messageContent;
     }
 
+    @PrePersist
+    public void prePersist() {
+        this.createDate = new Date();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.editDate = new Date();
+    }
+
+    public void update(Message message, User messageEditor) {
+        this.content = message.getContent();
+        this.messageEditor = messageEditor;
+    }
+
     public User getMessageCreator() {
         return messageCreator;
     }

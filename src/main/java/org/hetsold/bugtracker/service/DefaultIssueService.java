@@ -145,6 +145,22 @@ public class DefaultIssueService implements IssueService {
         }
     }
 
+    public void addIssueMessage(IssueDTO issueDTO, MessageDTO messageDTO, UserDTO userDTO) {
+        Issue issue;
+        Message message;
+        if (issueDTO == null || issueDTO.getUuid().isEmpty() || (issue = getIssueById(issueDTO.getUuid())) == null) {
+            throw new IllegalArgumentException("issue incorrect: issue cannot be null or not persisted");
+        }
+        if (messageDTO == null || messageDTO.getContent().isEmpty() || (message = messageService.getMessageById(messageDTO.getUuid())) == null) {
+            throw new IllegalArgumentException("message can not be null/empty content or not persisted");
+        }
+        User user;
+        if (userDTO == null || (user = userDAO.getUserById(userDTO.getUuid())) == null) {
+            throw new IllegalArgumentException("user argument can not be null or not persisted");
+        }
+        addIssueMessage(issue, message, user);
+    }
+
     @Override
     public void addIssueMessage(Issue issue, Message message, User user) {
         if (issue == null || (issue = getIssueById(issue.getUuid())) == null) {
@@ -156,15 +172,12 @@ public class DefaultIssueService implements IssueService {
         if (user == null || (user = userDAO.getUserById(user.getUuid())) == null) {
             throw new IllegalArgumentException("user argument can not be null or not persisted");
         }
-        boolean messageNotExists = messageService.getMessageById(message) == null;
-        if (messageNotExists) {
-            messageService.saveMessage(message, user);
-            HistoryIssueMessageEvent messageEvent = new HistoryIssueMessageEvent();
-            messageEvent.setMessage(message);
-            messageEvent.setIssue(issue);
-            messageEvent.setEventDate(new Date());
-            historyEventDAO.saveIssueMessage(messageEvent);
-        }
+        Message savedMessage = messageService.saveNewMessage(message, user);
+        HistoryIssueMessageEvent messageEvent = new HistoryIssueMessageEvent();
+        messageEvent.setMessage(savedMessage);
+        messageEvent.setIssue(issue);
+        messageEvent.setEventDate(new Date());
+        historyEventDAO.saveIssueMessage(messageEvent);
     }
 
     @Override
