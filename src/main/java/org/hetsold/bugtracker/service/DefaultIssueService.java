@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -104,29 +105,42 @@ public class DefaultIssueService implements IssueService {
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public List<IssueShortDTO> getIssueList(int startPosition, int limit) {
+        return issueDAO.getIssueList(startPosition, limit)
+                .stream()
+                .map(IssueConverter::getIssueShortDTO)
+                .collect(Collectors.toList());
+    }
+
+    public long getIssuesCount(){
+        return issueDAO.getIssueCount();
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public Issue getIssueForViewById(String uuid) {
         return issueDAO.getIssueToDetailedViewById(uuid);
     }
 
     @Override
-    public void changeIssueState(Issue issue, State newState, User user) {
+    public void changeIssueState(Issue issue, IssueState newIssueState, User user) {
         if (issue == null || (issue = issueDAO.getIssueById(issue.getUuid())) == null) {
             throw new IllegalArgumentException("issue argument can not be null or not persisted");
         }
-        if (newState == null) {
+        if (newIssueState == null) {
             throw new IllegalArgumentException("newState argument can not be null");
         }
-        if (newState == State.ASSIGNED && issue.getAssignedTo() == null) {
+        if (newIssueState == IssueState.ASSIGNED && issue.getAssignedTo() == null) {
             throw new IllegalArgumentException("cannot change State to assigned with unassigned User. use changeIssueAssignedUser");
         }
-        if (issue.getCurrentState() != newState) {
-            issue.setCurrentState(newState);
+        if (issue.getCurrentIssueState() != newIssueState) {
+            issue.setCurrentIssueState(newIssueState);
             HistoryIssueStateChangeEvent event = new HistoryIssueStateChangeEvent();
             event.setEventDate(new Date());
             event.setIssue(issue);
             event.setRedactor(user);
-            event.setState(newState);
-            issue.setCurrentState(newState);
+            event.setState(newIssueState);
+            issue.setCurrentIssueState(newIssueState);
             historyEventDAO.saveStateChange(event);
         }
     }
@@ -140,8 +154,8 @@ public class DefaultIssueService implements IssueService {
             throw new IllegalArgumentException("issue argument can not be null or not persisted");
         }
         issue.setAssignedTo(assignedTo);
-        if (issue.getCurrentState() != State.ASSIGNED) {
-            changeIssueState(issue, State.ASSIGNED, user);
+        if (issue.getCurrentIssueState() != IssueState.ASSIGNED) {
+            changeIssueState(issue, IssueState.ASSIGNED, user);
         }
     }
 
@@ -189,6 +203,7 @@ public class DefaultIssueService implements IssueService {
             throw new IllegalArgumentException("user argument can not be null or not persisted");
         }
         issue.setCreationTime(new Date());
+        issue.setCurrentIssueState(IssueState.OPEN);
         issue.setReportedBy(user);
         save(issue);
     }
@@ -239,7 +254,7 @@ public class DefaultIssueService implements IssueService {
         Issue oldIssue = getIssueById(issue.getUuid());
         if (oldIssue.getAssignedTo() != issue.getAssignedTo() || oldIssue.getSeverity() != issue.getSeverity() || !oldIssue.getFixVersion().equals(issue.getFixVersion())) {
             HistoryIssueStateChangeEvent stateChangeEvent = new HistoryIssueStateChangeEvent();
-            stateChangeEvent.setState(issue.getCurrentState());
+            stateChangeEvent.setState(issue.getCurrentIssueState());
             stateChangeEvent.setRedactor(user);
             stateChangeEvent.setExpectedFixVersion(issue.getFixVersion());
             stateChangeEvent.setEventDate(new Date());

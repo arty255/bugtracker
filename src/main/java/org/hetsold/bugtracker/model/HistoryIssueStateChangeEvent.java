@@ -6,18 +6,18 @@ import javax.persistence.*;
 @Table(name = "issueStateChangeEvent")
 public class HistoryIssueStateChangeEvent extends HistoryEvent {
     @Enumerated
-    private State state;
+    private IssueState issueState;
     private String expectedFixVersion;
     @OneToOne
     @JoinColumn(name = "redactorId")
     private User redactor;
 
-    public State getState() {
-        return state;
+    public IssueState getState() {
+        return issueState;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setState(IssueState issueState) {
+        this.issueState = issueState;
     }
 
     public String getExpectedFixVersion() {

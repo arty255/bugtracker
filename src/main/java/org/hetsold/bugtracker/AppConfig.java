@@ -3,6 +3,7 @@ package org.hetsold.bugtracker;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -20,16 +21,23 @@ import java.util.Properties;
                 "org.hetsold.bugtracker.facade"
         }
 )
+@PropertySource({
+        "classpath:dbConfig.properties",
+        "classpath:jpaProp.properties"
+})
 public class AppConfig {
+    @Autowired
+    private Environment environment;
+
     @Bean()
     @Primary
     @Profile("dev")
     public DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl("jdbc:mysql://localhost:3306/h_bugtracker");
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUsername("root");
-        dataSource.setPassword("OnHG8^nnP");
+        dataSource.setUrl(environment.getProperty("db.devUrl"));
+        dataSource.setDriverClassName(environment.getProperty("db.driverClassName"));
+        dataSource.setUsername(environment.getProperty("db.username"));
+        dataSource.setPassword(environment.getProperty("db.password"));
         return dataSource;
     }
 
@@ -54,6 +62,9 @@ public class AppConfig {
     private Properties getAdditionalHibernateProperties() {
         Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
+        properties.setProperty("hibernate.show_sql", environment.getProperty("hibernate.show_sql"));
+        properties.setProperty("hibernate.format_sql", environment.getProperty("hibernate.format_sql"));
+        properties.setProperty("hibernate.generate_statistics", environment.getProperty("hibernate.generate_statistics"));
         return properties;
     }
 }

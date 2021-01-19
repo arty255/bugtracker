@@ -50,18 +50,18 @@ create table if not exists ticket_message
 drop table if exists issue;
 create table if not exists issue
 (
-    uuid           varchar(40)   not null,
-    version        int,
-    issueNumber    varchar(50),
-    description    varchar(1200) not null,
-    creationTime   datetime      not null,
-    productVersion varchar(70),
-    reproduceSteps varchar(1500),
-    existedResult  varchar(500),
-    expectedResult varchar(500),
-    severity       tinyint,
-    fixVersion     varchar(70),
-    currentState   tinyint,
+    uuid              varchar(40)   not null,
+    version           int,
+    issueNumber       varchar(50),
+    description       varchar(1200) not null,
+    creationTime      datetime      not null,
+    productVersion    varchar(70),
+    reproduceSteps    varchar(1500),
+    existedResult     varchar(500),
+    expectedResult    varchar(500),
+    severity          tinyint,
+    fixVersion        varchar(70),
+    currentIssueState tinyint,
     primary key (uuid)
 );
 
@@ -117,7 +117,7 @@ drop table if exists issueStateChangeEvent;
 create table if not exists issueStateChangeEvent
 (
     uuid               varchar(40) not null,
-    state              tinyint,
+    issueState         tinyint,
     expectedFixVersion varchar(70),
     redactorId         varchar(40),
     primary key (uuid),

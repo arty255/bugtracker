@@ -116,7 +116,7 @@ public class DefaultIssueServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void checkIfIssueStateChangeToEmptyThrowException() {
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
-        issue.setCurrentState(null);
+        issue.setCurrentIssueState(null);
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
         issueService.changeIssueState(issue, null, user);
         Mockito.verify(issueDAO, Mockito.never()).save(issue);
@@ -124,21 +124,21 @@ public class DefaultIssueServiceTest {
 
     @Test
     public void checkIfIssueStateChangeToCorrectCanBePreform() {
-        State newState = State.REOPENED;
+        IssueState newIssueState = IssueState.REOPENED;
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
         Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
-        issueService.changeIssueState(issue, newState, user);
-        assertEquals(issue.getCurrentState(), newState);
+        issueService.changeIssueState(issue, newIssueState, user);
+        assertEquals(issue.getCurrentIssueState(), newIssueState);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkIfIssueAssignStateThrowException() {
-        State newState = State.ASSIGNED;
+        IssueState newIssueState = IssueState.ASSIGNED;
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
         Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
-        issueService.changeIssueState(issue, newState, user);
+        issueService.changeIssueState(issue, newIssueState, user);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -155,7 +155,7 @@ public class DefaultIssueServiceTest {
         Mockito.when(userDAO.getUserById(user.getUuid())).thenReturn(user);
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);
         issueService.changeIssueAssignedUser(issue, user, user);
-        assertEquals(issue.getCurrentState(), State.ASSIGNED);
+        assertEquals(issue.getCurrentIssueState(), IssueState.ASSIGNED);
         assertEquals(issue.getAssignedTo(), user);
     }
 

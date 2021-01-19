@@ -12,7 +12,7 @@ insert into issue(uuid,
                   expectedResult,
                   severity,
                   fixVersion,
-                  currentState)
+                  currentIssueState)
 VALUES ('11112-31412-12131', 0, '2312312', 'description', '2010-02-02', 'test', 'no steps', 'exception', 'no exception',
         0, '', 0);
 
