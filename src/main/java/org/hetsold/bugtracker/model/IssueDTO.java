@@ -13,7 +13,7 @@ public class IssueDTO {
     private String expectedResult;
     private Severity severity;
     private String fixVersion;
-    private State currentState;
+    private IssueState currentIssueState;
 
     public IssueDTO(Issue issue) {
         this.uuid = issue.getUuid();
@@ -26,7 +26,7 @@ public class IssueDTO {
         this.expectedResult = issue.getExpectedResult();
         this.severity = issue.getSeverity();
         this.fixVersion = issue.getFixVersion();
-        this.currentState = issue.getCurrentState();
+        this.currentIssueState = issue.getCurrentIssueState();
     }
 
     public String getUuid() {
@@ -109,11 +109,11 @@ public class IssueDTO {
         this.fixVersion = fixVersion;
     }
 
-    public State getCurrentState() {
-        return currentState;
+    public IssueState getCurrentState() {
+        return currentIssueState;
     }
 
-    public void setCurrentState(State currentState) {
-        this.currentState = currentState;
+    public void setCurrentState(IssueState currentIssueState) {
+        this.currentIssueState = currentIssueState;
     }
 }

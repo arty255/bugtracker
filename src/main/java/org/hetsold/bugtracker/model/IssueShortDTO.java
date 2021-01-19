@@ -7,7 +7,7 @@ public class IssueShortDTO {
     private String issueNumber;
     private String description;
     private Date creationTime;
-    private State currentState;
+    private IssueState currentIssueState;
     private Severity severity;
     private UserDTO reportedBy;
     private UserDTO assignedTo;
@@ -18,9 +18,9 @@ public class IssueShortDTO {
         this.issueNumber = issue.getIssueNumber();
         this.description = issue.getDescription();
         this.creationTime = issue.getCreationTime();
-        this.currentState = issue.getCurrentState();
+        this.currentIssueState = issue.getCurrentIssueState();
         this.severity = issue.getSeverity();
-        if (issue.getAssignedTo() != null) {
+        if (issue.getReportedBy() != null) {
             this.reportedBy = new UserDTO(issue.getReportedBy());
         }
         if (issue.getAssignedTo() != null) {
@@ -71,12 +71,12 @@ public class IssueShortDTO {
         this.creationTime = creationTime;
     }
 
-    public State getCurrentState() {
-        return currentState;
+    public IssueState getCurrentIssueState() {
+        return currentIssueState;
     }
 
-    public void setCurrentState(State currentState) {
-        this.currentState = currentState;
+    public void setCurrentIssueState(IssueState currentIssueState) {
+        this.currentIssueState = currentIssueState;
     }
 
     public Severity getSeverity() {

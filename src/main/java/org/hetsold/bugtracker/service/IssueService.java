@@ -17,12 +17,16 @@ public interface IssueService {
 
     List<Issue> getIssueList();
 
+    List<IssueShortDTO> getIssueList(int startPosition, int limit);
+
+    long getIssuesCount();
+
     Issue getIssueForViewById(String uuid);
 
     //issue - selected issue to change State
     //newState - new issue state
     //assignedTo - user to who issue will be assigned
-    void changeIssueState(Issue issue, State newState, User user);
+    void changeIssueState(Issue issue, IssueState newIssueState, User user);
 
     void changeIssueAssignedUser(Issue issue, User assignedTo, User user);
 
