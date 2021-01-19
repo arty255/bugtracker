@@ -7,14 +7,14 @@
       xmlns:composite="http://java.sun.com/jsf/composite"
       xml:lang="en" lang="en">
 <composite:interface>
-    <composite:attribute name="state" type="org.hetsold.bugtracker.model.TicketResolveState" required="true"/>
+    <composite:attribute name="issueState" type="org.hetsold.bugtracker.model.TicketResolveState" required="true"/>
 </composite:interface>
 <composite:implementation>
     <h:outputStylesheet library="css" name="stateView.css"/>
     <h:panelGroup layout="block" styleClass="stateContainer">
-        <div class="stateIndicator #{cc.attrs.state == 'NotResolved' ? 'red' :
-        (cc.attrs.state == 'Resolved' ? 'green': 'gray')}"></div>
-        <h:outputText value="#{cc.attrs.state}"/>
+        <div class="stateIndicator #{cc.attrs.issueState == 'NotResolved' ? 'red' :
+        (cc.attrs.issueState == 'Resolved' ? 'green': 'gray')}"></div>
+        <h:outputText value="#{cc.attrs.issueState}"/>
     </h:panelGroup>
 </composite:implementation>
 </html>

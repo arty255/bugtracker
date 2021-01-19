@@ -1,7 +1,7 @@
 package org.hetsold.bugtracker.util;
 
 import org.hetsold.bugtracker.model.Issue;
-import org.hetsold.bugtracker.model.State;
+import org.hetsold.bugtracker.model.IssueState;
 import org.hetsold.bugtracker.model.User;
 
 import java.time.LocalDateTime;
@@ -29,10 +29,10 @@ public class IssueFactory {
             case CorrectIssue:
                 break;
             case CorrectOpenIssue:
-                issue.setCurrentState(State.OPEN);
+                issue.setCurrentIssueState(IssueState.OPEN);
                 break;
             case CorrectClosedIssue:
-                issue.setCurrentState(State.FIXED);
+                issue.setCurrentIssueState(IssueState.FIXED);
                 break;
             case InvalidCreationDateIssue:
                 issue.setCreationTime(Date.from(LocalDateTime.now().plusSeconds(5).atZone(ZoneId.systemDefault()).toInstant()));

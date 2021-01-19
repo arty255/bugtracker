@@ -33,7 +33,7 @@ public class IssueConverter {
                     .withIssueNumber(issueShortDTO.getIssueNumber())
                     .withDescription(issueShortDTO.getDescription())
                     .withCreationTime(issueShortDTO.getCreationTime())
-                    .withIssueState(issueShortDTO.getCurrentState())
+                    .withIssueState(issueShortDTO.getCurrentIssueState())
                     .withIssueSeverity(issueShortDTO.getSeverity())
                     .build();
         }

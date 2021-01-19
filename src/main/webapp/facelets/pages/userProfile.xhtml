@@ -7,7 +7,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:view="http://java.sun.com/jsf/composite/stateView"
+      xmlns:view="http://java.sun.com/jsf/composite/ticketResolveStateComponent"
       xmlns="http://www.w3.org/1999/xhtml"
       xml:lang="en" lang="en">
 
@@ -80,7 +80,7 @@
                                     </h:link>
                                 </p:column>
                                 <p:column headerText="Resolve Status">
-                                    <view:stateView state="#{ticket.resolveState}"/>
+                                    <view:stateView issueState="#{ticket.resolveState}"/>
                                 </p:column>
                                 <p:column headerText="Description">
                                     <h:outputText value="#{ticket.description}"/>

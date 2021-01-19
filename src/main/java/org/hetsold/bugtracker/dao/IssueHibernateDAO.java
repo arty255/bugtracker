@@ -36,6 +36,19 @@ public class IssueHibernateDAO implements IssueDAO {
     }
 
     @Override
+    public List<Issue> getIssueList(int startPosition, int limit) {
+        return hibernateTemplate.execute(session -> {
+            EntityGraph issueEntityGraph = session.getEntityGraph("IssueEntityGraphToShortView");
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<Issue> query = builder.createQuery(Issue.class);
+            Root<Issue> root = query.from(Issue.class);
+            TypedQuery<Issue> typedQuery = session.createQuery(query);
+            typedQuery.setHint("javax.persistence.loadgraph", issueEntityGraph);
+            return typedQuery.setFirstResult(startPosition).setMaxResults(limit).getResultList();
+        });
+    }
+
+    @Override
     public void delete(Issue issue) {
         hibernateTemplate.delete(issue);
     }
@@ -94,8 +107,8 @@ public class IssueHibernateDAO implements IssueDAO {
 
     private Predicate[] getPredicates(Issue issue, Root<Issue> root, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicateList = new ArrayList<>();
-        if (issue.getCurrentState() != null) {
-            predicateList.add(criteriaBuilder.equal(root.get(Issue_.currentState), issue.getCurrentState()));
+        if (issue.getCurrentIssueState() != null) {
+            predicateList.add(criteriaBuilder.equal(root.get(Issue_.currentState), issue.getCurrentIssueState()));
         }
         if (issue.getDescription() != null) {
             predicateList.add(criteriaBuilder.like(root.get(Issue_.description), issue.getDescription()));

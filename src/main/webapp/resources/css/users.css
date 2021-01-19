@@ -1,4 +1,8 @@
-
 .ui-datatable-header {
     display: flex;
+}
+
+.minimalWidthColumn {
+    width: 10% !important;
+    vertical-align: top !important;
 }

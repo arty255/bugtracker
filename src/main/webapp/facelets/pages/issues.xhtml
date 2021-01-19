@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:user="http://xmlns.jcp.org/jsf/composite/userComponent"
+      xmlns:ticket="http://xmlns.jcp.org/jsf/composite/ticketComponent"
+      xmlns:issue="http://xmlns.jcp.org/jsf/composite/issueStateComponent"
+      xml:lang="en" lang="en">
+<ui:composition template="../templates/simpleTemplate.xhtml">
+    <ui:define name="title">
+        Issue list
+    </ui:define>
+    <ui:define name="headArea">
+        <h:outputStylesheet library="css" name="issues.css"/>
+    </ui:define>
+    <ui:define name="content">
+        <p:dataTable var="issue" value="#{issueListBean.issuesLazyDataModel}" lazy="true"
+                     paginator="true" rowsPerPageTemplate="10,25,50" rows="10"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                     styleClass="issuesTable"  >
+            <f:facet name="header">
+                <div style="width: 100%; display: flex; flex-direction: row">
+                    <p:commandButton value="Add Issue" icon="pi pi-plus"
+                    />
+                </div>
+            </f:facet>
+            <p:column headerText="ID" styleClass="issueUUIDColumn" >
+                <div>
+                    <div>
+                        <p:link rel="#" includeViewParams="true">
+                            <f:param name="#{issue.uuid}"/>
+                            <h:outputText value="#{issue.uuid}"/>
+                        </p:link>
+                    </div>
+                    <div>
+                        <issue:issueState issueState="#{issue.currentIssueState}"/>
+                    </div>
+                </div>
+            </p:column>
+            <p:column headerText="Description">
+                <div class="descriptionSection">
+                    <div class="descriptionContent">
+                        <h:outputText value="#{issue.description}"/>
+                    </div>
+                    <div class="ticketBaseWrapper">
+                        <h:outputText value="Base on ticket:"/>
+                        <ticket:linkedTicket uuid="#{issue.ticketId}"/>
+                    </div>
+                </div>
+            </p:column>
+            <p:column headerText="Reported By" styleClass="minimalWidthColumn">
+                <!--todo: show user group: forum, tester or other -based on department-->
+                <user:linkedUser user="#{issue.reportedBy}"/>
+            </p:column>
+            <p:column headerText="Assigned to" styleClass="minimalWidthColumn">
+                <user:linkedUser user="#{issue.assignedTo}" rendered="#{not empty issue.assignedTo}"/>
+                <!--todo: show warning with time=cur.time-creat.time and color range-->
+            </p:column>
+            <p:column headerText="Creation date" styleClass="minimalWidthColumn">
+                <h:outputText value="#{issue.creationTime}">
+                    <f:convertDateTime pattern="#{appUtilBean.dateFormat}"/>
+                </h:outputText>
+            </p:column>
+        </p:dataTable>
+    </ui:define>
+</ui:composition>
+</html>

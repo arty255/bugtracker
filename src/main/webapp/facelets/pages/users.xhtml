@@ -39,7 +39,7 @@
                     <h:outputText value="#{user.lastName}"/>
                 </p:column>
                 <!--todo: change with spring security integration-->
-                <p:column rendered="#{true}">
+                <p:column rendered="#{true}" styleClass="minimalWidthColumn">
                     <p:commandButton icon="pi pi-pencil" style="margin-right: 0.8em;"
                                      process="@this"
                                      update=":dialogForm"

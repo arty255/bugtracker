@@ -4,8 +4,9 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:composite="http://java.sun.com/jsf/composite" xmlns:p="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:user="http://xmlns.jcp.org/jsf/composite/userComponent"
+      xmlns:p="http://java.sun.com/jsf/html"
       xml:lang="en" lang="en">
 <composite:interface>
     <composite:attribute name="user" type="org.hetsold.bugtracker.model.UserDTO" required="true"/>
@@ -17,12 +18,8 @@
             <p:graphicImage library="images" name="no_image.jpg" rendered="#{false}"/>
             <p:graphicImage library="images" name="no_image.jpg" rendered="#{true}"/>
         </div>
-        <div class="userIdRecord">
-            <p:link outcome="userProfile" includeViewParams="true">
-                <h:outputText value="#{cc.attrs.user.firstName}" styleClass="child"/>
-                <h:outputText value="#{cc.attrs.user.lastName}"/>
-                <f:param name="user" value="#{cc.attrs.user.uuid}"/>
-            </p:link>
+        <div class="userNamePartWrapper">
+            <user:linkedUser user="#{cc.attrs.user}"/>
         </div>
     </h:panelGroup>
 </composite:implementation>

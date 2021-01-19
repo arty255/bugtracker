@@ -19,12 +19,12 @@
     width: 10%;
 }
 
-.userIdRecord {
+.userNamePartWrapper {
     flex-grow: 3;
     padding-left: 0.5em;
 }
 
-.userIdRecord link {
+.userNamePartWrapper link {
     display: flex;
     flex-direction: row;
 }

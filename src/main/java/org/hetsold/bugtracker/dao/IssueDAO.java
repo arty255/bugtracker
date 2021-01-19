@@ -9,6 +9,8 @@ public interface IssueDAO {
 
     List<Issue> listAll();
 
+    List<Issue> getIssueList(int startPosition, int limit);
+
     void delete(Issue issue);
 
     long getIssueCount();

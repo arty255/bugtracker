@@ -1,0 +1,18 @@
+.userNameWrapper{
+    padding: 0 0.5em;
+    text-align: center;
+}
+
+.userNameWrapper > link{
+    text-decoration: none;
+    display: flex;
+    flex-direction: row;
+}
+
+.firstName{
+    margin-right: 0.5em;
+}
+
+.lastName{
+
+}

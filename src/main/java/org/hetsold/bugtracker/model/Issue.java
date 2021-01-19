@@ -45,6 +45,25 @@ import java.util.List;
         }
 )
 
+@NamedEntityGraph(
+        name = "IssueEntityGraphToShortView",
+        includeAllAttributes = true,
+        attributeNodes = {
+                @NamedAttributeNode(value = "reportedBy", subgraph = "reportedBySubGraph"),
+        },
+        subgraphs = {
+                @NamedSubgraph(name = "reportedBySubGraph",
+                        attributeNodes = {
+                                @NamedAttributeNode("firstName"),
+                                @NamedAttributeNode("lastName")
+                        }),
+                @NamedSubgraph(name = "historyEventSubGraph",
+                        attributeNodes = {
+                                @NamedAttributeNode("eventDate"),
+                        })
+        }
+)
+
 @Entity
 @Table(name = "issue")
 public class Issue extends AbstractIdentity {
@@ -69,7 +88,7 @@ public class Issue extends AbstractIdentity {
     private String fixVersion;
     @Enumerated
     @Column(columnDefinition = "tinyint")
-    private State currentState;
+    private IssueState currentIssueState;
     @OneToMany(mappedBy = "issue", fetch = FetchType.LAZY)
     private List<HistoryEvent> history;
     @OneToOne
@@ -80,6 +99,15 @@ public class Issue extends AbstractIdentity {
 
     public Issue() {
         history = new ArrayList<>();
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.creationTime = new Date();
+    }
+
+    public void update(Issue newIssue) {
+
     }
 
     public String getIssueNumber() {
@@ -170,12 +198,12 @@ public class Issue extends AbstractIdentity {
         this.fixVersion = fixVersion;
     }
 
-    public State getCurrentState() {
-        return currentState;
+    public IssueState getCurrentIssueState() {
+        return currentIssueState;
     }
 
-    public void setCurrentState(State currentState) {
-        this.currentState = currentState;
+    public void setCurrentIssueState(IssueState currentIssueState) {
+        this.currentIssueState = currentIssueState;
     }
 
     public List<HistoryEvent> getHistory() {
@@ -261,8 +289,8 @@ public class Issue extends AbstractIdentity {
             return this;
         }
 
-        public Builder withIssueState(State issueState) {
-            newIssue.setCurrentState(issueState);
+        public Builder withIssueState(IssueState issueState) {
+            newIssue.setCurrentIssueState(issueState);
             return this;
         }
 

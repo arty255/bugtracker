@@ -7,8 +7,8 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:view="http://java.sun.com/jsf/composite/stateView"
-      xmlns:user="http://java.sun.com/jsf/composite/minifiedUserView"
+      xmlns:view="http://java.sun.com/jsf/composite/ticketResolveStateComponent"
+      xmlns:user="http://java.sun.com/jsf/composite/userComponent"
       xml:lang="en" lang="en">
 <ui:composition template="../templates/simpleTemplate.xhtml">
     <ui:define name="title">Ticket List</ui:define>
@@ -32,7 +32,7 @@
                                     <h:outputText value="#{ticket.uuid}"/>
                                     <f:param name="uuid" value="#{ticket.uuid}"/>
                                 </p:link>
-                                <view:stateView state="#{ticket.resolveState}"/>
+                                <view:stateView issueState="#{ticket.resolveState}"/>
                             </h:panelGrid>
                         </p:outputPanel>
 
@@ -53,7 +53,7 @@
                                              update=":viewForm:ticketsDataView"/>
                             <h:panelGrid columns="2">
                                 <h:outputText value="Reported by:"/>
-                                <user:minifiedUserView user="#{ticket.user}"/>
+                                <user:miniUser user="#{ticket.user}"/>
 
                                 <h:outputText value="Creation date:"/>
                                 <h:outputText value="#{ticket.creationTime}">
@@ -69,8 +69,8 @@
                 <p:dataViewGridItem>
                     <p:panel header="#{ticket.uuid}" styleClass="ticket">
                         <p:panelGrid columns="2" style="width: 100%" columnClasses="minimalWidthColumn,autoWidthColumn">
-                            <h:outputText value="Resolve state:"/>
-                            <view:stateView state="#{ticket.resolveState}"/>
+                            <h:outputText value="Resolve issueState:"/>
+                            <view:stateView issueState="#{ticket.resolveState}"/>
 
                             <h:outputText value="Description:"/>
                             <h:outputText value="#{ticket.description}"/>
@@ -84,7 +84,7 @@
                             </h:outputText>
 
                             <h:outputText value="Reported by:"/>
-                            <user:minifiedUserView user="#{ticket.user}"/>
+                            <user:miniUser user="#{ticket.user}"/>
                         </p:panelGrid>
                         <p:fieldset legend="Reproduce steps:"
                                     toggleable="true" collapsed="true"

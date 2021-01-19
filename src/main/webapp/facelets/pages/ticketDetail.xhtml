@@ -7,8 +7,8 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:view="http://java.sun.com/jsf/composite/stateView"
-      xmlns:user="http://java.sun.com/jsf/composite/minifiedUserView"
+      xmlns:view="http://java.sun.com/jsf/composite/ticketResolveStateComponent"
+      xmlns:user="http://java.sun.com/jsf/composite/userComponent"
       xml:lang="en" lang="en">
 <f:metadata>
     <f:viewParam name="uuid" value="#{detailedTicketBean.uuid}" required="#{not facesContext.postback}"/>
@@ -24,11 +24,11 @@
         <h:form>
             <p:panel header="Ticket: #{detailedTicketBean.selectedTicketDTO.uuid}" styleClass="ticket">
                 <p:panelGrid columns="2" style="width: 100%" columnClasses="minimalWidthColumn,autoWidthColumn">
-                    <h:outputText value="Resolve state:"/>
+                    <h:outputText value="Resolve issueState:"/>
                     <h:panelGroup layout="block">
                         <p:inplace style="float: left" styleClass="stateInplace" editor="true" effectSpeed="fast">
                             <f:facet name="output">
-                                <view:stateView state="#{detailedTicketBean.selectedTicketDTO.resolveState}"/>
+                                <view:stateView issueState="#{detailedTicketBean.selectedTicketDTO.resolveState}"/>
                             </f:facet>
                             <f:facet name="input">
                                 <p:selectOneMenu value="#{detailedTicketBean.selectedTicketDTO.resolveState}"
@@ -88,7 +88,7 @@
                     </h:outputText>
 
                     <h:outputText value="Reported by:"/>
-                    <user:minifiedUserView user="#{detailedTicketBean.selectedTicketDTO.user}"/>
+                    <user:miniUser user="#{detailedTicketBean.selectedTicketDTO.user}"/>
                 </p:panelGrid>
                 <div class="saveControls">
                     <div style="flex-basis: 100%; padding-right: 1em;">
@@ -117,7 +117,8 @@
                                                                rendered="#{not empty detailedTicketBean.selectedMessage.uuid}">
                                                     <f:setPropertyActionListener value="#{false}"
                                                                                  target="#{detailedTicketBean.editMode}"/>
-                                                    Cancel
+                                                    <i class="pi pi-times"></i>
+                                                    <h:outputText value="Cancel"/>
                                                 </p:commandLink>
                                             </p:outputPanel>
                                             <p:inputTextarea id="newMessageContent" widgetVar="messageContentWidget"
@@ -175,7 +176,7 @@
                             <f:facet name="actions">
                                 <!--todo: rendered rules for spring security integration-->
                                 <p:commandLink
-                                        styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
+                                        styleClass="ui-panel-titlebar-icon ui-corner-all ui-issueState-default"
                                         rendered="#{true}"
                                         process="@this"
                                         update="@form:ticketMessages,@(.editMarker),@(.controlButtonsMarker),@widgetVar(messageContentWidget)"
@@ -183,7 +184,7 @@
                                     <h:outputText styleClass="ui-icon pi pi-trash"/>
                                 </p:commandLink>
                                 <p:commandLink
-                                        styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
+                                        styleClass="ui-panel-titlebar-icon ui-corner-all ui-issueState-default"
                                         rendered="#{true}"
                                         process="@this"
                                         update="@(.editMarker),@(.controlButtonsMarker),@widgetVar(messageContentWidget)"
@@ -200,7 +201,7 @@
                                          styleClass="messageTable">
                                 <h:panelGroup layout="block" style="width: 100%; padding: 0.5em"
                                               styleClass="messageArea">
-                                    <user:minifiedUserView user="#{message.creator}"/>
+                                    <user:miniUser user="#{message.creator}"/>
                                     <div class="createDate">
                                         <p:outputLabel value="#{message.createDate}">
                                             <f:convertDateTime type="both" pattern="#{appUtilBean.dateFormat}"/>

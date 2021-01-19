@@ -1,4 +1,4 @@
-.ticketCommentWidgetArea{
+.ticketCommentWidgetArea {
     overflow: auto;
 }
 
@@ -173,15 +173,20 @@ body .ui-accordion .ui-accordion-header.ui-state-active:hover, body .ui-accordio
 .editMarker {
     display: flex;
     flex-direction: row;
-    /*align-content: space-between;*/
     justify-content: space-between;
     width: 100%;
     padding: 0.2em 0.1em;
-    font-style: italic;
 }
 
 .editMarker a {
-    font-style: normal;
+    align-items: center;
+    display: flex;
+    font-style: italic !important;
+    padding: 0 0.2em;
+}
+
+.editMarker i{
+    color: #ff0000;
 }
 
 .saveControls {

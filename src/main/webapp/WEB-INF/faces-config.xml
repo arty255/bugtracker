@@ -16,15 +16,6 @@
             <redirect/>
         </navigation-case>
     </navigation-rule>
-    <!--<navigation-rule>
-        <display-name>tickets list</display-name>
-        <from-view-id>*</from-view-id>
-        <navigation-case>
-            <from-outcome>tickets</from-outcome>
-            <to-view-id>/facelets/pages/tickets.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-    </navigation-rule>-->
 
     <navigation-rule>
         <display-name>to user profile</display-name>

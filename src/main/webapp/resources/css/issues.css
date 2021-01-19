@@ -1,0 +1,32 @@
+.issuesTable td {
+    vertical-align: top;
+}
+
+.minimalWidthColumn {
+    width: 10% !important;
+    vertical-align: top !important;
+}
+
+.issueUUIDColumn{
+    width: 15%;
+}
+
+.descriptionSection {
+    display: flex;
+    flex-direction: column
+}
+
+.descriptionSection > div {
+    width: 100%;
+}
+
+.descriptionContent {
+    padding: 0 0.2em 1em;
+}
+
+.descriptionSection .ticketBaseWrapper {
+    border-top: 1px solid #a6a6a6;
+    display: flex;
+    flex-direction: row;
+    padding-top: 0.4em;
+}
