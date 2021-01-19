@@ -27,7 +27,10 @@
                                      onclick="PF('addUserDialog').show();"/>
                 </f:facet>
                 <p:column headerText="#ID">
-                    <h:outputText value="#{user.uuid}"/>
+                    <p:link outcome="userProfile" includeViewParams="true">
+                        <f:param name="user" value="#{user.uuid}"/>
+                        <h:outputText value="#{user.uuid}"/>
+                    </p:link>
                 </p:column>
                 <p:column headerText="First name">
                     <h:outputText value="#{user.firstName}"/>

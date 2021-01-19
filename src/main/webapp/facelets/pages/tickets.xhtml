@@ -28,10 +28,10 @@
                         <p:outputPanel>
                             <h:panelGrid columns="1">
                                 <h:outputText value="Ticket:"/>
-                                <h:link outcome="ticketDetail" includeViewParams="true">
+                                <p:link outcome="ticketDetail" includeViewParams="true">
                                     <h:outputText value="#{ticket.uuid}"/>
                                     <f:param name="uuid" value="#{ticket.uuid}"/>
-                                </h:link>
+                                </p:link>
                                 <view:stateView state="#{ticket.resolveState}"/>
                             </h:panelGrid>
                         </p:outputPanel>
