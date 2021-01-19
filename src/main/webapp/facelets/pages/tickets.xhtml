@@ -17,12 +17,16 @@
     </ui:define>
     <ui:define name="content">
         <h:form id="viewForm">
-            <p:commandButton value="Add Ticket" icon="pi pi-plus"
-                             style="margin-bottom: 0.5em;"
-                             onclick="PF('PFAddTicketDialog').show()"/>
             <p:dataView id="ticketsDataView"
                         var="ticket" value="#{ticketListBean.ticketDTOList}"
                         gridIcon="pi pi-th-large" listIcon="pi pi-bars" styleClass="ticketDataView">
+                <f:facet name="header">
+                    <div style="display: flex; flex-direction: row; float: left;">
+                        <p:commandButton value="Add Ticket" icon="pi pi-plus"
+                                         style="margin-bottom: 0.5em;"
+                                         onclick="PF('PFAddTicketDialog').show()"/>
+                    </div>
+                </f:facet>
                 <p:dataViewListItem>
                     <h:panelGrid columns="3" style="width:100%" columnClasses="info,description">
                         <p:outputPanel>
