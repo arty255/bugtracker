@@ -19,7 +19,7 @@ public class IssueConverter {
                     .withIssueExpectedResult(issueDTO.getExpectedResult())
                     .withIssueSeverity(issueDTO.getSeverity())
                     .withFixVersion(issueDTO.getFixVersion())
-                    .withIssueState(issueDTO.getCurrentState())
+                    .withIssueState(issueDTO.getCurrentIssueState())
                     .build();
         }
         return issue;

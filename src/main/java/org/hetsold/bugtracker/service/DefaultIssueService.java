@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -53,6 +54,13 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public IssueDTO saveOrUpdateIssue(IssueDTO issueDTO) {
+
+        return null;
+    }
+
+    @Override
     public void generateAndSaveIssue() {
         Random random = new Random();
         User user;
@@ -78,6 +86,12 @@ public class DefaultIssueService implements IssueService {
             throw new IllegalArgumentException("uuid argument can not be empty");
         }
         return issueDAO.getIssueById(uuid);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public IssueDTO getIssueDTOById(String uuid) {
+        return IssueConverter.getIssueDTO(getIssueById(uuid));
     }
 
     @Override
@@ -112,7 +126,7 @@ public class DefaultIssueService implements IssueService {
                 .collect(Collectors.toList());
     }
 
-    public long getIssuesCount(){
+    public long getIssuesCount() {
         return issueDAO.getIssueCount();
     }
 
@@ -259,5 +273,10 @@ public class DefaultIssueService implements IssueService {
             stateChangeEvent.setExpectedFixVersion(issue.getFixVersion());
             stateChangeEvent.setEventDate(new Date());
         }
+    }
+
+    @Override
+    public List<HistoryEvent> getIssueEvents(IssueDTO issue, int startPosition, int limit) {
+        return new ArrayList<>();
     }
 }
