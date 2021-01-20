@@ -1,6 +1,7 @@
 package org.hetsold.bugtracker.view;
 
 
+import org.hetsold.bugtracker.model.IssueState;
 import org.hetsold.bugtracker.model.TicketResolveState;
 import org.hetsold.bugtracker.model.TicketVerificationState;
 
@@ -18,6 +19,8 @@ public class AppUtilBean implements Serializable {
     public TicketVerificationState[] getTicketVerificationStates() {
         return TicketVerificationState.values();
     }
+
+    public IssueState[] getIssueStates(){ return IssueState.values();}
 
     public String getDateFormat() {
         return "dd-MM-yyyy HH:mm";

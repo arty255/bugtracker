@@ -9,7 +9,8 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:user="http://xmlns.jcp.org/jsf/composite/userComponent"
       xmlns:ticket="http://xmlns.jcp.org/jsf/composite/ticketComponent"
-      xmlns:issue="http://xmlns.jcp.org/jsf/composite/issueStateComponent"
+      xmlns:issue="http://xmlns.jcp.org/jsf/composite/issueComponent"
+
       xml:lang="en" lang="en">
 <ui:composition template="../templates/simpleTemplate.xhtml">
     <ui:define name="title">
@@ -33,10 +34,7 @@
             <p:column headerText="ID" styleClass="issueUUIDColumn" >
                 <div>
                     <div>
-                        <p:link rel="#" includeViewParams="true">
-                            <f:param name="#{issue.uuid}"/>
-                            <h:outputText value="#{issue.uuid}"/>
-                        </p:link>
+                        <issue:linkedIssue uuid="#{issue.uuid}"/>
                     </div>
                     <div>
                         <issue:issueState issueState="#{issue.currentIssueState}"/>
@@ -54,7 +52,7 @@
                     </div>
                 </div>
             </p:column>
-            <p:column headerText="Reported By" styleClass="minimalWidthColumn">
+            <p:column headerText="Reported By" styleClass="minimalWidthColumn assignColumn">
                 <!--todo: show user group: forum, tester or other -based on department-->
                 <user:linkedUser user="#{issue.reportedBy}"/>
             </p:column>

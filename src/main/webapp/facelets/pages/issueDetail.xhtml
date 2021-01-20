@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:user="http://java.sun.com/jsf/composite/userComponent"
+      xmlns:issue="http://java.sun.com/jsf/composite/issueComponent"
+      xmlns:ticket="http://java.sun.com/jsf/composite/ticketComponent"
+      xml:lang="en" lang="en">
+<f:metadata>
+    <f:viewParam name="uuid" value="#{detailedIssueBean.uuid}" required="#{not facesContext.postback}"/>
+    <f:event type="preRenderView" listener="#{detailedIssueBean.preInitIssue}"/>
+</f:metadata>
+<ui:composition template="../templates/simpleTemplate.xhtml">
+    <ui:define name="title">
+        <h:outputText value="Issue: #{detailedIssueBean.issue.uuid}"/>
+    </ui:define>
+    <ui:define name="headArea">
+        <h:outputStylesheet library="css" name="reusable.css"/>
+        <h:outputStylesheet library="css" name="detailedIssue.css"/>
+    </ui:define>
+    <ui:define name="content">
+        <h:form>
+            <p:panel header="Issue: #{detailedIssueBean.issue.uuid}" styleClass="issue">
+                <p:panelGrid columns="2" style="width: 100%" columnClasses="minimalWidthColumn,autoWidthColumn">
+                    <h:outputText value="Current issue state:"/>
+                    <p:inplace style="float: left" styleClass="noPaddingInplace" effectSpeed="fast">
+                        <f:facet name="output">
+                            <issue:issueState issueState="#{detailedIssueBean.issue.currentIssueState}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <div style="display: flex; flex-direction: row">
+                                <p:selectOneMenu value="#{detailedIssueBean.issue.currentIssueState}"
+                                                 style="margin-right: 0.5em;">
+                                    <f:selectItems var="issueState" value="#{appUtilBean.issueStates}"
+                                                   itemLabel="#{issueState.label}" itemValue="#{issueState}"/>
+                                </p:selectOneMenu>
+                                <p:commandButton value="Change state"/>
+                            </div>
+                        </f:facet>
+                    </p:inplace>
+
+                    <h:outputText value="Description:"/>
+                    <p:inplace id="deInplace" styleClass="ticketDescriptionInplace noPaddingInplace" effectSpeed="fast" editor="true">
+                        <p:editor value="#{detailedIssueBean.issue.description}"
+                                  style="width: 100%"/>
+                    </p:inplace>
+
+                    <h:outputText value="Reproduce steps:"/>
+                    <p:inplace editor="true" styleClass="noPaddingInplace">
+                        <p:inputTextarea value="#{detailedIssueBean.issue.reproduceSteps}"
+                                         style="width: 100%"/>
+                    </p:inplace>
+
+                    <h:outputText value="Creation date:"/>
+                    <h:outputText value="#{detailedIssueBean.issue.creationTime}">
+                        <f:convertDateTime type="both" pattern="#{appUtilBean.dateFormat}"/>
+                    </h:outputText>
+
+                    <h:outputText value="Reported by:"/>
+                    <user:miniUser user="#{detailedIssueBean.issue.reportedBy}"/>
+
+                    <h:outputText value="Assigned to:"/>
+                    <h:panelGroup layout="block" style="display: flex; flex-direction: row; align-items: center">
+                        <div style="margin-right: 0.5em;">
+                            <user:miniUser user="#{detailedIssueBean.issue.assignedTo}"
+                                           rendered="#{not empty detailedIssueBean.issue.assignedTo}"/>
+                        </div>
+                        <h:outputText value="Not Assigned" rendered="#{empty detailedIssueBean.issue.assignedTo}"
+                                      style="margin-right: 0.5em;"/>
+                        <p:commandButton value="Unassign" icon="pi pi-user-minus"
+                                         rendered="#{not empty detailedIssueBean.issue.assignedTo}"
+                                         style="margin-right: 0.5em;"/>
+                        <p:commandButton value="Reassign" icon="pi pi-users"
+                                         style="margin-right: 0.5em;"/>
+                    </h:panelGroup>
+
+                    <h:outputText value="Base on Ticket:"/>
+                    <h:panelGroup layout="block" class="noPaddingWrapper">
+                        <ticket:linkedTicket uuid="#{detailedIssueBean.issue.ticket.uuid}"/>
+                    </h:panelGroup>
+                </p:panelGrid>
+                <div class="saveControls">
+                    <div style="flex-basis: 100%; padding-right: 1em;">
+                        <p:messages id="messages" showDetail="true" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                    <p:commandButton value="Save" actionListener="#{detailedIssueBean.save}"/>
+                </div>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

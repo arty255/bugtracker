@@ -12,14 +12,12 @@
 </composite:interface>
 <composite:implementation>
     <h:outputStylesheet library="css" name="linkedUser.css"/>
-    <h:panelGroup layout="block" styleClass="userViewContainer">
-        <div class="userNameWrapper">
-            <p:link outcome="userProfile" includeViewParams="true">
-                <h:outputText value="#{cc.attrs.user.firstName}" styleClass="firstName"/>
-                <h:outputText value="#{cc.attrs.user.lastName}" styleClass="lastName"/>
-                <f:param name="user" value="#{cc.attrs.user.uuid}"/>
-            </p:link>
-        </div>
-    </h:panelGroup>
+    <div class="linkWrapper">
+        <p:link outcome="userProfile" includeViewParams="true">
+            <h:outputText value="#{cc.attrs.user.firstName}" styleClass="firstName"/>
+            <h:outputText value="#{cc.attrs.user.lastName}" styleClass="lastName"/>
+            <f:param name="user" value="#{cc.attrs.user.uuid}"/>
+        </p:link>
+    </div>
 </composite:implementation>
 </html>

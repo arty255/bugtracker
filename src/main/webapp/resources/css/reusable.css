@@ -1,0 +1,3 @@
+.noPaddingInplace .ui-inplace-display {
+    padding: 0 !important;
+}

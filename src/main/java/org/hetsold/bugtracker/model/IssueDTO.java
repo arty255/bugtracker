@@ -14,6 +14,9 @@ public class IssueDTO {
     private Severity severity;
     private String fixVersion;
     private IssueState currentIssueState;
+    private UserDTO reportedBy;
+    private UserDTO assignedTo;
+    private TicketDTO ticket;
 
     public IssueDTO(Issue issue) {
         this.uuid = issue.getUuid();
@@ -27,6 +30,13 @@ public class IssueDTO {
         this.severity = issue.getSeverity();
         this.fixVersion = issue.getFixVersion();
         this.currentIssueState = issue.getCurrentIssueState();
+        this.reportedBy = new UserDTO(issue.getReportedBy());
+        if (issue.getAssignedTo() != null) {
+            this.assignedTo = new UserDTO(issue.getAssignedTo());
+        }
+        if (issue.getTicket() != null) {
+            this.ticket = new TicketDTO(issue.getTicket());
+        }
     }
 
     public String getUuid() {
@@ -109,11 +119,35 @@ public class IssueDTO {
         this.fixVersion = fixVersion;
     }
 
-    public IssueState getCurrentState() {
+    public IssueState getCurrentIssueState() {
         return currentIssueState;
     }
 
-    public void setCurrentState(IssueState currentIssueState) {
+    public void setCurrentIssueState(IssueState currentIssueState) {
         this.currentIssueState = currentIssueState;
+    }
+
+    public UserDTO getReportedBy() {
+        return reportedBy;
+    }
+
+    public void setReportedBy(UserDTO reportedBy) {
+        this.reportedBy = reportedBy;
+    }
+
+    public UserDTO getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(UserDTO assignedTo) {
+        this.assignedTo = assignedTo;
+    }
+
+    public TicketDTO getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(TicketDTO ticket) {
+        this.ticket = ticket;
     }
 }

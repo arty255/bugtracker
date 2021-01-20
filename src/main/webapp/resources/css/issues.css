@@ -7,8 +7,16 @@
     vertical-align: top !important;
 }
 
-.issueUUIDColumn{
+.issueUUIDColumn {
     width: 15%;
+}
+
+.issueUUIDColumn .linkWrapper {
+    padding: 0 !important;
+}
+
+.assignColumn {
+    text-align: center;
 }
 
 .descriptionSection {

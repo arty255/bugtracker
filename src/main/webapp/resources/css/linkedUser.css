@@ -1,9 +1,9 @@
-.userNameWrapper{
+.linkWrapper{
     padding: 0 0.5em;
-    text-align: center;
+    /*text-align: center;*/
 }
 
-.userNameWrapper > link{
+.linkWrapper > link{
     text-decoration: none;
     display: flex;
     flex-direction: row;

@@ -7,7 +7,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:view="http://java.sun.com/jsf/composite/ticketResolveStateComponent"
+      xmlns:ticket="http://java.sun.com/jsf/composite/ticketComponent"
       xmlns:user="http://java.sun.com/jsf/composite/userComponent"
       xml:lang="en" lang="en">
 <f:metadata>
@@ -28,7 +28,7 @@
                     <h:panelGroup layout="block">
                         <p:inplace style="float: left" styleClass="stateInplace" editor="true" effectSpeed="fast">
                             <f:facet name="output">
-                                <view:stateView issueState="#{detailedTicketBean.selectedTicketDTO.resolveState}"/>
+                                <ticket:stateView issueState="#{detailedTicketBean.selectedTicketDTO.resolveState}"/>
                             </f:facet>
                             <f:facet name="input">
                                 <p:selectOneMenu value="#{detailedTicketBean.selectedTicketDTO.resolveState}"

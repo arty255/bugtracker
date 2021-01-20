@@ -7,7 +7,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:view="http://java.sun.com/jsf/composite/ticketResolveStateComponent"
+      xmlns:ticket="http://java.sun.com/jsf/composite/ticketComponent"
       xmlns:user="http://java.sun.com/jsf/composite/userComponent"
       xml:lang="en" lang="en">
 <ui:composition template="../templates/simpleTemplate.xhtml">
@@ -36,7 +36,7 @@
                                     <h:outputText value="#{ticket.uuid}"/>
                                     <f:param name="uuid" value="#{ticket.uuid}"/>
                                 </p:link>
-                                <view:stateView issueState="#{ticket.resolveState}"/>
+                                <ticket:stateView issueState="#{ticket.resolveState}"/>
                             </h:panelGrid>
                         </p:outputPanel>
 
@@ -74,7 +74,7 @@
                     <p:panel header="#{ticket.uuid}" styleClass="ticket">
                         <p:panelGrid columns="2" style="width: 100%" columnClasses="minimalWidthColumn,autoWidthColumn">
                             <h:outputText value="Resolve issueState:"/>
-                            <view:stateView issueState="#{ticket.resolveState}"/>
+                            <ticket:stateView issueState="#{ticket.resolveState}"/>
 
                             <h:outputText value="Description:"/>
                             <h:outputText value="#{ticket.description}"/>

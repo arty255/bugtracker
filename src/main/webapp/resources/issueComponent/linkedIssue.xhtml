@@ -14,7 +14,7 @@
 <composite:implementation>
     <h:outputStylesheet library="css" name="linkedUser.css"/>
     <div class="linkWrapper">
-        <p:link outcome="ticketDetail" includeViewParams="true">
+        <p:link outcome="issueDetail" includeViewParams="true">
             <f:param name="uuid" value="#{cc.attrs.uuid}"/>
             <h:outputText value="#{cc.attrs.uuid}"/>
         </p:link>
