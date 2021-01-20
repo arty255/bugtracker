@@ -15,66 +15,75 @@
     <f:event type="preRenderView" listener="#{detailedTicketBean.initData}"/>
 </f:metadata>
 <ui:composition template="../templates/simpleTemplate.xhtml">
-    <ui:define name="title">Ticket: #{detailedTicketBean.selectedTicketDTO.uuid}</ui:define>
+    <ui:define name="title">Ticket: #{detailedTicketBean.ticket.uuid}</ui:define>
     <ui:define name="headArea">
         <h:outputStylesheet library="css" name="tickets.css"/>
+        <h:outputStylesheet library="css" name="reusable.css"/>
         <h:outputScript library="js" name="ticket.js"/>
     </ui:define>
     <ui:define name="content">
         <h:form>
-            <p:panel header="Ticket: #{detailedTicketBean.selectedTicketDTO.uuid}" styleClass="ticket">
-                <p:panelGrid columns="2" style="width: 100%" columnClasses="minimalWidthColumn,autoWidthColumn">
-                    <h:outputText value="Resolve issueState:"/>
-                    <h:panelGroup layout="block">
-                        <p:inplace style="float: left" styleClass="stateInplace" editor="true" effectSpeed="fast">
+            <p:panel header="Ticket: #{detailedTicketBean.ticket.uuid}" styleClass="ticket">
+                <p:panelGrid columns="2" columnClasses="minimalWidthColumn,autoWidthColumn">
+                    <h:outputText value="Ticket resolve state:"/>
+                    <h:panelGroup layout="block" styleClass="resolveStateContent">
+                        <p:inplace styleClass="noPaddingInplace" editor="true" effectSpeed="fast">
                             <f:facet name="output">
-                                <ticket:stateView issueState="#{detailedTicketBean.selectedTicketDTO.resolveState}"/>
+                                <ticket:stateLabel issueState="#{detailedTicketBean.ticket.resolveState}"/>
                             </f:facet>
                             <f:facet name="input">
-                                <p:selectOneMenu value="#{detailedTicketBean.selectedTicketDTO.resolveState}"
+                                <p:selectOneMenu value="#{detailedTicketBean.ticket.resolveState}"
                                                  valueChangeListener="#{detailedTicketBean.tickedChangedListener}">
                                     <f:selectItems var="item" value="#{appUtilBean.ticketResolveStates}"
                                                    itemLabel="#{item.label}" itemValue="#{item}"/>
                                 </p:selectOneMenu>
                             </f:facet>
                         </p:inplace>
-                        <p:commandButton value="Create issue" icon="pi pi-tags"
-                                         style="float: right; margin-right: 0.5em"
-                                         actionListener="#{detailedTicketBean.createIssueFromTicket}"
-                                         onsuccess="PF('issueCreatedDialog').show();"/>
+                        <div>
+                            <!--todo: change with spring security integration-->
+                            <p:commandButton value="Create issue" icon="pi pi-tags"
+                                             rendered="#{true}"
+                                             actionListener="#{detailedTicketBean.createIssueFromTicket}"
+                                             onsuccess="PF('issueCreatedDialog').show();"/>
+                            <!--todo: change with spring security integration-->
+                            <p:commandButton value="Link issue" icon="pi pi-list"
+                                             rendered="#{true}"/>
+                        </div>
                     </h:panelGroup>
 
                     <h:outputText value="Description:"/>
-                    <p:inplace id="deInplace" styleClass="ticketDescriptionInplace" effectSpeed="fast" editor="true">
+                    <p:inplace id="deInplace" styleClass="ticketDescriptionInplace noPaddingInplace"
+                               effectSpeed="fast" editor="true">
                         <f:facet name="output">
-                            <h:outputText id="description" value="#{detailedTicketBean.selectedTicketDTO.description}"/>
+                            <h:outputText id="description" value="#{detailedTicketBean.ticket.description}"/>
                         </f:facet>
                         <f:facet name="input">
-                            <p:editor value="#{detailedTicketBean.selectedTicketDTO.description}"
-                                      valueChangeListener="#{detailedTicketBean.tickedChangedListener}"
-                                      style="width: 100%"/>
+                            <p:inputTextarea value="#{detailedTicketBean.ticket.description}"
+                                             valueChangeListener="#{detailedTicketBean.tickedChangedListener}"/>
                         </f:facet>
                     </p:inplace>
 
                     <h:outputText value="Reproduce steps:"/>
-                    <p:inplace editor="true">
+                    <p:inplace styleClass="ticketDescriptionInplace noPaddingInplace"
+                               editor="true">
                         <f:facet name="output">
-                            <h:outputText value="#{detailedTicketBean.selectedTicketDTO.reproduceSteps}"/>
+                            <h:outputText value="#{detailedTicketBean.ticket.reproduceSteps}"/>
                         </f:facet>
                         <f:facet name="input">
-                            <p:inputTextarea value="#{detailedTicketBean.selectedTicketDTO.reproduceSteps}"
+                            <p:inputTextarea value="#{detailedTicketBean.ticket.reproduceSteps}"
                                              valueChangeListener="#{detailedTicketBean.tickedChangedListener}"
                                              style="width: 100%"/>
                         </f:facet>
                     </p:inplace>
 
                     <h:outputText value="Verification:"/>
-                    <p:inplace editor="true" effectSpeed="fast">
+                    <p:inplace editor="true" styleClass="noPaddingInplace" effectSpeed="fast">
                         <f:facet name="output">
-                            <h:outputText value="#{detailedTicketBean.selectedTicketDTO.verificationState}"/>
+                            <ticket:vrificationLabel
+                                    verificationState="#{detailedTicketBean.ticket.verificationState}"/>
                         </f:facet>
                         <f:facet name="input">
-                            <p:selectOneMenu value="#{detailedTicketBean.selectedTicketDTO.verificationState}"
+                            <p:selectOneMenu value="#{detailedTicketBean.ticket.verificationState}"
                                              valueChangeListener="#{detailedTicketBean.tickedChangedListener}">
                                 <f:selectItems var="item" value="#{appUtilBean.ticketVerificationStates}"
                                                itemLabel="#{item.label}" itemValue="#{item}"/>
@@ -83,12 +92,12 @@
                     </p:inplace>
 
                     <h:outputText value="Creation date:"/>
-                    <h:outputText value="#{detailedTicketBean.selectedTicketDTO.creationTime}">
-                        <f:convertDateTime type="both" pattern="dd-MM-yyyy HH:mm"/>
+                    <h:outputText value="#{detailedTicketBean.ticket.creationTime}">
+                        <f:convertDateTime type="both" pattern="#{appUtilBean.dateFormat}"/>
                     </h:outputText>
 
                     <h:outputText value="Reported by:"/>
-                    <user:miniUser user="#{detailedTicketBean.selectedTicketDTO.user}"/>
+                    <user:miniUser user="#{detailedTicketBean.ticket.user}"/>
                 </p:panelGrid>
                 <div class="saveControls">
                     <div style="flex-basis: 100%; padding-right: 1em;">

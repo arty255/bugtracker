@@ -80,7 +80,7 @@
                                     </h:link>
                                 </p:column>
                                 <p:column headerText="Resolve Status">
-                                    <ticket:stateView issueState="#{ticket.resolveState}"/>
+                                    <ticket:stateLabel issueState="#{ticket.resolveState}"/>
                                 </p:column>
                                 <p:column headerText="Description">
                                     <h:outputText value="#{ticket.description}"/>

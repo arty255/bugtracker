@@ -12,6 +12,10 @@
     margin-right: 0.5em;
 }
 
+.stateText{
+    text-transform: capitalize;
+}
+
 .red {
     background-color: #ff0000;
 }

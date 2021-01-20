@@ -25,7 +25,7 @@ import java.util.List;
 @ViewScoped
 public class DetailedTicketBean implements Serializable {
     private String uuid;
-    private TicketDTO selectedTicketDTO;
+    private TicketDTO ticket;
     private List<MessageDTO> ticketMessages;
     private MessageDTO selectedMessage;
     private IssueShortDTO createdIssue;
@@ -51,13 +51,13 @@ public class DetailedTicketBean implements Serializable {
 
     public void initData() {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            selectedTicketDTO = ticketService.getTicketDTO(uuid);
+            ticket = ticketService.getTicketDTO(uuid);
             initMessageList();
         }
     }
 
-    public TicketDTO getSelectedTicketDTO() {
-        return selectedTicketDTO;
+    public TicketDTO getTicket() {
+        return ticket;
     }
 
     public String getUuid() {
@@ -72,7 +72,7 @@ public class DetailedTicketBean implements Serializable {
         /*todo: getUser FromSecurityContext*/
         UserDTO user = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
         try {
-            createdIssue = issueService.createIssueFromTicket(selectedTicketDTO, user);
+            createdIssue = issueService.createIssueFromTicket(ticket, user);
         } catch (IllegalArgumentException e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No issue created", "Probably issue already exists"));
         }
@@ -81,7 +81,7 @@ public class DetailedTicketBean implements Serializable {
     public void updateTicket() {
         /*todo: getUser FromSecurityContext*/
         UserDTO user = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
-        ticketService.updateTicket(selectedTicketDTO, user);
+        ticketService.updateTicket(ticket, user);
     }
 
     public void tickedChangedListener(ValueChangeEvent event) {
@@ -91,7 +91,7 @@ public class DetailedTicketBean implements Serializable {
     public void addMessageToTicket() {
         /*todo: getUser FromSecurityContext*/
         UserDTO user = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
-        ticketService.addTicketMessage(selectedTicketDTO, selectedMessage, user);
+        ticketService.addTicketMessage(ticket, selectedMessage, user);
         initMessage();
         initMessageList();
     }
@@ -114,7 +114,7 @@ public class DetailedTicketBean implements Serializable {
 
 
     public void initMessageList() {
-        ticketMessages = ticketService.getTicketMessages(selectedTicketDTO, 0, 99);
+        ticketMessages = ticketService.getTicketMessages(ticket, 0, 99);
     }
 
     public void initMessage() {

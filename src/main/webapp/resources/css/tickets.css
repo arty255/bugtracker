@@ -10,6 +10,22 @@
 
 }
 
+.ticket > .ui-panelgrid {
+    width: 100%;
+}
+
+.resolveStateContent {
+    align-content: space-between;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.resolveStateContent button {
+    margin-right: 0.5em;
+}
+
 .ticket > .ui-panel-content {
     padding: 0.4em 0.5em !important;
 }
@@ -58,16 +74,16 @@
     align-items: center;
 }
 
-.stateInplace .ui-inplace-display {
-    padding: 0 !important;
-}
-
 .ticketDescriptionInplace {
 
 }
 
 .ticketDescriptionInplace > span {
     align-items: flex-start;
+}
+
+.ticketDescriptionInplace textarea {
+    width: 100%;
 }
 
 .messageTable tr td {
@@ -185,7 +201,7 @@ body .ui-accordion .ui-accordion-header.ui-state-active:hover, body .ui-accordio
     padding: 0 0.2em;
 }
 
-.editMarker i{
+.editMarker i {
     color: #ff0000;
 }
 

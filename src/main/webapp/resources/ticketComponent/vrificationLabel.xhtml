@@ -7,14 +7,15 @@
       xmlns:composite="http://java.sun.com/jsf/composite"
       xml:lang="en" lang="en">
 <composite:interface>
-    <composite:attribute name="issueState" type="org.hetsold.bugtracker.model.IssueState" required="true"/>
+    <composite:attribute name="verificationState" type="org.hetsold.bugtracker.model.TicketVerificationState"
+                         required="true"/>
 </composite:interface>
 <composite:implementation>
     <h:outputStylesheet library="css" name="stateView.css"/>
     <h:panelGroup layout="block" styleClass="stateContainer">
-        <div class="stateIndicator #{cc.attrs.issueState.label == 'assigned' ? 'orange' :
-        (cc.attrs.issueState.label == 'fixed' ? 'green': 'red')}"></div>
-        <h:outputText value="#{cc.attrs.issueState.label}" styleClass="stateText"/>
+        <div class="stateIndicator #{cc.attrs.verificationState == 'NotVerified' ? 'gray' :
+        (cc.attrs.verificationState == 'Verified' ? 'green': 'gray')}"></div>
+        <h:outputText value="#{cc.attrs.verificationState.label}" styleClass="stateText"/>
     </h:panelGroup>
 </composite:implementation>
 </html>

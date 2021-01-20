@@ -1,3 +1,11 @@
 .noPaddingInplace .ui-inplace-display {
     padding: 0 !important;
 }
+
+.noPaddingWrapper {
+
+}
+
+.noPaddingWrapper .linkWrapper {
+    padding: 0 !important;
+}

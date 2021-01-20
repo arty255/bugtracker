@@ -14,7 +14,7 @@
     <h:panelGroup layout="block" styleClass="stateContainer">
         <div class="stateIndicator #{cc.attrs.issueState == 'NotResolved' ? 'red' :
         (cc.attrs.issueState == 'Resolved' ? 'green': 'gray')}"></div>
-        <h:outputText value="#{cc.attrs.issueState}"/>
+        <h:outputText value="#{cc.attrs.issueState.label}" styleClass="stateText"/>
     </h:panelGroup>
 </composite:implementation>
 </html>

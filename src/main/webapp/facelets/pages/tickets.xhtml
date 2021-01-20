@@ -36,7 +36,7 @@
                                     <h:outputText value="#{ticket.uuid}"/>
                                     <f:param name="uuid" value="#{ticket.uuid}"/>
                                 </p:link>
-                                <ticket:stateView issueState="#{ticket.resolveState}"/>
+                                <ticket:stateLabel issueState="#{ticket.resolveState}"/>
                             </h:panelGrid>
                         </p:outputPanel>
 
@@ -74,7 +74,7 @@
                     <p:panel header="#{ticket.uuid}" styleClass="ticket">
                         <p:panelGrid columns="2" style="width: 100%" columnClasses="minimalWidthColumn,autoWidthColumn">
                             <h:outputText value="Resolve issueState:"/>
-                            <ticket:stateView issueState="#{ticket.resolveState}"/>
+                            <ticket:stateLabel issueState="#{ticket.resolveState}"/>
 
                             <h:outputText value="Description:"/>
                             <h:outputText value="#{ticket.description}"/>
