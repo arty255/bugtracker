@@ -25,7 +25,7 @@ public class SimpleIssueFacade implements IssueFacade {
 
     @Override
     public void generateRandomIssue() {
-        issueService.generateAndSaveIssue();
+
     }
 
     @Override
@@ -50,7 +50,7 @@ public class SimpleIssueFacade implements IssueFacade {
     }
 
     @Override
-    public List<IssueShortDTO> getIssue(IssueShortDTO issueShortDTO) {
+    public List<IssueShortDTO> getIssueList(IssueShortDTO issueShortDTO) {
         return issueService.findIssueByFilter(IssueConverter.getIssue(issueShortDTO))
                 .stream()
                 .map(IssueConverter::getIssueShortDTO)
