@@ -2,7 +2,6 @@ package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dao.HistoryEventDAO;
 import org.hetsold.bugtracker.dao.IssueDAO;
-import org.hetsold.bugtracker.dao.UserDAO;
 import org.hetsold.bugtracker.facade.IssueConverter;
 import org.hetsold.bugtracker.facade.TicketConvertor;
 import org.hetsold.bugtracker.facade.UserConvertor;
@@ -15,25 +14,24 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class DefaultIssueService implements IssueService {
     private IssueDAO issueDAO;
-    private UserDAO userDAO;
     private HistoryEventDAO historyEventDAO;
     private MessageService messageService;
     private TicketService ticketService;
+    private UserService userService;
 
     public DefaultIssueService() {
     }
 
     @Autowired
-    public DefaultIssueService(IssueDAO issueDAO, UserDAO userDAO, HistoryEventDAO historyEventDAO, MessageService messageService, TicketService ticketService) {
+    public DefaultIssueService(IssueDAO issueDAO, UserService userService, HistoryEventDAO historyEventDAO, MessageService messageService, TicketService ticketService) {
         this.issueDAO = issueDAO;
-        this.userDAO = userDAO;
+        this.userService = userService;
         this.historyEventDAO = historyEventDAO;
         this.messageService = messageService;
         this.ticketService = ticketService;
@@ -44,7 +42,7 @@ public class DefaultIssueService implements IssueService {
         if (issue.getCreationTime() == null) {
             throw new IllegalArgumentException("issue creationTime can not be null");
         }
-        if (issue.getReportedBy() == null || userDAO.getUserById(issue.getReportedBy().getUuid()) == null) {
+        if (issue.getReportedBy() == null || userService.getUserById(issue.getReportedBy().getUuid()) == null) {
             throw new IllegalArgumentException("issueReporter argument can not be null or not persisted");
         }
         if (issue.getDescription().isEmpty()) {
@@ -58,25 +56,6 @@ public class DefaultIssueService implements IssueService {
     public IssueDTO saveOrUpdateIssue(IssueDTO issueDTO) {
 
         return null;
-    }
-
-    @Override
-    public void generateAndSaveIssue() {
-        Random random = new Random();
-        User user;
-        List<User> userList = userDAO.listAll();
-        if (userList.size() < 5) {
-            user = new User("user" + random.nextInt(5) + " firsName", "user " + random.nextInt(5) + " lastName");
-            userDAO.save(user);
-            user = userDAO.getUserById(user.getUuid());
-        } else {
-            user = userList.get(random.nextInt(5));
-        }
-        Issue issue = new Issue();
-        issue.setReportedBy(user);
-        issue.setCreationTime(new Date());
-        issue.setDescription("description" + random.nextInt());
-        issueDAO.save(issue);
     }
 
     @Override
@@ -137,7 +116,8 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
-    public void changeIssueState(Issue issue, IssueState newIssueState, User user) {
+    @Transactional(propagation = Propagation.REQUIRED)
+    public boolean changeIssueState(Issue issue, IssueState newIssueState, User user) {
         if (issue == null || (issue = issueDAO.getIssueById(issue.getUuid())) == null) {
             throw new IllegalArgumentException("issue argument can not be null or not persisted");
         }
@@ -146,6 +126,9 @@ public class DefaultIssueService implements IssueService {
         }
         if (newIssueState == IssueState.ASSIGNED && issue.getAssignedTo() == null) {
             throw new IllegalArgumentException("cannot change State to assigned with unassigned User. use changeIssueAssignedUser");
+        }
+        if (user == null || user.getUuid().isEmpty() || (user = userService.getUserById(user.getUuid())) == null) {
+            throw new IllegalArgumentException("incorrect user: user can not be null or not persisted");
         }
         if (issue.getCurrentIssueState() != newIssueState) {
             issue.setCurrentIssueState(newIssueState);
@@ -157,10 +140,22 @@ public class DefaultIssueService implements IssueService {
             issue.setCurrentIssueState(newIssueState);
             historyEventDAO.saveStateChange(event);
         }
+        return true;
+    }
+
+    @Override
+    public boolean changeIssueState(IssueDTO issueDTO, IssueState newIssueState, UserDTO userDTO) {
+        if (issueDTO == null || issueDTO.getUuid().isEmpty()) {
+            throw new IllegalArgumentException("incorrect issue: issue can not be null");
+        }
+        if (userDTO == null || userDTO.getUuid().isEmpty()) {
+            throw new IllegalArgumentException("incorrect user: user can not be null");
+        }
+        return changeIssueState(IssueConverter.getIssue(issueDTO), newIssueState, UserConvertor.getUser(userDTO));
     }
 
     public void changeIssueAssignedUser(Issue issue, User assignedTo, User user) {
-        if (assignedTo == null || (userDAO.getUserById(assignedTo.getUuid())) == null) {
+        if (assignedTo == null || (userService.getUserById(assignedTo.getUuid())) == null) {
             throw new IllegalArgumentException("assignedUser argument can not be null or not persisted");
         }
         issue = getIssueById(issue.getUuid());
@@ -183,7 +178,7 @@ public class DefaultIssueService implements IssueService {
             throw new IllegalArgumentException("message can not be null/empty content or not persisted");
         }
         User user;
-        if (userDTO == null || (user = userDAO.getUserById(userDTO.getUuid())) == null) {
+        if (userDTO == null || (user = userService.getUserById(userDTO.getUuid())) == null) {
             throw new IllegalArgumentException("user argument can not be null or not persisted");
         }
         addIssueMessage(issue, message, user);
@@ -197,7 +192,7 @@ public class DefaultIssueService implements IssueService {
         if (message == null || message.getContent().isEmpty()) {
             throw new IllegalArgumentException("message can not be null or with empty content ");
         }
-        if (user == null || (user = userDAO.getUserById(user.getUuid())) == null) {
+        if (user == null || (user = userService.getUserById(user.getUuid())) == null) {
             throw new IllegalArgumentException("user argument can not be null or not persisted");
         }
         Message savedMessage = messageService.saveNewMessage(message, user);
@@ -213,7 +208,7 @@ public class DefaultIssueService implements IssueService {
         if (getIssueById(issue.getUuid()) != null) {
             throw new IllegalArgumentException("new issue wit this id can not be created");
         }
-        if (user == null || (user = userDAO.getUserById(user.getUuid())) == null) {
+        if (user == null || (user = userService.getUserById(user.getUuid())) == null) {
             throw new IllegalArgumentException("user argument can not be null or not persisted");
         }
         issue.setCreationTime(new Date());

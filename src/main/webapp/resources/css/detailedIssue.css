@@ -1,0 +1,9 @@
+.stateDescriptionArea {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}
+
+.stateDescriptionArea button {
+    margin-left: 0.5em;
+}

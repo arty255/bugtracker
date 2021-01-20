@@ -28,26 +28,40 @@
             <p:panel header="Issue: #{detailedIssueBean.issue.uuid}" styleClass="issue">
                 <p:panelGrid columns="2" style="width: 100%" columnClasses="minimalWidthColumn,autoWidthColumn">
                     <h:outputText value="Current issue state:"/>
-                    <p:inplace style="float: left" styleClass="noPaddingInplace" effectSpeed="fast">
+                    <p:inplace widgetVar="issueStateInplaceWidget" styleClass="noPaddingInplace"
+                               effectSpeed="normal">
                         <f:facet name="output">
-                            <issue:issueState issueState="#{detailedIssueBean.issue.currentIssueState}"/>
+                            <h:panelGroup id="issueStateLabelWrapper">
+                                <issue:issueState issueState="#{detailedIssueBean.issue.currentIssueState}"/>
+                            </h:panelGroup>
                         </f:facet>
                         <f:facet name="input">
-                            <div style="display: flex; flex-direction: row">
-                                <p:selectOneMenu value="#{detailedIssueBean.issue.currentIssueState}"
-                                                 style="margin-right: 0.5em;">
+                            <div class="stateDescriptionArea">
+                                <p:selectOneMenu id="issueStateOneMenu"
+                                                 value="#{detailedIssueBean.issue.currentIssueState}">
+                                    <p:ajax event="valueChange" listener="#{detailedIssueBean.issueStateChanged}"
+                                            process="@this"
+                                            update="issueStateChangeButtonWrapper"/>
                                     <f:selectItems var="issueState" value="#{appUtilBean.issueStates}"
                                                    itemLabel="#{issueState.label}" itemValue="#{issueState}"/>
                                 </p:selectOneMenu>
-                                <p:commandButton value="Change state"/>
+                                <h:panelGroup id="issueStateChangeButtonWrapper" layout="block">
+                                    <p:commandButton value="Change state"
+                                                     process="issueStateOneMenu @this"
+                                                     update="issueStateLabelWrapper"
+                                                     actionListener="#{detailedIssueBean.changeIssueState}"
+                                                     onsuccess="PF('issueStateInplaceWidget').hide()"
+                                                     rendered="#{detailedIssueBean.originalStateChanged}"/>
+                                </h:panelGroup>
                             </div>
                         </f:facet>
                     </p:inplace>
 
                     <h:outputText value="Description:"/>
-                    <p:inplace id="deInplace" styleClass="ticketDescriptionInplace noPaddingInplace" effectSpeed="fast" editor="true">
-                        <p:editor value="#{detailedIssueBean.issue.description}"
-                                  style="width: 100%"/>
+                    <p:inplace id="deInplace" styleClass="ticketDescriptionInplace noPaddingInplace" effectSpeed="fast"
+                               editor="true">
+                        <p:inputTextarea value="#{detailedIssueBean.issue.description}"
+                                         style="width: 100%"/>
                     </p:inplace>
 
                     <h:outputText value="Reproduce steps:"/>
