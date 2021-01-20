@@ -7,9 +7,13 @@ import java.util.List;
 public interface IssueService {
     void save(Issue issue);
 
+    IssueDTO saveOrUpdateIssue(IssueDTO issueDTO);
+
     void generateAndSaveIssue();
 
     Issue getIssueById(String uuid);
+
+    IssueDTO getIssueDTOById(String uuid);
 
     void deleteIssue(Issue issue);
 
@@ -41,4 +45,6 @@ public interface IssueService {
     IssueShortDTO createIssueFromTicket(TicketDTO selectedTicketDTO, UserDTO user);
 
     void updateIssueState(Issue issue, User user);
+
+    List<HistoryEvent> getIssueEvents(IssueDTO issue, int startPosition, int limit);
 }

@@ -15,16 +15,12 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(
-        basePackages = {
-                "org.hetsold.bugtracker.dao",
+        basePackages = {"org.hetsold.bugtracker.dao",
                 "org.hetsold.bugtracker.service",
-                "org.hetsold.bugtracker.facade"
-        }
-)
+                "org.hetsold.bugtracker.facade"})
 @PropertySource({
         "classpath:dbConfig.properties",
-        "classpath:jpaProp.properties"
-})
+        "classpath:jpaProp.properties"})
 public class AppConfig {
     @Autowired
     private Environment environment;
