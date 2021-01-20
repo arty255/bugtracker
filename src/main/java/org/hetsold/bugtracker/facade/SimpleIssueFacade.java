@@ -25,7 +25,7 @@ public class SimpleIssueFacade implements IssueFacade {
 
     @Override
     public void generateRandomIssue() {
-        issueService.generateAndSaveIssue();
+
     }
 
     @Override

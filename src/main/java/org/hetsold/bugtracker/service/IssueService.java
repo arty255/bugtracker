@@ -9,8 +9,6 @@ public interface IssueService {
 
     IssueDTO saveOrUpdateIssue(IssueDTO issueDTO);
 
-    void generateAndSaveIssue();
-
     Issue getIssueById(String uuid);
 
     IssueDTO getIssueDTOById(String uuid);
@@ -30,7 +28,9 @@ public interface IssueService {
     //issue - selected issue to change State
     //newState - new issue state
     //assignedTo - user to who issue will be assigned
-    void changeIssueState(Issue issue, IssueState newIssueState, User user);
+    boolean changeIssueState(Issue issue, IssueState newIssueState, User user);
+
+    boolean changeIssueState(IssueDTO issueDTO, IssueState newIssueState, UserDTO userDTO);
 
     void changeIssueAssignedUser(Issue issue, User assignedTo, User user);
 
