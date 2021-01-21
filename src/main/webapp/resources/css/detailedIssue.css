@@ -12,6 +12,12 @@
     padding-right: 0.5em;
 }
 
+.issueAssignContentWrapper {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+}
+
 .issueAssignControlsWrapper {
     display: flex;
     flex-direction: row;

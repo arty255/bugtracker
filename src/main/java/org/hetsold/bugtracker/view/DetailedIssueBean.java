@@ -1,10 +1,7 @@
 package org.hetsold.bugtracker.view;
 
 
-import org.hetsold.bugtracker.model.HistoryEvent;
-import org.hetsold.bugtracker.model.IssueDTO;
-import org.hetsold.bugtracker.model.IssueState;
-import org.hetsold.bugtracker.model.UserDTO;
+import org.hetsold.bugtracker.model.*;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.MessageService;
 import org.hetsold.bugtracker.service.UserService;
@@ -39,6 +36,9 @@ public class DetailedIssueBean implements Serializable {
     private LazyDataModel<UserDTO> userDTODataModel;
     private UserDTO selectedToAssignUser;
 
+    private MessageDTO selectedMessage;
+    private boolean editMode;
+
     private UserDTO activeUser;
 
     @PostConstruct
@@ -49,6 +49,7 @@ public class DetailedIssueBean implements Serializable {
         selectedToAssignUser = null;
         userDTODataModel = new UserDTOLazyDataModel(userService);
         activeUser = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
+        initMessageListener();
     }
 
     public void preInitIssue() {
@@ -80,6 +81,18 @@ public class DetailedIssueBean implements Serializable {
 
     public void reAssignUser() {
         issueService.changeIssueAssignedUser(issue, selectedToAssignUser, activeUser);
+    }
+
+    public void initMessageListener() {
+        selectedMessage = new MessageDTO();
+    }
+
+    public void editMessageListener() {
+
+    }
+
+    public void saveMessageListener() {
+
     }
 
     public void save() {
@@ -118,4 +131,19 @@ public class DetailedIssueBean implements Serializable {
         return userDTODataModel;
     }
 
+    public MessageDTO getSelectedMessage() {
+        return selectedMessage;
+    }
+
+    public void setSelectedMessage(MessageDTO selectedMessage) {
+        this.selectedMessage = selectedMessage;
+    }
+
+    public boolean isEditMode() {
+        return editMode;
+    }
+
+    public void setEditMode(boolean editMode) {
+        this.editMode = editMode;
+    }
 }

@@ -10,6 +10,7 @@
       xmlns:user="http://java.sun.com/jsf/composite/userComponent"
       xmlns:issue="http://java.sun.com/jsf/composite/issueComponent"
       xmlns:ticket="http://java.sun.com/jsf/composite/ticketComponent"
+      xmlns:message="http://java.sun.com/jsf/composite/messageComponent"
       xml:lang="en" lang="en">
 <f:metadata>
     <f:viewParam name="uuid" value="#{detailedIssueBean.uuid}" required="#{not facesContext.postback}"/>
@@ -79,10 +80,8 @@
                     <user:miniUser user="#{detailedIssueBean.issue.reportedBy}"/>
 
                     <h:outputText value="Assigned to:"/>
-                    <h:panelGroup layout="block" style="display: flex; flex-direction: row; align-items: center">
+                    <h:panelGroup layout="block" styleClass="issueAssignContentWrapper">
                         <h:panelGroup id="assignedUserWrapper">
-                            <!--<user:miniUser user="#{detailedIssueBean.issue.assignedTo}"
-                                           emptyMessage="Not assigned"/>-->
                             <user:linkedUser user="#{detailedIssueBean.issue.assignedTo}" emptyMessage="Not Assigned"/>
                         </h:panelGroup>
                         <h:panelGroup layout="block" styleClass="issueAssignControlsWrapper">
@@ -103,15 +102,23 @@
                         <ticket:linkedTicket uuid="#{detailedIssueBean.issue.ticket.uuid}"/>
                     </h:panelGroup>
                 </p:panelGrid>
-                <div class="saveControls">
+                <!--<div class="saveControls">
                     <div style="flex-basis: 100%; padding-right: 1em;">
                         <p:messages id="messages" showDetail="true" closable="true">
                             <p:autoUpdate/>
                         </p:messages>
                     </div>
                     <p:commandButton value="Save" actionListener="#{detailedIssueBean.save}"/>
-                </div>
+                </div>-->
+                <message:messageBuilder message="#{detailedIssueBean.selectedMessage}"
+                                        editMode="#{detailedIssueBean.editMode}"
+                                        initMessageListener="#{detailedIssueBean.initMessageListener}"
+                                        saveMessageListener="#{detailedIssueBean.saveMessageListener}"
+                                        editMessageListener="#{detailedIssueBean.editMessageListener}"
+                                        updateListId="@form:issueStateOneMenu"/>
+
             </p:panel>
+
 
             <p:dialog widgetVar="selectToAssignDialog" modal="true" dynamic="true"
                       appendTo="@(body)" resizable="false" width="500">

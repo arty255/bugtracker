@@ -46,7 +46,7 @@ public class DetailedTicketBean implements Serializable {
                 .getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
         ticketMessages = new ArrayList<>();
-        initMessage();
+        initMessageListener();
     }
 
     public void initData() {
@@ -88,18 +88,18 @@ public class DetailedTicketBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Warning!", "Ticked changed. Dont forget save."));
     }
 
-    public void addMessageToTicket() {
+    public void addMessageToTicketListener() {
         /*todo: getUser FromSecurityContext*/
         UserDTO user = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
         ticketService.addTicketMessage(ticket, selectedMessage, user);
-        initMessage();
+        initMessageListener();
         initMessageList();
     }
 
-    public void editTicketMessage() {
+    public void editTicketMessageListener() {
         UserDTO user = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
         messageService.saveOrUpdateMessage(selectedMessage, user);
-        initMessage();
+        initMessageListener();
         initMessageList();
         editMode = false;
     }
@@ -108,7 +108,7 @@ public class DetailedTicketBean implements Serializable {
         messageService.deleteMessage(message);
         initMessageList();
         if(message.equals(selectedMessage)){
-            initMessage();
+            initMessageListener();
         }
     }
 
@@ -117,7 +117,7 @@ public class DetailedTicketBean implements Serializable {
         ticketMessages = ticketService.getTicketMessages(ticket, 0, 99);
     }
 
-    public void initMessage() {
+    public void initMessageListener() {
         selectedMessage = new MessageDTO("");
     }
 

@@ -9,6 +9,7 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ticket="http://java.sun.com/jsf/composite/ticketComponent"
       xmlns:user="http://java.sun.com/jsf/composite/userComponent"
+      xmlns:message="http://java.sun.com/jsf/composite/messageComponent"
       xml:lang="en" lang="en">
 <f:metadata>
     <f:viewParam name="uuid" value="#{detailedTicketBean.uuid}" required="#{not facesContext.postback}"/>
@@ -19,7 +20,6 @@
     <ui:define name="headArea">
         <h:outputStylesheet library="css" name="tickets.css"/>
         <h:outputStylesheet library="css" name="reusable.css"/>
-        <h:outputScript library="js" name="ticket.js"/>
     </ui:define>
     <ui:define name="content">
         <h:form>
@@ -108,74 +108,13 @@
                     <p:commandButton value="Save" actionListener="#{detailedTicketBean.updateTicket}"/>
                 </div>
                 <div>
-                    <p:accordionPanel widgetVar="CommentAccordionWidget" style="width: 100%; padding: 0.5em 0;"
-                                      activeIndex="-1">
-                        <p:tab title="Start Commenting">
-                            <p:tabView id="messageTabView">
-                                <p:ajax event="tabChange" process="newMessageContent" update="renderedPreview"/>
-                                <p:tab title="Write">
-                                    <div class="ticketCommentWidgetArea">
-                                        <p:outputPanel layout="block">
-                                            <p:outputPanel layout="block" styleClass="editMarker">
-                                                <h:outputText
-                                                        value="You editing #{detailedTicketBean.selectedMessage.creator.firstName} #{detailedTicketBean.selectedMessage.creator.lastName} message!"
-                                                        rendered="#{not empty detailedTicketBean.selectedMessage.uuid}"/>
-                                                <p:commandLink action="#{detailedTicketBean.initMessage}"
-                                                               process="@this"
-                                                               update="@(.editMarker),@(.controlButtonsMarker),@widgetVar(messageContentWidget)"
-                                                               rendered="#{not empty detailedTicketBean.selectedMessage.uuid}">
-                                                    <f:setPropertyActionListener value="#{false}"
-                                                                                 target="#{detailedTicketBean.editMode}"/>
-                                                    <i class="pi pi-times"></i>
-                                                    <h:outputText value="Cancel"/>
-                                                </p:commandLink>
-                                            </p:outputPanel>
-                                            <p:inputTextarea id="newMessageContent" widgetVar="messageContentWidget"
-                                                             value="#{detailedTicketBean.selectedMessage.content}"
-                                                             counter="display" maxlength="1000"
-                                                             counterTemplate="{0} characters remaining."
-                                                             rows="5" style="width: 100%"/>
-                                        </p:outputPanel>
-                                        <h:outputText id="display"/>
-                                        <div style="overflow: auto; padding-top: 0.5em">
-                                            <p:outputPanel layout="block" styleClass="controlButtonsMarker">
-                                                <p:commandButton value="Hide coment window" style="float: left"
-                                                                 onclick="PF('CommentAccordionWidget').unselect(0);"/>
-                                                <p:commandButton value="Comment" style="float: right"
-                                                                 rendered="#{not detailedTicketBean.editMode}"
-                                                                 actionListener="#{detailedTicketBean.addMessageToTicket}"
-                                                                 update="@form:ticketMessages,@(.editMarker),newMessageContent"
-                                                                 process="@this newMessageContent"
-                                                                 onsuccess="PF('CommentAccordionWidget').unselect(0);"/>
-                                                <p:commandButton value="Edit" style="float: right"
-                                                                 rendered="#{detailedTicketBean.editMode}"
-                                                                 actionListener="#{detailedTicketBean.editTicketMessage}"
-                                                                 update="@form:ticketMessages,@(.editMarker),newMessageContent"
-                                                                 process="@this newMessageContent"/>
-                                                <p:commandButton value="Clear" style="float: right; margin-right: 1em"
-                                                                 onclick="PF('messageContentWidget').clear();">
-                                                </p:commandButton>
-                                            </p:outputPanel>
-                                        </div>
-                                    </div>
-                                </p:tab>
-                                <p:tab title="Preview">
-                                    <div>
-                                        <h:outputText id="renderedPreview"
-                                                      value="#{detailedTicketBean.selectedMessage.content}"/>
-                                        <div style="overflow: auto; padding-top: 0.5em">
-                                            <p:commandButton value="Hide coment window" style="float: left"
-                                                             onclick="PF('CommentAccordionWidget').unselect(0);"/>
-                                            <p:commandButton value="Comment" style="float: right"
-                                                             actionListener="#{detailedTicketBean.addMessageToTicket}"
-                                                             update="@form:ticketMessages,newMessageContent"
-                                                             process="@this newMessageContent"/>
-                                        </div>
-                                    </div>
-                                </p:tab>
-                            </p:tabView>
-                        </p:tab>
-                    </p:accordionPanel>
+                    <message:messageBuilder message="#{detailedTicketBean.selectedMessage}"
+                                            initMessageListener="#{detailedTicketBean.initMessageListener()}"
+                                            editMessageListener="#{detailedTicketBean.editTicketMessageListener()}"
+                                            saveMessageListener="#{detailedTicketBean.addMessageToTicketListener()}"
+                                            editMode="#{detailedTicketBean.editMode}"
+                                            updateListId="@form:ticketMessages"/>
+
                     <p:dataList id="ticketMessages" var="message" value="#{detailedTicketBean.ticketMessages}"
                                 emptyMessage="Discussion not started yet." styleClass="ticketMessages">
                         <f:facet name="header">

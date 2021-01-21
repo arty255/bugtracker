@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xml:lang="en" lang="en">
+<composite:interface>
+    <composite:attribute name="message" type="org.hetsold.bugtracker.model.MessageDTO" required="true"/>
+    <composite:attribute name="initMessageListener" method-signature="void listener" required="true"/>
+    <composite:attribute name="editMode" required="true"/>
+    <composite:attribute name="saveMessageListener" method-signature="void listener" required="true"/>
+    <composite:attribute name="editMessageListener" method-signature="void listener" required="true"/>
+    <composite:attribute name="updateListId" required="true"/>
+    <composite:attribute name="allowedMessageLenght" default="1000"/>
+    <composite:attribute name="allowedMessageLabel" default="characters remaining."/>
+</composite:interface>
+<composite:implementation>
+    <h:outputStylesheet library="css" name="messageBuider.css"/>
+    <h:outputScript library="js" name="messageBuilder.js"/>
+    <p:accordionPanel widgetVar="commentAccordionWidget" styleClass="messageBuilder"
+                      activeIndex="-1">
+        <p:tab title="Start Commenting">
+            <p:tabView id="messageTabView">
+                <p:ajax event="tabChange" process="newMessageContent" update="renderedPreview"/>
+                <p:tab title="Write">
+                    <p:outputPanel layout="block" styleClass="messageBuilderArea">
+                        <p:outputPanel layout="block">
+                            <p:outputPanel layout="block" styleClass="editMarker">
+                                <h:outputText
+                                        value="You editing #{cc.attrs.message.creator.firstName} #{cc.attrs.message.creator.lastName} message!"
+                                        rendered="#{not empty cc.attrs.message.uuid}"/>
+                                <p:commandLink action="#{cc.attrs.initMessageListener}"
+                                               process="@this"
+                                               update="@(.messageBuilderArea)"
+                                               rendered="#{not empty cc.attrs.message.uuid}">
+                                    <f:setPropertyActionListener value="#{false}"
+                                                                 target="#{cc.attrs.editMode}"/>
+                                    <i class="pi pi-times"/>
+                                    <h:outputText value="Cancel"/>
+                                </p:commandLink>
+                            </p:outputPanel>
+                            <p:inputTextarea id="newMessageContent" widgetVar="messageContentWidget"
+                                             value="#{cc.attrs.message.content}"
+                                             counter="symbolsLeftCounter" maxlength="#{cc.attrs.allowedMessageLenght}"
+                                             counterTemplate="{0} #{cc.attrs.allowedMessageLabel}"
+                                             rows="5"/>
+                        </p:outputPanel>
+                        <h:outputText id="symbolsLeftCounter" styleClass="symbolCounter"/>
+                        <p:outputPanel layout="block" styleClass="controlButtonsMarker">
+                            <p:commandButton value="Hide coment window"
+                                             onclick="PF('commentAccordionWidget').unselect(0);"/>
+                            <h:panelGroup layout="block" styleClass="rightGroupControls">
+                                <!--todo: clear method-->
+                                <p:commandButton type="button" value="Clear" icon="pi pi-minus"
+                                          onclick="PF('messageContentWidget').clear();"/>
+                                <p:commandButton value="Comment" icon="pi pi-check"
+                                                 rendered="#{not cc.attrs.editMode}"
+                                                 actionListener="#{cc.attrs.saveMessageListener}"
+                                                 update="#{cc.attrs.updateListId},@(.messageBuilderArea)"
+                                                 process="@this newMessageContent"
+                                                 onsuccess="PF('CommentAccordionWidget').unselect(0);"/>
+                                <p:commandButton value="Edit" icon="pi pi-pencil"
+                                                 rendered="#{cc.attrs.editMode}"
+                                                 actionListener="#{cc.attrs.editMessageListener}"
+                                                 update="#{cc.attrs.updateListId},@(.messageBuilderArea)"
+                                                 process="@this newMessageContent"/>
+                            </h:panelGroup>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                </p:tab>
+                <p:tab title="Preview">
+                    <div>
+                        <!--todo: render preview-->
+                        <h:outputText id="renderedPreview"
+                                      value="#{cc.attrs.message.content}"/>
+
+                        <p:outputPanel layout="block" styleClass="controlButtonsMarker">
+                            <p:commandButton value="Hide coment window" style="float: left"
+                                             onclick="PF('commentAccordionWidget').unselect(0);"/>
+                            <h:panelGroup layout="block" styleClass="rightGroupControls">
+                                <p:commandButton value="Comment" style="float: right"
+                                                 actionListener="#{cc.attrs.saveMessageListener}"
+                                                 update="#{cc.attrs.updateListId},@(.messageBuilderArea)"
+                                                 process="@this newMessageContent"/>
+                            </h:panelGroup>
+                        </p:outputPanel>
+                    </div>
+                </p:tab>
+            </p:tabView>
+        </p:tab>
+    </p:accordionPanel>
+</composite:implementation>
+</html>

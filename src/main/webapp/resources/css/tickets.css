@@ -139,32 +139,6 @@
     margin-right: 0.5em;
 }
 
-body .ui-accordion .ui-accordion-header.ui-state-active {
-    border: 1px solid #c8c8c8;
-    background-color: #f4f4f4;
-    color: #333;
-}
-
-body .ui-accordion .ui-accordion-header {
-    border: 1px solid #007ad9;
-    background-color: #007ad9;
-    color: #fff;
-}
-
-body .ui-accordion .ui-accordion-header.ui-state-hover, body .ui-accordion .ui-accordion-header.ui-tabs-outline {
-    outline: 0 none;
-    border: 1px solid #116fbf;
-    background-color: #116fbf;
-    color: #fff;
-}
-
-body .ui-accordion .ui-accordion-header.ui-state-active:hover, body .ui-accordion .ui-accordion-header.ui-state-active.ui-tabs-outline {
-    outline: 0 none;
-    border: 1px solid #dbdbdb;
-    background-color: #dbdbdb;
-    color: #333;
-}
-
 
 .ticketMessages {
     padding: 0;
@@ -184,25 +158,6 @@ body .ui-accordion .ui-accordion-header.ui-state-active:hover, body .ui-accordio
     text-align: center;
     font-size: 2em;
     font-weight: bold;
-}
-
-.editMarker {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-    padding: 0.2em 0.1em;
-}
-
-.editMarker a {
-    align-items: center;
-    display: flex;
-    font-style: italic !important;
-    padding: 0 0.2em;
-}
-
-.editMarker i {
-    color: #ff0000;
 }
 
 .saveControls {

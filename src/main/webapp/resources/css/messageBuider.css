@@ -1,0 +1,81 @@
+.messageBuilder{
+    width: 100%; padding: 0.5em 0;
+}
+
+.messageBuilderArea {
+    overflow: auto;
+}
+
+.messageBuilderArea textarea {
+    width: 100%;
+}
+
+.editMarker {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.2em 0.1em;
+}
+
+.editMarker a {
+    align-items: center;
+    display: flex;
+    font-style: italic !important;
+    padding: 0 0.2em;
+}
+
+.editMarker i {
+    color: #ff0000;
+}
+
+.symbolCounter {
+
+}
+
+.controlButtonsMarker {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: 0.5em;
+}
+
+.rightGroupControls{
+    display: flex;
+    flex-direction: row;
+    padding: 0 0 0 0.5em;
+}
+
+.rightGroupControls button:nth-child(1){
+    margin-right: 1em;
+}
+
+.rightGroupControls > button{
+    /*margin-right: 0.5em;*/
+}
+
+.messageBuilder .ui-accordion-header.ui-state-active {
+    border: 1px solid #bfbfbf !important;
+    background-color: #c1c1c1 !important;
+    color: #333!important;
+}
+
+.messageBuilder .ui-accordion-header {
+    border: 1px solid #007ad9!important;
+    background-color: #007ad9!important;
+    color: #fff!important;
+}
+
+.messageBuilder .ui-accordion-header .ui-state-hover, .messageBuilder .ui-accordion-header .ui-tabs-outline {
+    outline: 0 none!important;
+    border: 1px solid #116fbf!important;
+    background-color: #116fbf!important;
+    color: #fff!important;
+}
+
+.messageBuilder .ui-accordion-header .ui-state-active:hover, .messageBuilder .ui-accordion-header .ui-state-active .ui-tabs-outline {
+    outline: 0 none!important;
+    border: 1px solid #a2a2a2 !important;
+    background-color: #969494 !important;
+    color: #333!important;
+}
