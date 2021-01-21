@@ -34,6 +34,8 @@ public interface IssueService {
 
     void changeIssueAssignedUser(Issue issue, User assignedTo, User user);
 
+    void changeIssueAssignedUser(IssueDTO issueDTO, UserDTO assignedTo, UserDTO userDTO);
+
     void addIssueMessage(IssueDTO issueDTO, MessageDTO messageDTO, UserDTO userDTO);
 
     void addIssueMessage(Issue issue, Message message, User user);

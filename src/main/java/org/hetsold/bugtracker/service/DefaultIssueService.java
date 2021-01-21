@@ -117,6 +117,18 @@ public class DefaultIssueService implements IssueService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
+    public boolean changeIssueState(IssueDTO issueDTO, IssueState newIssueState, UserDTO userDTO) {
+        if (issueDTO == null || issueDTO.getUuid().isEmpty()) {
+            throw new IllegalArgumentException("incorrect issue: issue can not be null");
+        }
+        if (userDTO == null || userDTO.getUuid().isEmpty()) {
+            throw new IllegalArgumentException("incorrect user: user can not be null");
+        }
+        return changeIssueState(IssueConverter.getIssue(issueDTO), newIssueState, UserConvertor.getUser(userDTO));
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public boolean changeIssueState(Issue issue, IssueState newIssueState, User user) {
         if (issue == null || (issue = issueDAO.getIssueById(issue.getUuid())) == null) {
             throw new IllegalArgumentException("issue argument can not be null or not persisted");
@@ -130,42 +142,70 @@ public class DefaultIssueService implements IssueService {
         if (user == null || user.getUuid().isEmpty() || (user = userService.getUserById(user.getUuid())) == null) {
             throw new IllegalArgumentException("incorrect user: user can not be null or not persisted");
         }
-        if (issue.getCurrentIssueState() != newIssueState) {
-            issue.setCurrentIssueState(newIssueState);
-            HistoryIssueStateChangeEvent event = new HistoryIssueStateChangeEvent();
-            event.setEventDate(new Date());
-            event.setIssue(issue);
-            event.setRedactor(user);
-            event.setState(newIssueState);
-            issue.setCurrentIssueState(newIssueState);
-            historyEventDAO.saveStateChange(event);
-        }
+        changeStateIfChangedAndSaveHistory(issue, newIssueState, user);
         return true;
     }
 
-    @Override
-    public boolean changeIssueState(IssueDTO issueDTO, IssueState newIssueState, UserDTO userDTO) {
-        if (issueDTO == null || issueDTO.getUuid().isEmpty()) {
-            throw new IllegalArgumentException("incorrect issue: issue can not be null");
+    private boolean changeStateIfChangedAndSaveHistory(Issue issue, IssueState newIssueState, User editor) {
+        if (isStateChanged(issue, newIssueState)) {
+            issue.setCurrentIssueState(newIssueState);
+            generateAndSaveStateChangeEvent(issue, newIssueState, editor);
+            return true;
         }
-        if (userDTO == null || userDTO.getUuid().isEmpty()) {
-            throw new IllegalArgumentException("incorrect user: user can not be null");
-        }
-        return changeIssueState(IssueConverter.getIssue(issueDTO), newIssueState, UserConvertor.getUser(userDTO));
+        return false;
     }
 
+    private boolean isStateChanged(Issue issue, IssueState newIssueState) {
+        return issue.getCurrentIssueState() != newIssueState;
+    }
+
+    private void generateAndSaveStateChangeEvent(Issue issue, IssueState issueState, User eventActor) {
+        HistoryIssueStateChangeEvent event = new HistoryIssueStateChangeEvent();
+        event.setIssue(issue);
+        event.setRedactor(eventActor);
+        event.setState(issueState);
+        historyEventDAO.saveStateChange(event);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void changeIssueAssignedUser(IssueDTO issueDTO, UserDTO assignedToDTO, UserDTO userDTO) {
+        Issue issue;
+        if (issueDTO == null || issueDTO.getUuid().isEmpty() || (issue = issueDAO.getIssueById(issueDTO.getUuid())) == null) {
+            throw new IllegalArgumentException("incorrect issue: issue can not be null or not persisted");
+        }
+        User assignedTo = null, user;
+        if (userDTO == null || userDTO.getUuid().isEmpty() || (user = userService.getUserById(userDTO.getUuid())) == null) {
+            throw new IllegalArgumentException("incorrect user: user can not be null or not persisted");
+        }
+        if (assignedToDTO != null && (assignedTo = userService.getUserById(assignedToDTO.getUuid())) == null) {
+            throw new IllegalArgumentException("incorrect assigned user: user not persisted");
+        }
+        changeIssueAssignedUser(issue, assignedTo, user);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
     public void changeIssueAssignedUser(Issue issue, User assignedTo, User user) {
-        if (assignedTo == null || (userService.getUserById(assignedTo.getUuid())) == null) {
-            throw new IllegalArgumentException("assignedUser argument can not be null or not persisted");
+        if (assignedTo != null && (userService.getUserById(assignedTo.getUuid())) == null) {
+            throw new IllegalArgumentException("incorrect assignedUser");
         }
         issue = getIssueById(issue.getUuid());
         if (issue == null) {
             throw new IllegalArgumentException("issue argument can not be null or not persisted");
         }
-        issue.setAssignedTo(assignedTo);
-        if (issue.getCurrentIssueState() != IssueState.ASSIGNED) {
-            changeIssueState(issue, IssueState.ASSIGNED, user);
+        /*todo: add assignation history event*/
+        if (isAssignedUserChanged(issue, assignedTo)) {
+            issue.setAssignedTo(assignedTo);
+            if (issue.getCurrentIssueState() == IssueState.OPEN && assignedTo != null) {
+                changeStateIfChangedAndSaveHistory(issue, IssueState.ASSIGNED, user);
+            } else if (assignedTo == null) {
+                changeStateIfChangedAndSaveHistory(issue, IssueState.OPEN, user);
+            }
         }
+    }
+
+    private boolean isAssignedUserChanged(Issue issue, User newAssignedTo) {
+        return issue.getAssignedTo() != newAssignedTo;
     }
 
     public void addIssueMessage(IssueDTO issueDTO, MessageDTO messageDTO, UserDTO userDTO) {
