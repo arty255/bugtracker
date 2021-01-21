@@ -80,17 +80,22 @@
 
                     <h:outputText value="Assigned to:"/>
                     <h:panelGroup layout="block" style="display: flex; flex-direction: row; align-items: center">
-                        <div style="margin-right: 0.5em;">
-                            <user:miniUser user="#{detailedIssueBean.issue.assignedTo}"
-                                           rendered="#{not empty detailedIssueBean.issue.assignedTo}"/>
-                        </div>
-                        <h:outputText value="Not Assigned" rendered="#{empty detailedIssueBean.issue.assignedTo}"
-                                      style="margin-right: 0.5em;"/>
-                        <p:commandButton value="Unassign" icon="pi pi-user-minus"
-                                         rendered="#{not empty detailedIssueBean.issue.assignedTo}"
-                                         style="margin-right: 0.5em;"/>
-                        <p:commandButton value="Reassign" icon="pi pi-users"
-                                         style="margin-right: 0.5em;"/>
+                        <h:panelGroup id="assignedUserWrapper">
+                            <!--<user:miniUser user="#{detailedIssueBean.issue.assignedTo}"
+                                           emptyMessage="Not assigned"/>-->
+                            <user:linkedUser user="#{detailedIssueBean.issue.assignedTo}" emptyMessage="Not Assigned"/>
+                        </h:panelGroup>
+                        <h:panelGroup layout="block" styleClass="issueAssignControlsWrapper">
+                            <p:commandButton value="Assign" icon="pi pi-user-plus"
+                                             onclick="PF('selectToAssignDialog').show();"
+                                             rendered="#{empty detailedIssueBean.issue.assignedTo}"/>
+                            <p:commandButton value="Unassign" icon="pi pi-user-minus"
+                                             actionListener="#{detailedIssueBean.unAssignUser}"
+                                             rendered="#{not empty detailedIssueBean.issue.assignedTo}"/>
+                            <p:commandButton value="Reassign" icon="pi pi-users"
+                                             onclick="PF('selectToAssignDialog').show();"
+                                             rendered="#{not empty detailedIssueBean.issue.assignedTo}"/>
+                        </h:panelGroup>
                     </h:panelGroup>
 
                     <h:outputText value="Base on Ticket:"/>
@@ -107,6 +112,29 @@
                     <p:commandButton value="Save" actionListener="#{detailedIssueBean.save}"/>
                 </div>
             </p:panel>
+
+            <p:dialog widgetVar="selectToAssignDialog" modal="true" dynamic="true"
+                      appendTo="@(body)" resizable="false" width="500">
+                <p:dataTable id="usersToAssingDateTable"
+                             var="user" value="#{detailedIssueBean.userDTODataModel}" lazy="true"
+                             rows="10" paginator="true">
+                    <p:column headerText="user">
+                        <user:linkedUser user="#{user}"/>
+                    </p:column>
+                    <p:column headerText="Active assigned issues count">
+                        <!--todo: calculate active count and deside where to put-->
+                        <h:outputText value="N"/>
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value="Select"
+                                         action="#{detailedIssueBean.reAssignUser}"
+                                         onsuccess="PF('selectToAssignDialog').hide();">
+                            <f:setPropertyActionListener value="#{user}"
+                                                         target="#{detailedIssueBean.selectedToAssignUser}"/>
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
         </h:form>
     </ui:define>
 </ui:composition>

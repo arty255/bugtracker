@@ -19,6 +19,11 @@ public abstract class HistoryEvent extends AbstractIdentity {
     public HistoryEvent() {
     }
 
+    @PrePersist
+    public void prePersist() {
+        this.eventDate = new Date();
+    }
+
     public Issue getIssue() {
         return issue;
     }

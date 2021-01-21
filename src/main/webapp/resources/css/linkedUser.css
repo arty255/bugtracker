@@ -16,3 +16,8 @@
 .lastName{
 
 }
+
+.emptyMessageLabel {
+    text-transform: capitalize;
+    font-weight: bold;
+}

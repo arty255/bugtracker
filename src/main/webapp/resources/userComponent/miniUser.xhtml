@@ -10,17 +10,23 @@
       xml:lang="en" lang="en">
 <composite:interface>
     <composite:attribute name="user" type="org.hetsold.bugtracker.model.UserDTO" required="true"/>
+    <composite:attribute name="emptyMessage" type="java.lang.String"/>
 </composite:interface>
 <composite:implementation>
     <h:outputStylesheet library="css" name="minifiedUserView.css"/>
     <h:panelGroup layout="block" styleClass="userViewContainer">
-        <div class="imageWrapper">
-            <p:graphicImage library="images" name="no_image.jpg" rendered="#{false}"/>
-            <p:graphicImage library="images" name="no_image.jpg" rendered="#{true}"/>
-        </div>
-        <div class="userNamePartWrapper">
-            <user:linkedUser user="#{cc.attrs.user}"/>
-        </div>
+        <h:panelGroup layout="block" rendered="#{not empty cc.attrs.user}">
+            <div class="imageWrapper">
+                <p:graphicImage library="images" name="no_image.jpg" rendered="#{false}"/>
+                <p:graphicImage library="images" name="no_image.jpg" rendered="#{true}"/>
+            </div>
+            <div class="userNamePartWrapper">
+                <user:linkedUser user="#{cc.attrs.user}"/>
+            </div>
+        </h:panelGroup>
+        <h:outputText value="#{cc.attrs.emptyMessage}"
+                      styleClass="emptyMessageLabel"
+                      rendered="#{not empty cc.attrs.emptyMessage and empty cc.attrs.user}"/>
     </h:panelGroup>
 </composite:implementation>
 </html>

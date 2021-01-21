@@ -9,16 +9,17 @@ import org.primefaces.model.SortMeta;
 import java.util.List;
 import java.util.Map;
 
-public class UsersLazyDataModel extends LazyDataModel<UserDTO> {
+class UserDTOLazyDataModel extends LazyDataModel<UserDTO> {
     private UserService userService;
 
-    public UsersLazyDataModel(UserService userService) {
+    public UserDTOLazyDataModel(UserService userService) {
         this.userService = userService;
     }
 
     @Override
-    public String getRowKey(UserDTO user) {
-        return user.getUuid();
+    public List<UserDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+        this.setRowCount((int) userService.getUserCount());
+        return userService.getUsers(first, pageSize);
     }
 
     @Override
@@ -27,8 +28,7 @@ public class UsersLazyDataModel extends LazyDataModel<UserDTO> {
     }
 
     @Override
-    public List<UserDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-        this.setRowCount((int) userService.getUserCount());
-        return userService.getUsers(first, pageSize);
+    public String getRowKey(UserDTO object) {
+        return object.getUuid();
     }
 }

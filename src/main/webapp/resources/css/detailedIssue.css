@@ -7,3 +7,18 @@
 .stateDescriptionArea button {
     margin-left: 0.5em;
 }
+
+#assignedUserWrapper {
+    padding-right: 0.5em;
+}
+
+.issueAssignControlsWrapper {
+    display: flex;
+    flex-direction: row;
+    justify-items: baseline;
+
+}
+
+.issueAssignControlsWrapper > button {
+    margin-right: 0.5em;
+}

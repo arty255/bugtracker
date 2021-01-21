@@ -8,6 +8,7 @@ import org.hetsold.bugtracker.model.UserDTO;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.MessageService;
 import org.hetsold.bugtracker.service.UserService;
+import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.jsf.FacesContextUtils;
 
@@ -35,6 +36,9 @@ public class DetailedIssueBean implements Serializable {
     private boolean isOriginalStateChanged;
     private IssueState originalIssueState;
 
+    private LazyDataModel<UserDTO> userDTODataModel;
+    private UserDTO selectedToAssignUser;
+
     private UserDTO activeUser;
 
     @PostConstruct
@@ -42,6 +46,8 @@ public class DetailedIssueBean implements Serializable {
         FacesContextUtils.getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
         isOriginalStateChanged = false;
+        selectedToAssignUser = null;
+        userDTODataModel = new UserDTOLazyDataModel(userService);
         activeUser = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
     }
 
@@ -68,6 +74,14 @@ public class DetailedIssueBean implements Serializable {
         }
     }
 
+    public void unAssignUser() {
+        issueService.changeIssueAssignedUser(issue, null, activeUser);
+    }
+
+    public void reAssignUser() {
+        issueService.changeIssueAssignedUser(issue, selectedToAssignUser, activeUser);
+    }
+
     public void save() {
         issue = issueService.saveOrUpdateIssue(issue);
     }
@@ -91,4 +105,17 @@ public class DetailedIssueBean implements Serializable {
     public boolean isOriginalStateChanged() {
         return isOriginalStateChanged;
     }
+
+    public UserDTO getSelectedToAssignUser() {
+        return selectedToAssignUser;
+    }
+
+    public void setSelectedToAssignUser(UserDTO selectedToAssignUser) {
+        this.selectedToAssignUser = selectedToAssignUser;
+    }
+
+    public LazyDataModel<UserDTO> getUserDTODataModel() {
+        return userDTODataModel;
+    }
+
 }
