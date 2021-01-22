@@ -19,6 +19,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @ManagedBean
@@ -27,9 +28,12 @@ public class DetailedTicketBean implements Serializable {
     private String uuid;
     private TicketDTO ticket;
     private List<MessageDTO> ticketMessages;
-    private MessageDTO selectedMessage;
+    private MessageDTO selectedToEditMessage;
+    private MessageDTO selectedToDeleteMessage;
     private IssueShortDTO createdIssue;
     private boolean editMode;
+
+    private UserDTO activeUser;
 
     @Autowired
     private TicketService ticketService;
@@ -46,7 +50,8 @@ public class DetailedTicketBean implements Serializable {
                 .getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
         ticketMessages = new ArrayList<>();
-        initMessageListener();
+        initMessageAction();
+        activeUser = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
     }
 
     public void initData() {
@@ -70,9 +75,8 @@ public class DetailedTicketBean implements Serializable {
 
     public void createIssueFromTicket() {
         /*todo: getUser FromSecurityContext*/
-        UserDTO user = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
         try {
-            createdIssue = issueService.createIssueFromTicket(ticket, user);
+            createdIssue = issueService.createIssueFromTicket(ticket, activeUser);
         } catch (IllegalArgumentException e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No issue created", "Probably issue already exists"));
         }
@@ -80,35 +84,33 @@ public class DetailedTicketBean implements Serializable {
 
     public void updateTicket() {
         /*todo: getUser FromSecurityContext*/
-        UserDTO user = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
-        ticketService.updateTicket(ticket, user);
+        ticketService.updateTicket(ticket, activeUser);
     }
 
     public void tickedChangedListener(ValueChangeEvent event) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Warning!", "Ticked changed. Dont forget save."));
     }
 
-    public void addMessageToTicketListener() {
+    public void addMessageToTicketAction() {
         /*todo: getUser FromSecurityContext*/
-        UserDTO user = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
-        ticketService.addTicketMessage(ticket, selectedMessage, user);
-        initMessageListener();
+        ticketService.addTicketMessage(ticket, selectedToEditMessage, activeUser);
+        initMessageAction();
         initMessageList();
     }
 
-    public void editTicketMessageListener() {
-        UserDTO user = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
-        messageService.saveOrUpdateMessage(selectedMessage, user);
-        initMessageListener();
+    public void editTicketMessageAction() {
+        /*todo: getUser FromSecurityContext*/
+        messageService.saveOrUpdateMessage(selectedToEditMessage, activeUser);
+        initMessageAction();
         initMessageList();
         editMode = false;
     }
 
-    public void deleteMessage(MessageDTO message) {
-        messageService.deleteMessage(message);
+    public void deleteMessageAction() {
+        messageService.deleteMessage(selectedToDeleteMessage);
         initMessageList();
-        if(message.equals(selectedMessage)){
-            initMessageListener();
+        if (selectedToDeleteMessage == selectedToEditMessage) {
+            cancelEditAction();
         }
     }
 
@@ -117,20 +119,47 @@ public class DetailedTicketBean implements Serializable {
         ticketMessages = ticketService.getTicketMessages(ticket, 0, 99);
     }
 
-    public void initMessageListener() {
-        selectedMessage = new MessageDTO("");
+    public void initMessageAction() {
+        selectedToEditMessage = new MessageDTO("");
+    }
+
+    public void editMessagePrepareAction(){
+        editMode = true;
+    }
+
+    public void cancelEditAction() {
+        editMode = false;
+        initMessageAction();
+    }
+
+    public void initPreviewListener() {
+        if (editMode) {
+            selectedToEditMessage.setEditor(activeUser);
+            selectedToEditMessage.setEditDate(new Date());
+        } else {
+            selectedToEditMessage.setCreator(activeUser);
+            selectedToEditMessage.setCreateDate(new Date());
+        }
     }
 
     public List<MessageDTO> getTicketMessages() {
         return ticketMessages;
     }
 
-    public MessageDTO getSelectedMessage() {
-        return selectedMessage;
+    public MessageDTO getSelectedToEditMessage() {
+        return selectedToEditMessage;
     }
 
-    public void setSelectedMessage(MessageDTO selectedMessage) {
-        this.selectedMessage = selectedMessage;
+    public void setSelectedToEditMessage(MessageDTO selectedToEditMessage) {
+        this.selectedToEditMessage = selectedToEditMessage;
+    }
+
+    public MessageDTO getSelectedToDeleteMessage() {
+        return selectedToDeleteMessage;
+    }
+
+    public void setSelectedToDeleteMessage(MessageDTO selectedToDeleteMessage) {
+        this.selectedToDeleteMessage = selectedToDeleteMessage;
     }
 
     public IssueShortDTO getCreatedIssue() {
@@ -145,7 +174,7 @@ public class DetailedTicketBean implements Serializable {
         return editMode;
     }
 
-    public void setEditMode(boolean editMode) {
+    /*public void setEditMode(boolean editMode) {
         this.editMode = editMode;
-    }
+    }*/
 }

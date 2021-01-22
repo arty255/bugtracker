@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:message="http://java.sun.com/jsf/composite/messageComponent"
+      xml:lang="en" lang="en">
+<composite:interface>
+    <composite:attribute name="selectedToDelte" required="true"/>
+    <composite:attribute name="selectedToEdit" required="true"/>
+    <composite:attribute name="editMode" required="true"/>
+    <composite:attribute name="message" type="org.hetsold.bugtracker.model.MessageDTO" required="true"/>
+    <composite:attribute name="deleteMessageAction" method-signature="void action()" required="true"/>
+    <composite:attribute name="editMessagePrepareAction" method-signature="void action()" required="true"/>
+    <composite:attribute name="onEditActionUpdateSelectors"/>
+    <composite:attribute name="onDeleteActionUpdateSelectors"/>
+</composite:interface>
+<composite:implementation>
+    <p:panel header="#{cc.attrs.message.uuid}">
+        <f:facet name="actions">
+            <!--todo: rendered rules for spring security integration-->
+            <h:panelGroup layout="block" rendered="#{true}">
+                <p:commandLink
+                        styleClass="ui-panel-titlebar-icon ui-corner-all ui-issueState-default"
+                        rendered="#{true}"
+                        process="@this"
+                        update="#{cc.attrs.onDeleteActionUpdateSelectors}"
+                        action="#{cc.attrs.deleteMessageAction}">
+                    <f:setPropertyActionListener value="#{cc.attrs.message}" target="#{cc.attrs.selectedToDelte}"/>
+                    <h:outputText styleClass="ui-icon pi pi-trash"/>
+                </p:commandLink>
+                <p:commandLink
+                        styleClass="ui-panel-titlebar-icon ui-corner-all ui-issueState-default"
+                        rendered="#{true}"
+                        process="@this"
+                        update="#{cc.attrs.onEditActionUpdateSelectors}"
+                        action="#{cc.attrs.editMessagePrepareAction}"
+                        onclick="selectIfUnselected()"
+                        style="margin-right: 0.5em;">
+                    <f:setPropertyActionListener value="#{cc.attrs.message}" target="#{cc.attrs.selectedToEdit}"/>
+                    <h:outputText styleClass="ui-icon pi pi-pencil"/>
+                </p:commandLink>
+            </h:panelGroup>
+        </f:facet>
+        <message:messageContent message="#{cc.attrs.message}"/>
+    </p:panel>
+</composite:implementation>
+</html>

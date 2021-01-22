@@ -11,6 +11,7 @@
 <composite:interface>
     <composite:attribute name="user" type="org.hetsold.bugtracker.model.UserDTO" required="true"/>
     <composite:attribute name="emptyMessage" type="java.lang.String"/>
+    <composite:attribute name="isDisabled" default="false"/>
 </composite:interface>
 <composite:implementation>
     <h:outputStylesheet library="css" name="minifiedUserView.css"/>
@@ -21,7 +22,7 @@
                 <p:graphicImage library="images" name="no_image.jpg" rendered="#{true}"/>
             </div>
             <div class="userNamePartWrapper">
-                <user:linkedUser user="#{cc.attrs.user}"/>
+                <user:linkedUser isDisabled="#{cc.attrs.isDisabled}" user="#{cc.attrs.user}"/>
             </div>
         </h:panelGroup>
         <h:outputText value="#{cc.attrs.emptyMessage}"

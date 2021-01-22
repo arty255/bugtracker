@@ -102,45 +102,54 @@
                         <ticket:linkedTicket uuid="#{detailedIssueBean.issue.ticket.uuid}"/>
                     </h:panelGroup>
                 </p:panelGrid>
-                <!--<div class="saveControls">
-                    <div style="flex-basis: 100%; padding-right: 1em;">
-                        <p:messages id="messages" showDetail="true" closable="true">
-                            <p:autoUpdate/>
-                        </p:messages>
-                    </div>
-                    <p:commandButton value="Save" actionListener="#{detailedIssueBean.save}"/>
-                </div>-->
-                <message:messageBuilder message="#{detailedIssueBean.selectedMessage}"
-                                        editMode="#{detailedIssueBean.editMode}"
-                                        initMessageListener="#{detailedIssueBean.initMessageListener}"
-                                        saveMessageListener="#{detailedIssueBean.saveMessageListener}"
-                                        editMessageListener="#{detailedIssueBean.editMessageListener}"
-                                        updateListId="@form:issueStateOneMenu"/>
-
+                <message:messageEditor message="#{detailedIssueBean.selectedToEditMessage}"
+                                       inEditMode="#{detailedIssueBean.editMode}"
+                                       initPreviewListener="#{detailedIssueBean.initPreviewListener()}"
+                                       cancelEditAction="#{detailedIssueBean.cancelEditAction()}"
+                                       saveMessageAction="#{detailedIssueBean.saveMessageAction()}"
+                                       editMessageAction="#{detailedIssueBean.editMessageAction()}"
+                                       onCommentActionUpdateSelectors="@form:listContainer"
+                                       onPreviewActionUpdateSelectors="@(.issueMessagePreview)">
+                    <h:panelGroup layout="block" styleClass="issueMessagePreview">
+                        <!--<message:messageContent message=""/>-->
+                    </h:panelGroup>
+                </message:messageEditor>
+                <h:panelGroup id="listContainer" layout="block">
+                    <p:dataList var="historyEvent" value="#{detailedIssueBean.issueEvents}">
+                        <!--<message:messageWithControls message="#{historyEvent}"
+                                                     selectedToEdit="#{detailedIssueBean.selectedToEditMessage}"
+                                                     selectedToDelte="#{detailedIssueBean.selectedToDeleteMessage}"
+                                                     deleteMessageAction="#{detailedIssueBean.deleteMessageAction()}"
+                                                     editMessagePrepareAction="#{detailedIssueBean.editMessagePrepareAction()}"
+                                                     editMode="#{detailedIssueBean.editMode}"/>-->
+                    </p:dataList>
+                </h:panelGroup>
             </p:panel>
 
 
             <p:dialog widgetVar="selectToAssignDialog" modal="true" dynamic="true"
                       appendTo="@(body)" resizable="false" width="500">
-                <p:dataTable id="usersToAssingDateTable"
-                             var="user" value="#{detailedIssueBean.userDTODataModel}" lazy="true"
-                             rows="10" paginator="true">
-                    <p:column headerText="user">
-                        <user:linkedUser user="#{user}"/>
-                    </p:column>
-                    <p:column headerText="Active assigned issues count">
-                        <!--todo: calculate active count and deside where to put-->
-                        <h:outputText value="N"/>
-                    </p:column>
-                    <p:column>
-                        <p:commandButton value="Select"
-                                         action="#{detailedIssueBean.reAssignUser}"
-                                         onsuccess="PF('selectToAssignDialog').hide();">
-                            <f:setPropertyActionListener value="#{user}"
-                                                         target="#{detailedIssueBean.selectedToAssignUser}"/>
-                        </p:commandButton>
-                    </p:column>
-                </p:dataTable>
+                <h:form>
+                    <p:dataTable id="usersToAssingDateTable"
+                                 var="user" value="#{detailedIssueBean.userDTODataModel}" lazy="true"
+                                 rows="10" paginator="true">
+                        <p:column headerText="user">
+                            <user:linkedUser user="#{user}"/>
+                        </p:column>
+                        <p:column headerText="Active assigned issues count">
+                            <!--todo: calculate active count and deside where to put-->
+                            <h:outputText value="N"/>
+                        </p:column>
+                        <p:column>
+                            <p:commandButton value="Select"
+                                             action="#{detailedIssueBean.reAssignUser}"
+                                             onsuccess="PF('selectToAssignDialog').hide();">
+                                <f:setPropertyActionListener value="#{user}"
+                                                             target="#{detailedIssueBean.selectedToAssignUser}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
             </p:dialog>
         </h:form>
     </ui:define>

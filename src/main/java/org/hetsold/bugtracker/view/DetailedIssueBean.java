@@ -15,6 +15,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @ManagedBean
@@ -36,7 +37,8 @@ public class DetailedIssueBean implements Serializable {
     private LazyDataModel<UserDTO> userDTODataModel;
     private UserDTO selectedToAssignUser;
 
-    private MessageDTO selectedMessage;
+    private MessageDTO selectedToEditMessage;
+    private MessageDTO selectedToDeleteMessage;
     private boolean editMode;
 
     private UserDTO activeUser;
@@ -84,15 +86,38 @@ public class DetailedIssueBean implements Serializable {
     }
 
     public void initMessageListener() {
-        selectedMessage = new MessageDTO();
+        selectedToEditMessage = new MessageDTO();
     }
 
-    public void editMessageListener() {
+    public void editMessageAction() {
 
     }
 
-    public void saveMessageListener() {
+    public void saveMessageAction() {
 
+    }
+
+    public void deleteMessageAction() {
+
+    }
+
+    public void editMessagePrepareAction(){
+
+    }
+
+    public void cancelEditAction() {
+        editMode = false;
+        initMessageListener();
+    }
+
+    public void initPreviewListener() {
+        if (editMode) {
+            selectedToEditMessage.setEditor(activeUser);
+            selectedToEditMessage.setEditDate(new Date());
+        } else {
+            selectedToEditMessage.setCreator(activeUser);
+            selectedToEditMessage.setCreateDate(new Date());
+        }
     }
 
     public void save() {
@@ -131,12 +156,20 @@ public class DetailedIssueBean implements Serializable {
         return userDTODataModel;
     }
 
-    public MessageDTO getSelectedMessage() {
-        return selectedMessage;
+    public MessageDTO getSelectedToEditMessage() {
+        return selectedToEditMessage;
     }
 
-    public void setSelectedMessage(MessageDTO selectedMessage) {
-        this.selectedMessage = selectedMessage;
+    public void setSelectedToEditMessage(MessageDTO selectedToEditMessage) {
+        this.selectedToEditMessage = selectedToEditMessage;
+    }
+
+    public MessageDTO getSelectedToDeleteMessage() {
+        return selectedToDeleteMessage;
+    }
+
+    public void setSelectedToDeleteMessage(MessageDTO selectedToDeleteMessage) {
+        this.selectedToDeleteMessage = selectedToDeleteMessage;
     }
 
     public boolean isEditMode() {
@@ -146,4 +179,6 @@ public class DetailedIssueBean implements Serializable {
     public void setEditMode(boolean editMode) {
         this.editMode = editMode;
     }
+
+
 }

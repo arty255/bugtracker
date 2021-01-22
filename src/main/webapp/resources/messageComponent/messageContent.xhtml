@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:user="http://java.sun.com/jsf/composite/userComponent"
+      xml:lang="en" lang="en">
+<composite:interface>
+    <composite:attribute name="message" type="org.hetsold.bugtracker.model.MessageDTO" required="true"/>
+    <composite:attribute name="disableControls" default="false"/>
+</composite:interface>
+<composite:implementation>
+    <h:panelGrid columns="2" columnClasses="messageInfoColumn,messageContentColumn"
+                 styleClass="messageTable">
+        <h:panelGroup layout="block" styleClass="messageArea messageContentBlock">
+            <user:miniUser isDisabled="#{cc.attrs.disableControls}" user="#{cc.attrs.message.creator}"/>
+            <div class="messageCreateDate">
+                <p:outputLabel value="#{cc.attrs.message.createDate}">
+                    <f:convertDateTime type="both" pattern="#{appUtilBean.dateFormat}"/>
+                </p:outputLabel>
+            </div>
+        </h:panelGroup>
+        <h:panelGroup layout="block" styleClass="messageArea messageContentArea messageContentBlock">
+            <div>
+                <h:outputText value="#{cc.attrs.message.content}"/>
+            </div>
+            <h:panelGroup styleClass="messageEditorDataWrapper" layout="block"
+                          rendered="#{cc.attrs.message.editor ne null}">
+                <p:outputLabel value="Edited by:"/>
+                <user:linkedUser isDisabled="#{cc.attrs.disableControls}" user="#{cc.attrs.message.editor}"/>
+                <p:outputLabel value="#{cc.attrs.message.editDate}">
+                    <f:convertDateTime type="both" pattern="#{appUtilBean.dateFormat}"/>
+                </p:outputLabel>
+            </h:panelGroup>
+        </h:panelGroup>
+    </h:panelGrid>
+</composite:implementation>
+</html>

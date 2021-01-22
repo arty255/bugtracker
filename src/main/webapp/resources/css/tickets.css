@@ -86,25 +86,6 @@
     width: 100%;
 }
 
-.messageTable tr td {
-    height: 1px;
-}
-
-.messageInfo {
-    width: 20%;
-}
-
-.messageContent {
-    width: 80%;
-    vertical-align: top;
-}
-
-.messageArea {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-}
-
 .messageInfoArea {
     justify-content: flex-start;
     align-items: stretch;
@@ -112,31 +93,6 @@
 
 .messageInfoArea div {
     width: 50%;
-}
-
-.createDate {
-    width: 100%;
-    border-top: 1px solid #A8A8A8;
-    padding: 0.2em 0.5em;
-    border-top-color: var(--input-border-color, #A8A8A8);
-}
-
-.messageContentArea {
-    justify-content: space-between;
-    height: 100%;
-}
-
-.messageEditorWrapper {
-    border-top: 1px solid #A8A8A8;
-    padding: 0.2em 0.5em;
-    border-top-color: var(--input-border-color, #A8A8A8);
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-}
-
-.messageEditorWrapper > label {
-    margin-right: 0.5em;
 }
 
 

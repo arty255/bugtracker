@@ -4,23 +4,30 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:composite="http://java.sun.com/jsf/composite" xmlns:p="http://java.sun.com/jsf/html"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xml:lang="en" lang="en">
 <composite:interface>
     <composite:attribute name="user" type="org.hetsold.bugtracker.model.UserDTO" required="true"/>
+    <composite:attribute name="isDisabled" default="false"/>
     <composite:attribute name="emptyMessage" type="java.lang.String" default="Emty"/>
 </composite:interface>
 <composite:implementation>
     <h:outputStylesheet library="css" name="linkedUser.css"/>
     <div class="linkWrapper">
-        <p:link outcome="userProfile" includeViewParams="true" rendered="#{not empty cc.attrs.user}">
+        <p:link outcome="userProfile" includeViewParams="true"
+                rendered="#{not empty cc.attrs.user and not cc.attrs.isDisabled}">
             <h:outputText value="#{cc.attrs.user.firstName}" styleClass="firstName"/>
             <h:outputText value="#{cc.attrs.user.lastName}" styleClass="lastName"/>
             <f:param name="user" value="#{cc.attrs.user.uuid}"/>
         </p:link>
-        <p:outputText value="#{cc.attrs.emptyMessage}" rendered="#{empty cc.attrs.user}"
-         styleClass="emptyMessageLabel"/>
+        <h:panelGroup layout="block" rendered="#{not empty cc.attrs.user and cc.attrs.isDisabled}">
+            <h:outputText value="#{cc.attrs.user.firstName}" styleClass="firstName"/>
+            <h:outputText value="#{cc.attrs.user.lastName}" styleClass="lastName"/>
+        </h:panelGroup>
+        <h:outputText value="#{cc.attrs.emptyMessage}" rendered="#{empty cc.attrs.user}"
+                      styleClass="emptyMessageLabel"/>
     </div>
 </composite:implementation>
 </html>

@@ -20,6 +20,7 @@
     <ui:define name="headArea">
         <h:outputStylesheet library="css" name="tickets.css"/>
         <h:outputStylesheet library="css" name="reusable.css"/>
+        <h:outputScript library="js" name="messageBuilder.js"/>
     </ui:define>
     <ui:define name="content">
         <h:form>
@@ -108,75 +109,39 @@
                     <p:commandButton value="Save" actionListener="#{detailedTicketBean.updateTicket}"/>
                 </div>
                 <div>
-                    <message:messageBuilder message="#{detailedTicketBean.selectedMessage}"
-                                            initMessageListener="#{detailedTicketBean.initMessageListener()}"
-                                            editMessageListener="#{detailedTicketBean.editTicketMessageListener()}"
-                                            saveMessageListener="#{detailedTicketBean.addMessageToTicketListener()}"
-                                            editMode="#{detailedTicketBean.editMode}"
-                                            updateListId="@form:ticketMessages"/>
-
-                    <p:dataList id="ticketMessages" var="message" value="#{detailedTicketBean.ticketMessages}"
-                                emptyMessage="Discussion not started yet." styleClass="ticketMessages">
-                        <f:facet name="header">
-                            Messages
-                        </f:facet>
-                        <p:panel header="#{message.uuid}">
-                            <f:facet name="actions">
-                                <!--todo: rendered rules for spring security integration-->
-                                <p:commandLink
-                                        styleClass="ui-panel-titlebar-icon ui-corner-all ui-issueState-default"
-                                        rendered="#{true}"
-                                        process="@this"
-                                        update="@form:ticketMessages,@(.editMarker),@(.controlButtonsMarker),@widgetVar(messageContentWidget)"
-                                        action="#{detailedTicketBean.deleteMessage(message)}">
-                                    <h:outputText styleClass="ui-icon pi pi-trash"/>
-                                </p:commandLink>
-                                <p:commandLink
-                                        styleClass="ui-panel-titlebar-icon ui-corner-all ui-issueState-default"
-                                        rendered="#{true}"
-                                        process="@this"
-                                        update="@(.editMarker),@(.controlButtonsMarker),@widgetVar(messageContentWidget)"
-                                        onclick="selectIfUnselected()"
-                                        style="margin-right: 0.5em;">
-                                    <f:setPropertyActionListener value="#{message}"
-                                                                 target="#{detailedTicketBean.selectedMessage}"/>
-                                    <f:setPropertyActionListener value="#{true}"
-                                                                 target="#{detailedTicketBean.editMode}"/>
-                                    <h:outputText styleClass="ui-icon pi pi-pencil"/>
-                                </p:commandLink>
-                            </f:facet>
-                            <h:panelGrid columns="2" columnClasses="messageInfo,messageContent"
-                                         styleClass="messageTable">
-                                <h:panelGroup layout="block" style="width: 100%; padding: 0.5em"
-                                              styleClass="messageArea">
-                                    <user:miniUser user="#{message.creator}"/>
-                                    <div class="createDate">
-                                        <p:outputLabel value="#{message.createDate}">
-                                            <f:convertDateTime type="both" pattern="#{appUtilBean.dateFormat}"/>
-                                        </p:outputLabel>
-                                    </div>
-                                </h:panelGroup>
-                                <h:panelGroup layout="block" style="width: 100%; padding: 0.5em"
-                                              styleClass="messageArea messageContentArea">
-                                    <div>
-                                        <h:outputText value="#{message.content}"/>
-                                    </div>
-                                    <h:panelGroup class="messageEditorWrapper" layout="block"
-                                                  rendered="#{message.editor ne null}">
-                                        <p:outputLabel value="Edited by:"/>
-                                        <p:outputLabel
-                                                value="#{message.editor.firstName} #{message.editor.lastName}"/>
-                                        <p:outputLabel value="#{message.editDate}">
-                                            <f:convertDateTime type="both" pattern="dd-MM-yyyy HH:mm"/>
-                                        </p:outputLabel>
-                                    </h:panelGroup>
-                                </h:panelGroup>
-                            </h:panelGrid>
+                    <message:messageEditor message="#{detailedTicketBean.selectedToEditMessage}"
+                                           inEditMode="#{detailedTicketBean.editMode}"
+                                           cancelEditAction="#{detailedTicketBean.cancelEditAction()}"
+                                           editMessageAction="#{detailedTicketBean.editTicketMessageAction()}"
+                                           saveMessageAction="#{detailedTicketBean.addMessageToTicketAction()}"
+                                           initPreviewListener="#{detailedTicketBean.initPreviewListener()}"
+                                           onPreviewActionUpdateSelectors="@(.commentPreview)"
+                                           onCommentActionUpdateSelectors="@(.ticketMessages)">
+                        <p:panel id="commentPreview" header="#{detailedTicketBean.selectedToEditMessage.uuid}"
+                                 styleClass="commentPreview">
+                            <message:messageContent message="#{detailedTicketBean.selectedToEditMessage}"
+                                                    disableControls="true"/>
                         </p:panel>
-                    </p:dataList>
+                    </message:messageEditor>
+
+                    <h:panelGroup layout="block" styleClass="ticketMessagesWrapper">
+                        <p:dataList id="ticketMessages" var="message" value="#{detailedTicketBean.ticketMessages}"
+                                    emptyMessage="Discussion not started yet." styleClass="ticketMessages">
+                            <f:facet name="header">
+                                <h:outputText value="Messages:"/>
+                            </f:facet>
+                            <message:messageWithControls message="#{message}" editMode="#{detailedTicketBean.editMode}"
+                                                         deleteMessageAction="#{detailedTicketBean.deleteMessageAction()}"
+                                                         editMessagePrepareAction="#{detailedTicketBean.editMessagePrepareAction()}"
+                                                         onEditActionUpdateSelectors="@(.messageEditorWrappedArea)"
+                                                         onDeleteActionUpdateSelectors="@(.messageEditorWrappedArea),@(.ticketMessages),@(.commentPreview)"
+                                                         selectedToDelte="#{detailedTicketBean.selectedToDeleteMessage}"
+                                                         selectedToEdit="#{detailedTicketBean.selectedToEditMessage}"/>
+                        </p:dataList>
+                    </h:panelGroup>
                 </div>
             </p:panel>
-            <p:dialog widgetVar="issueCreatedDialog" dynamic="true" onHide="">
+            <p:dialog widgetVar="issueCreatedDialog" dynamic="true">
                 <p:ajax event="close" update="@this" process="@this"
                         listener="#{detailedTicketBean.onCloseCreatedIssueDialog}"/>
                 <p:panel header="New Issue created" rendered="#{not empty detailedTicketBean.createdIssue}">

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:p="http://primefaces.org/ui"
+      xml:lang="en" lang="en">
+<composite:interface>
+    <composite:attribute name="message" type="org.hetsold.bugtracker.model.MessageDTO" required="true"/>
+    <composite:attribute name="inEditMode" required="true"/>
+    <composite:attribute name="cancelEditAction" method-signature="void action()" required="true"/>
+    <composite:attribute name="saveMessageAction" method-signature="void action()" required="true"/>
+    <composite:attribute name="editMessageAction" method-signature="void action()" required="true"/>
+    <composite:attribute name="initPreviewListener" method-signature="void listener()" required="true"/>
+    <composite:attribute name="onCommentActionUpdateSelectors"/>
+    <composite:attribute name="onPreviewActionUpdateSelectors"/>
+    <composite:attribute name="allowedMessageLenght" default="1000"/>
+    <composite:attribute name="allowedMessageLabel" default="characters remaining."/>
+    <composite:editableValueHolder name="newMessageContent"/>
+</composite:interface>
+<composite:implementation>
+    <h:outputStylesheet library="css" name="message.css"/>
+    <p:accordionPanel widgetVar="commentAccordionWidget" styleClass="messageBuilder"
+                      activeIndex="-1">
+        <p:tab title="Start Commenting">
+            <p:tabView onTabChange="tabChangeHelperCommand()">
+                <p:tab title="Write">
+                    <p:outputPanel layout="block" styleClass="messageEditorWrappedArea">
+                        <p:outputPanel layout="block">
+                            <p:outputPanel layout="block" styleClass="editMarker"
+                                           rendered="#{not empty cc.attrs.message.uuid and cc.attrs.inEditMode}">
+                                <h:outputText
+                                        value="You editing #{cc.attrs.message.creator.firstName} #{cc.attrs.message.creator.lastName} message!"
+                                        styleClass="editMarkerMessage"/>
+                                <p:commandLink action="#{cc.attrs.cancelEditAction}"
+                                               process="@this"
+                                               update="@(.messageEditorWrappedArea)"
+                                               styleClass="cancelEditLink">
+                                    <i class="pi pi-times"/>
+                                    <h:outputText value="Cancel"/>
+                                </p:commandLink>
+                            </p:outputPanel>
+                            <p:inputTextarea id="newMessageContent" widgetVar="messageContentWidget"
+                                             value="#{cc.attrs.message.content}"
+                                             counter="symbolsLeftCounter" maxlength="#{cc.attrs.allowedMessageLenght}"
+                                             counterTemplate="{0} #{cc.attrs.allowedMessageLabel}"
+                                             rows="5"/>
+                        </p:outputPanel>
+                        <h:outputText id="symbolsLeftCounter" styleClass="symbolCounter"/>
+                        <p:outputPanel layout="block" styleClass="controlButtonsMarker">
+                            <p:commandButton value="Hide coment window"
+                                             onclick="PF('commentAccordionWidget').unselect(0);"/>
+                            <h:panelGroup layout="block" styleClass="rightGroupControls">
+                                <!--todo: clear method-->
+                                <p:commandButton type="button" value="Clear" icon="pi pi-minus"
+                                                 onclick="PF('messageContentWidget').clear();"/>
+                                <p:commandButton value="Comment" icon="pi pi-check"
+                                                 rendered="#{not cc.attrs.inEditMode}"
+                                                 action="#{cc.attrs.saveMessageAction}"
+                                                 update="#{cc.attrs.onCommentActionUpdateSelectors},@(.messageEditorWrappedArea)"
+                                                 process="@this newMessageContent"
+                                                 onsuccess="PF('commentAccordionWidget').unselect(0);"/>
+                                <p:commandButton value="Edit" icon="pi pi-pencil"
+                                                 rendered="#{cc.attrs.inEditMode}"
+                                                 action="#{cc.attrs.editMessageAction}"
+                                                 update="#{cc.attrs.onCommentActionUpdateSelectors},@(.messageEditorWrappedArea)"
+                                                 process="@this newMessageContent"
+                                                 onsuccess="PF('commentAccordionWidget').unselect(0);"/>
+                            </h:panelGroup>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                </p:tab>
+                <p:tab title="Preview">
+                    <h:panelGroup id="renderedPreview" layout="block" styleClass="renderedPreview">
+                        <composite:insertChildren/>
+                        <p:outputPanel layout="block" styleClass="controlButtonsMarker">
+                            <p:commandButton value="Hide coment window"
+                                             onclick="PF('commentAccordionWidget').unselect(0);"/>
+                            <h:panelGroup layout="block" styleClass="rightGroupControls">
+                                <p:commandButton value="Comment" icon="pi pi-check"
+                                                 rendered="#{not cc.attrs.inEditMode}"
+                                                 action="#{cc.attrs.saveMessageAction}"
+                                                 update="#{cc.attrs.onCommentActionUpdateSelectors},@(.messageEditorWrappedArea)"
+                                                 process="@this newMessageContent"
+                                                 onsuccess="PF('CommentAccordionWidget').unselect(0);"
+                                                 style="margin-right: 0!important;"/>
+                                <p:commandButton value="Edit" icon="pi pi-pencil"
+                                                 rendered="#{cc.attrs.inEditMode}"
+                                                 action="#{cc.attrs.editMessageAction}"
+                                                 update="#{cc.attrs.onCommentActionUpdateSelectors},@(.messageEditorWrappedArea)"
+                                                 process="@this newMessageContent"
+                                                 style="margin-right: 0!important;"/>
+                            </h:panelGroup>
+                        </p:outputPanel>
+                    </h:panelGroup>
+                </p:tab>
+            </p:tabView>
+        </p:tab>
+    </p:accordionPanel>
+    <p:remoteCommand name="tabChangeHelperCommand"
+                     process="@widgetVar(messageContentWidget),@this"
+                     update="@(.renderedPreview),#{cc.attrs.onPreviewActionUpdateSelectors}"
+                     actionListener="#{cc.attrs.initPreviewListener}"/>
+</composite:implementation>
+</html>
