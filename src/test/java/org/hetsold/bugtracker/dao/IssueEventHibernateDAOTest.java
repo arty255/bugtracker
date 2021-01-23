@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 @ContextConfiguration(classes = {org.hetsold.bugtracker.AppConfig.class, org.hetsold.bugtracker.TestAppConfig.class})
 @ActiveProfiles(profiles = {"test", ""})
 @Transactional
-public class HistoryEventHibernateDAOTest {
+public class IssueEventHibernateDAOTest {
     @Autowired
     private HistoryEventDAO historyEventDAO;
     @Autowired
@@ -49,24 +49,22 @@ public class HistoryEventHibernateDAOTest {
 
     @Test
     public void checkIfIssueMessageCanBeSaved() {
-        HistoryIssueMessageEvent messageEvent = new HistoryIssueMessageEvent();
+        IssueMessageEvent messageEvent = new IssueMessageEvent();
         messageEvent.setIssue(issue);
         messageEvent.setMessage(message);
         messageEvent.setEventDate(new Date());
         historyEventDAO.saveIssueMessage(messageEvent);
-        HistoryIssueMessageEvent resultMessageEvent = historyEventDAO.getMessageEventById(messageEvent.getUuid());
+        IssueMessageEvent resultMessageEvent = historyEventDAO.getMessageEventById(messageEvent.getUuid());
         assertEquals(resultMessageEvent.getUuid(), messageEvent.getUuid());
     }
 
     @Test
     public void checkIfIssueStateChangeEventCanBeSaved() {
-        HistoryIssueStateChangeEvent stateChangeEvent = new HistoryIssueStateChangeEvent();
+        IssueStateChangeEvent stateChangeEvent = new IssueStateChangeEvent();
         stateChangeEvent.setEventDate(new Date());
-        stateChangeEvent.setExpectedFixVersion("1.0.0.1");
         historyEventDAO.saveStateChange(stateChangeEvent);
-        HistoryIssueStateChangeEvent resultStateChangeEvent = historyEventDAO.getStateChangeEventById(stateChangeEvent.getUuid());
+        IssueStateChangeEvent resultStateChangeEvent = historyEventDAO.getStateChangeEventById(stateChangeEvent.getUuid());
         assertEquals(resultStateChangeEvent.getUuid(), stateChangeEvent.getUuid());
         assertEquals(resultStateChangeEvent.getState(), stateChangeEvent.getState());
-        assertEquals(resultStateChangeEvent.getExpectedFixVersion(), stateChangeEvent.getExpectedFixVersion());
     }
 }

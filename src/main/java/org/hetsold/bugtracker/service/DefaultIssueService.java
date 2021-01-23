@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -160,7 +159,7 @@ public class DefaultIssueService implements IssueService {
     }
 
     private void generateAndSaveStateChangeEvent(Issue issue, IssueState issueState, User eventActor) {
-        HistoryIssueStateChangeEvent event = new HistoryIssueStateChangeEvent();
+        IssueStateChangeEvent event = new IssueStateChangeEvent();
         event.setIssue(issue);
         event.setRedactor(eventActor);
         event.setState(issueState);
@@ -236,7 +235,7 @@ public class DefaultIssueService implements IssueService {
             throw new IllegalArgumentException("user argument can not be null or not persisted");
         }
         Message savedMessage = messageService.saveNewMessage(message, user);
-        HistoryIssueMessageEvent messageEvent = new HistoryIssueMessageEvent();
+        IssueMessageEvent messageEvent = new IssueMessageEvent();
         messageEvent.setMessage(savedMessage);
         messageEvent.setIssue(issue);
         messageEvent.setEventDate(new Date());
@@ -302,16 +301,45 @@ public class DefaultIssueService implements IssueService {
     public void updateIssueState(Issue issue, User user) {
         Issue oldIssue = getIssueById(issue.getUuid());
         if (oldIssue.getAssignedTo() != issue.getAssignedTo() || oldIssue.getSeverity() != issue.getSeverity() || !oldIssue.getFixVersion().equals(issue.getFixVersion())) {
-            HistoryIssueStateChangeEvent stateChangeEvent = new HistoryIssueStateChangeEvent();
+            IssueStateChangeEvent stateChangeEvent = new IssueStateChangeEvent();
             stateChangeEvent.setState(issue.getCurrentIssueState());
             stateChangeEvent.setRedactor(user);
-            stateChangeEvent.setExpectedFixVersion(issue.getFixVersion());
             stateChangeEvent.setEventDate(new Date());
         }
     }
 
     @Override
-    public List<HistoryEvent> getIssueEvents(IssueDTO issue, int startPosition, int limit) {
-        return new ArrayList<>();
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public List<IssueEvent> getIssueEvents(Issue issue, int startPosition, int limit) {
+        return historyEventDAO.getHistoryIssueEventsByIssue(issue, startPosition, limit);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public List<IssueEventDTO> getIssueHistoryEventsDTO(IssueDTO issueDTO, int startPosition, int limit) {
+        Issue issue;
+        if (issueDTO == null || issueDTO.getUuid().isEmpty() || (issue = getIssueById(issueDTO.getUuid())) == null) {
+            throw new IllegalArgumentException("incorrect issue: issue can not be null or not persisted");
+        }
+        return getIssueEvents(issue, startPosition, limit)
+                .stream()
+                .map(IssueEventDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public long getIssueHistoryEventsCount(Issue issue) {
+        return historyEventDAO.getHistoryIssueEventsCountForIssue(issue);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public long getIssueHistoryEventsCount(IssueDTO issueDTO) {
+        Issue issue;
+        if (issueDTO == null || issueDTO.getUuid().isEmpty() || (issue = getIssueById(issueDTO.getUuid())) == null) {
+            throw new IllegalArgumentException("wrong issue: issue can not be null or not persisted");
+        }
+        return getIssueHistoryEventsCount(issue);
     }
 }

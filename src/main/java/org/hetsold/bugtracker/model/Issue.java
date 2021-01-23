@@ -33,12 +33,12 @@ import java.util.List;
                         attributeNodes = {}
                 ),
                 @NamedSubgraph(name = "historyEventSubGraph",
-                        type = org.hetsold.bugtracker.model.HistoryIssueMessageEvent.class,
+                        type = IssueMessageEvent.class,
                         attributeNodes = {
                                 @NamedAttributeNode("messageCreator")
                         }),
                 @NamedSubgraph(name = "historyEventSubGraph",
-                        type = org.hetsold.bugtracker.model.HistoryIssueStateChangeEvent.class,
+                        type = IssueStateChangeEvent.class,
                         attributeNodes = {
                                 @NamedAttributeNode("redactor")
                         })
@@ -90,7 +90,7 @@ public class Issue extends AbstractIdentity {
     @Column(columnDefinition = "tinyint")
     private IssueState currentIssueState;
     @OneToMany(mappedBy = "issue", fetch = FetchType.LAZY)
-    private List<HistoryEvent> history;
+    private List<IssueEvent> history;
     @OneToOne
     @JoinTable(name = "issue_ticket",
             joinColumns = @JoinColumn(name = "issueId", referencedColumnName = "uuid"),
@@ -206,11 +206,11 @@ public class Issue extends AbstractIdentity {
         this.currentIssueState = currentIssueState;
     }
 
-    public List<HistoryEvent> getHistory() {
+    public List<IssueEvent> getHistory() {
         return history;
     }
 
-    public void setHistory(List<HistoryEvent> history) {
+    public void setHistory(List<IssueEvent> history) {
         this.history = history;
     }
 
