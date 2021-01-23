@@ -10,13 +10,13 @@ import java.util.Date;
 @Entity
 @Table(name = "historyEvent")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class HistoryEvent extends AbstractIdentity {
+public abstract class IssueEvent extends AbstractIdentity {
     @ManyToOne()
     @JoinTable(name = "issue_historyEvent", joinColumns = @JoinColumn(name = "historyId"), inverseJoinColumns = @JoinColumn(name = "issueId"))
     private Issue issue;
     private Date eventDate;
 
-    public HistoryEvent() {
+    public IssueEvent() {
     }
 
     @PrePersist

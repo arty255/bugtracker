@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "issueMessageEvent")
-public class HistoryIssueMessageEvent extends HistoryEvent {
+public class IssueMessageEvent extends IssueEvent {
     @OneToOne
     @JoinColumn(name = "messageId")
     private Message message;

@@ -115,13 +115,17 @@
                     </h:panelGroup>
                 </message:messageEditor>
                 <h:panelGroup id="listContainer" layout="block">
-                    <p:dataList var="historyEvent" value="#{detailedIssueBean.issueEvents}">
-                        <!--<message:messageWithControls message="#{historyEvent}"
+                    <p:dataList var="issueEvent" value="#{detailedIssueBean.historyEventDataModel}"
+                                lazy="true" rows="10" paginator="true" styleClass="issueHistoryList">
+                        <message:messageWithControls message="#{issueEvent.entityDTO}"
                                                      selectedToEdit="#{detailedIssueBean.selectedToEditMessage}"
                                                      selectedToDelte="#{detailedIssueBean.selectedToDeleteMessage}"
                                                      deleteMessageAction="#{detailedIssueBean.deleteMessageAction()}"
                                                      editMessagePrepareAction="#{detailedIssueBean.editMessagePrepareAction()}"
-                                                     editMode="#{detailedIssueBean.editMode}"/>-->
+                                                     editMode="#{detailedIssueBean.editMode}"
+                                                     rendered="#{appUtilBean.isMessageInHistory(issueEvent.eventType)}"/>
+                        <issue:stateChangeMessage stateChangeEvent="#{issueEvent.entityDTO}"
+                                                  rendered="#{not appUtilBean.isMessageInHistory(issueEvent.eventType)}"/>
                     </p:dataList>
                 </h:panelGroup>
             </p:panel>

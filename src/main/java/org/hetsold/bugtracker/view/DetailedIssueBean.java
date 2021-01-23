@@ -16,20 +16,20 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 @ManagedBean
 @ViewScoped
 public class DetailedIssueBean implements Serializable {
     private String uuid;
     private IssueDTO issue;
-    private List<HistoryEvent> issueEvents;
     @Autowired
     private IssueService issueService;
     @Autowired
     private MessageService messageService;
     @Autowired
     private UserService userService;
+
+    private LazyDataModel<IssueEventDTO> historyEventDataModel;
 
     private boolean isOriginalStateChanged;
     private IssueState originalIssueState;
@@ -57,11 +57,11 @@ public class DetailedIssueBean implements Serializable {
     public void preInitIssue() {
         issue = issueService.getIssueDTOById(uuid);
         originalIssueState = issue.getCurrentIssueState();
-        initEvents();
+        initHistory();
     }
 
-    public void initEvents() {
-        issueEvents = issueService.getIssueEvents(issue, 0, 0);
+    public void initHistory() {
+        historyEventDataModel = new HistoryEventLazyDataModel(issueService, issue);
     }
 
     public void issueStateChanged() {
@@ -101,7 +101,7 @@ public class DetailedIssueBean implements Serializable {
 
     }
 
-    public void editMessagePrepareAction(){
+    public void editMessagePrepareAction() {
 
     }
 
@@ -126,10 +126,6 @@ public class DetailedIssueBean implements Serializable {
 
     public IssueDTO getIssue() {
         return issue;
-    }
-
-    public List<HistoryEvent> getIssueEvents() {
-        return issueEvents;
     }
 
     public String getUuid() {
@@ -162,6 +158,10 @@ public class DetailedIssueBean implements Serializable {
 
     public void setSelectedToEditMessage(MessageDTO selectedToEditMessage) {
         this.selectedToEditMessage = selectedToEditMessage;
+    }
+
+    public LazyDataModel<IssueEventDTO> getHistoryEventDataModel() {
+        return historyEventDataModel;
     }
 
     public MessageDTO getSelectedToDeleteMessage() {

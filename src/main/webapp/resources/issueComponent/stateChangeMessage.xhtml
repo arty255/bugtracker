@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:user="http://java.sun.com/jsf/composite/userComponent"
+      xmlns:issue="http://java.sun.com/jsf/composite/issueComponent"
+      xml:lang="en" lang="en">
+<composite:interface>
+    <composite:attribute name="stateChangeEvent" type="org.hetsold.bugtracker.model.IssueStateChangeEventDTO"
+                         required="true"/>
+    <composite:attribute name="showIcons" default="false"/>
+    <composite:attribute name="textContent" default="Issue state changed to"/>
+</composite:interface>
+<composite:implementation>
+    <p:panel header="State change" styleClass="messageStateChangePanel">
+        <div class="stateChangeMessageWrapper">
+            <div class="stateChangeDateWrapper">
+                <h:outputText value="#{cc.attrs.stateChangeEvent.date}">
+                    <f:convertDateTime pattern="#{appUtilBean.dateFormat}"/>
+                </h:outputText>
+            </div>
+            <div style="display: flex;flex-direction: row;">
+                <div>
+                    <h:outputText value="#{cc.attrs.textContent}"/>
+                </div>
+                <issue:issueState issueState="#{cc.attrs.stateChangeEvent.issueState}"/>
+            </div>
+        </div>
+        <div class="stateChangeMessageUserWrapper">
+            <h:panelGroup rendered="#{not cc.attrs.showIcons}">
+                <user:linkedUser user="#{cc.attrs.stateChangeEvent.userDTO}"/>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{cc.attrs.showIcons}">
+                <user:miniUser user="#{cc.attrs.stateChangeEvent.userDTO}"/>
+            </h:panelGroup>
+        </div>
+    </p:panel>
+</composite:implementation>
+</html>

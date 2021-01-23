@@ -1,23 +1,23 @@
 package org.hetsold.bugtracker.dao;
 
-import org.hetsold.bugtracker.model.HistoryIssueMessageEvent;
-import org.hetsold.bugtracker.model.HistoryIssueStateChangeEvent;
-import org.hetsold.bugtracker.model.Message;
+import org.hetsold.bugtracker.model.*;
 
 import java.util.List;
 
 public interface HistoryEventDAO {
-    void saveIssueMessage(HistoryIssueMessageEvent messageEvent);
+    void saveIssueMessage(IssueMessageEvent messageEvent);
 
-    List<HistoryIssueMessageEvent> listAllMessageEvents();
+    List<IssueMessageEvent> listAllMessageEvents();
 
-    HistoryIssueMessageEvent getMessageEventById(String uuid);
+    IssueMessageEvent getMessageEventById(String uuid);
 
-    void saveStateChange(HistoryIssueStateChangeEvent stateChangeEvent);
+    void saveStateChange(IssueStateChangeEvent stateChangeEvent);
 
-    HistoryIssueStateChangeEvent getStateChangeEventById(String uuid);
+    IssueStateChangeEvent getStateChangeEventById(String uuid);
 
-    void deleteIssueMessageEvent(HistoryIssueMessageEvent messageEvent);
+    void deleteIssueMessageEvent(IssueMessageEvent messageEvent);
 
-    HistoryIssueMessageEvent getHistoryIssueMessageEventByMessage(Message message);
+    List<IssueEvent> getHistoryIssueEventsByIssue(Issue issue, int firstResult, int limit);
+
+    long getHistoryIssueEventsCountForIssue(Issue issue);
 }

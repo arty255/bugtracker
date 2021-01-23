@@ -28,3 +28,18 @@
 .issueAssignControlsWrapper > button {
     margin-right: 0.5em;
 }
+
+/*issueHistory selectors*/
+
+.issueHistoryList {
+
+}
+
+.issueHistoryList ul {
+    list-style: none;
+    padding-inline-start: 0;
+}
+
+.issueHistoryList li {
+    padding: 0.5em 0;
+}
