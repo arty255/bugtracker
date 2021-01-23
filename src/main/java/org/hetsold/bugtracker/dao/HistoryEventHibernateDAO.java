@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
@@ -22,45 +21,63 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
     }
 
     @Override
-    public void saveIssueMessage(HistoryIssueMessageEvent messageEvent) {
+    public void saveIssueMessage(IssueMessageEvent messageEvent) {
         hibernateTemplate.save(messageEvent);
     }
 
     @Override
-    public List<HistoryIssueMessageEvent> listAllMessageEvents() {
-        return hibernateTemplate.loadAll(HistoryIssueMessageEvent.class);
+    public List<IssueMessageEvent> listAllMessageEvents() {
+        return hibernateTemplate.loadAll(IssueMessageEvent.class);
     }
 
     @Override
-    public HistoryIssueMessageEvent getMessageEventById(String uuid) {
-        return hibernateTemplate.load(HistoryIssueMessageEvent.class, uuid);
+    public IssueMessageEvent getMessageEventById(String uuid) {
+        return hibernateTemplate.get(IssueMessageEvent.class, uuid);
     }
 
     @Override
-    public void saveStateChange(HistoryIssueStateChangeEvent stateChangeEvent) {
+    public void saveStateChange(IssueStateChangeEvent stateChangeEvent) {
         hibernateTemplate.save(stateChangeEvent);
     }
 
     @Override
-    public HistoryIssueStateChangeEvent getStateChangeEventById(String uuid) {
-        return hibernateTemplate.load(HistoryIssueStateChangeEvent.class, uuid);
+    public IssueStateChangeEvent getStateChangeEventById(String uuid) {
+        return hibernateTemplate.load(IssueStateChangeEvent.class, uuid);
     }
 
     @Override
-    public void deleteIssueMessageEvent(HistoryIssueMessageEvent messageEvent) {
+    public void deleteIssueMessageEvent(IssueMessageEvent messageEvent) {
         hibernateTemplate.delete(messageEvent);
     }
 
     @Override
-    public HistoryIssueMessageEvent getHistoryIssueMessageEventByMessage(Message message) {
+    public long getHistoryIssueEventsCountForIssue(Issue issue) {
+        Long count = hibernateTemplate.execute(session -> {
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<Long> query = builder.createQuery(Long.class);
+            Root<IssueEvent> root = query.from(IssueEvent.class);
+            query.select(builder.count(root));
+            return session.createQuery(query).getSingleResult();
+        });
+        if (count != null) {
+            return count;
+        }
+        return 0;
+    }
+
+    @Override
+    public List<IssueEvent> getHistoryIssueEventsByIssue(Issue issue, int firstResult, int limit) {
+        if (limit < 1) {
+            throw new IllegalArgumentException("limit cannot be negative");
+        }
         return hibernateTemplate.execute(session -> {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<HistoryIssueMessageEvent> query = criteriaBuilder.createQuery(HistoryIssueMessageEvent.class);
-            Root<HistoryIssueMessageEvent> root = query.from(HistoryIssueMessageEvent.class);
-            Join<HistoryIssueMessageEvent, Message> joinRoot = root.join(HistoryIssueMessageEvent_.message);
-            query.where(criteriaBuilder.equal(joinRoot.get(Message_.uuid), message.getUuid()));
+            CriteriaQuery<IssueEvent> query = criteriaBuilder.createQuery(IssueEvent.class);
+            Root<IssueEvent> root = query.from(IssueEvent.class);
+            query.where(criteriaBuilder.equal(root.get(IssueEvent_.issue), issue));
             query.select(root);
-            return session.createQuery(query).getSingleResult();
+            query.orderBy(criteriaBuilder.asc(root.get(IssueEvent_.eventDate)));
+            return session.createQuery(query).setFirstResult(firstResult).setMaxResults(limit).list();
         });
     }
 

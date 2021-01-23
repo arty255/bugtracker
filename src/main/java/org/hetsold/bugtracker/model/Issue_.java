@@ -10,5 +10,5 @@ public class Issue_ {
     public static volatile SingularAttribute<Issue, User> reportedBy;
     public static volatile SingularAttribute<Issue, IssueState> currentState;
     public static volatile SingularAttribute<Issue, String> description;
-    public static volatile ListAttribute<Issue, HistoryEvent> history;
+    public static volatile ListAttribute<Issue, IssueEvent> history;
 }

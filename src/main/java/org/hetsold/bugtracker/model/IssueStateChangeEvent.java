@@ -4,10 +4,9 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "issueStateChangeEvent")
-public class HistoryIssueStateChangeEvent extends HistoryEvent {
+public class IssueStateChangeEvent extends IssueEvent {
     @Enumerated
     private IssueState issueState;
-    private String expectedFixVersion;
     @OneToOne
     @JoinColumn(name = "redactorId")
     private User redactor;
@@ -18,14 +17,6 @@ public class HistoryIssueStateChangeEvent extends HistoryEvent {
 
     public void setState(IssueState issueState) {
         this.issueState = issueState;
-    }
-
-    public String getExpectedFixVersion() {
-        return expectedFixVersion;
-    }
-
-    public void setExpectedFixVersion(String expectedFixVersion) {
-        this.expectedFixVersion = expectedFixVersion;
     }
 
     public User getRedactor() {

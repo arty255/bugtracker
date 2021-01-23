@@ -48,5 +48,11 @@ public interface IssueService {
 
     void updateIssueState(Issue issue, User user);
 
-    List<HistoryEvent> getIssueEvents(IssueDTO issue, int startPosition, int limit);
+    List<IssueEvent> getIssueEvents(Issue issue, int startPosition, int limit);
+
+    List<IssueEventDTO> getIssueHistoryEventsDTO(IssueDTO issueDTO, int startPosition, int limit);
+
+    long getIssueHistoryEventsCount(Issue issue);
+
+    long getIssueHistoryEventsCount(IssueDTO issueDTO);
 }

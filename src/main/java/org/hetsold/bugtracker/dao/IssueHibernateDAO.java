@@ -35,6 +35,13 @@ public class IssueHibernateDAO implements IssueDAO {
         return hibernateTemplate.loadAll(Issue.class);
     }
 
+    /*
+    hibernate.query
+    * default Query<R> applyFetchGraph(RootGraph graph) {
+		return applyGraph( graph, GraphSemantic.FETCH );
+	}
+    * */
+
     @Override
     public List<Issue> getIssueList(int startPosition, int limit) {
         return hibernateTemplate.execute(session -> {
