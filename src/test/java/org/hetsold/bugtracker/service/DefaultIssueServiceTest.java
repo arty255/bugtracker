@@ -97,7 +97,7 @@ public class DefaultIssueServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void checkEmptyIssueDeleteThrowException() {
         issueService.deleteIssue(null);
-        Mockito.verify(userDAO, Mockito.never()).delete(null);
+        Mockito.verify(issueService, Mockito.never()).deleteIssue(null);
     }
 
     @Test
