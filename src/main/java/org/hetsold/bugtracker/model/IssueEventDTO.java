@@ -8,6 +8,11 @@ public class IssueEventDTO {
         MessageEvent, StateChangeEvent
     }
 
+    public IssueEventDTO(EventType eventType, IssueEventType entityDTO) {
+        this.eventType = eventType;
+        this.entityDTO = entityDTO;
+    }
+
     public IssueEventDTO(IssueEvent issueEvent) {
         if (issueEvent instanceof IssueMessageEvent) {
             this.eventType = EventType.MessageEvent;

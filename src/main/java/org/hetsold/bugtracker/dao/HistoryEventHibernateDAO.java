@@ -36,6 +36,18 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
     }
 
     @Override
+    public IssueMessageEvent getMessageEventByMessage(Message message) {
+        return hibernateTemplate.execute(session -> {
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<IssueMessageEvent> query = builder.createQuery(IssueMessageEvent.class);
+            Root<IssueMessageEvent> root = query.from(IssueMessageEvent.class);
+            query.where(builder.equal(root.get(IssueMessageEvent_.message), message));
+            query.select(root);
+            return session.createQuery(query).getSingleResult();
+        });
+    }
+
+    @Override
     public void saveStateChange(IssueStateChangeEvent stateChangeEvent) {
         hibernateTemplate.save(stateChangeEvent);
     }
