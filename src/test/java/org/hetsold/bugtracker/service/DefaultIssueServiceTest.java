@@ -125,7 +125,7 @@ public class DefaultIssueServiceTest {
 
     @Test
     public void checkIfIssueStateChangeToCorrectCanBePreform() {
-        IssueState newIssueState = IssueState.REOPENED;
+        IssueState newIssueState = IssueState.REOPEN;
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
         Mockito.when(userService.getUserById(user.getUuid())).thenReturn(user);
         Mockito.when(issueDAO.getIssueById(issue.getUuid())).thenReturn(issue);

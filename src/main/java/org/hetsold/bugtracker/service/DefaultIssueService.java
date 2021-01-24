@@ -345,4 +345,15 @@ public class DefaultIssueService implements IssueService {
         }
         return getIssueHistoryEventsCount(issue);
     }
+
+    @Override
+    public void deleteIssueMessage(MessageDTO selectedToDeleteMessage) {
+        Message message;
+        if (selectedToDeleteMessage == null || selectedToDeleteMessage.getUuid().isEmpty() || (message = messageService.getMessageById(selectedToDeleteMessage.getUuid())) == null) {
+            throw new IllegalArgumentException("message can not be null or not persisted");
+        }
+        IssueMessageEvent issueMessageEvent = historyEventDAO.getMessageEventByMessage(message);
+        historyEventDAO.deleteIssueMessageEvent(issueMessageEvent);
+        messageService.deleteMessage(message);
+    }
 }

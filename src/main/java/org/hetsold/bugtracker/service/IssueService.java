@@ -55,4 +55,6 @@ public interface IssueService {
     long getIssueHistoryEventsCount(Issue issue);
 
     long getIssueHistoryEventsCount(IssueDTO issueDTO);
+
+    void deleteIssueMessage(MessageDTO selectedToDeleteMessage);
 }
