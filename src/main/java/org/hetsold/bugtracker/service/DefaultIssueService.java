@@ -38,6 +38,7 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void save(Issue issue) {
         if (issue.getCreationTime() == null) {
             throw new IllegalArgumentException("issue creationTime can not be null");
@@ -51,11 +52,45 @@ public class DefaultIssueService implements IssueService {
         issueDAO.save(issue);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Issue updateIssue(Issue issue) {
+        Issue oldIssue;
+        if ((oldIssue = getIssueById(issue.getUuid())) == null) {
+            throw new IllegalArgumentException("incorrect issue: update can be preform on existed issue");
+        }
+        oldIssue.update(issue);
+        return oldIssue;
+    }
+
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public IssueDTO saveOrUpdateIssue(IssueDTO issueDTO) {
+    public Issue saveOrUpdateIssue(Issue issue, User user) {
+        if (issue == null) {
+            throw new IllegalArgumentException("incorrect issue: issue can not be null");
+        }
+        if (user == null || user.getUuid().isEmpty()) {
+            throw new IllegalArgumentException("invalid user: user cannot be empty");
+        }
+        if (issue.getUuid().isEmpty()) {
+            issue.setReportedBy(user);
+            save(issue);
+        } else {
+            issue = updateIssue(issue);
+        }
+        return issue;
+    }
 
-        return null;
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public IssueDTO saveOrUpdateIssue(IssueDTO issueDTO, UserDTO userDTO) {
+        User user;
+        if (issueDTO == null) {
+            throw new IllegalArgumentException("incorrect issue: issue can not be null");
+        }
+        if (userDTO == null || userDTO.getUuid().isEmpty() || (user = userService.getUserById(userDTO.getUuid())) == null) {
+            throw new IllegalArgumentException("incorrect user: user can not be null or not persisted");
+        }
+        return IssueConverter.getIssueDTO(saveOrUpdateIssue(IssueConverter.getIssue(issueDTO), user));
     }
 
     @Override
@@ -217,7 +252,7 @@ public class DefaultIssueService implements IssueService {
         }
     }
 
-    public IssueState getPreviousState(Issue issue){
+    public IssueState getPreviousState(Issue issue) {
         return historyEventDAO.getPreviousOpenOrReopenStateForIssue(issue);
     }
 

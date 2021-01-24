@@ -15,6 +15,7 @@ public class IssueConverter {
                     .withDescription(issueDTO.getDescription())
                     .withCreationTime(issueDTO.getCreationTime())
                     .withProductVersion(issueDTO.getProductVersion())
+                    .withReproduceSteps(issueDTO.getReproduceSteps())
                     .withIssueExistedResult(issueDTO.getExistedResult())
                     .withIssueExpectedResult(issueDTO.getExpectedResult())
                     .withIssueSeverity(issueDTO.getSeverity())

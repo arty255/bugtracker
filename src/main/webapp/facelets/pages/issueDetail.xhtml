@@ -58,16 +58,34 @@
                         </f:facet>
                     </p:inplace>
 
+                    <h:outputText value="Product version:"/>
+                    <p:inplace editor="true" styleClass="versionInplace noPaddingInplace">
+                        <p:ajax event="save"
+                                process="@this issueProductVersion"
+                                update="@(.versionInplace)"
+                                listener="#{detailedIssueBean.save}"/>
+                        <p:inputTextarea id="issueProductVersion" value="#{detailedIssueBean.issue.productVersion}"
+                                         style="width: 100%"/>
+                    </p:inplace>
+
                     <h:outputText value="Description:"/>
-                    <p:inplace id="deInplace" styleClass="ticketDescriptionInplace noPaddingInplace" effectSpeed="fast"
-                               editor="true">
-                        <p:inputTextarea value="#{detailedIssueBean.issue.description}"
+                    <p:inplace id="deInplace" styleClass="ticketDescriptionInplace noPaddingInplace"
+                               editor="true" effectSpeed="fast">
+                        <p:ajax event="save"
+                                process="@this issueDescription"
+                                update="@(.ticketDescriptionInplace)"
+                                listener="#{detailedIssueBean.save}"/>
+                        <p:inputTextarea id="issueDescription" value="#{detailedIssueBean.issue.description}"
                                          style="width: 100%"/>
                     </p:inplace>
 
                     <h:outputText value="Reproduce steps:"/>
-                    <p:inplace editor="true" styleClass="noPaddingInplace">
-                        <p:inputTextarea value="#{detailedIssueBean.issue.reproduceSteps}"
+                    <p:inplace editor="true" styleClass="reproduceStepsInplace noPaddingInplace" emptyLabel="No data">
+                        <p:ajax event="save"
+                                process="@this issueReproduceSteps"
+                                update="@(.reproduceStepsInplace)"
+                                listener="#{detailedIssueBean.save}"/>
+                        <p:inputTextarea id="issueReproduceSteps" value="#{detailedIssueBean.issue.reproduceSteps}"
                                          style="width: 100%"/>
                     </p:inplace>
 
@@ -120,7 +138,7 @@
                 </message:messageEditor>
                 <h:panelGroup id="listContainer" layout="block">
                     <p:dataList var="issueEvent" value="#{detailedIssueBean.historyEventDataModel}"
-                                lazy="true" rows="10"
+                                lazy="true" rows="30"
                                 paginator="#{detailedIssueBean.historyEventDataModel.rowCount gt 0}"
                                 emptyMessage="Issue has to messages or state changes"
                                 styleClass="issueHistoryList">

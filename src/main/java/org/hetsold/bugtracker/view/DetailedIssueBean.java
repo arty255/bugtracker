@@ -55,7 +55,7 @@ public class DetailedIssueBean implements Serializable {
     }
 
     public void preInitIssue() {
-        if(!FacesContext.getCurrentInstance().isPostback()) {
+        if (!FacesContext.getCurrentInstance().isPostback()) {
             issue = issueService.getIssueDTOById(uuid);
             originalIssueState = issue.getCurrentIssueState();
             initHistory();
@@ -74,7 +74,7 @@ public class DetailedIssueBean implements Serializable {
     public void changeIssueState() {
         try {
             issueService.changeIssueState(issue, issue.getCurrentIssueState(), activeUser);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "issue state can not be changed", "issue state can not be changed to " + issue.getCurrentIssueState().getLabel()));
         }
@@ -133,7 +133,7 @@ public class DetailedIssueBean implements Serializable {
     }
 
     public void save() {
-        issue = issueService.saveOrUpdateIssue(issue);
+        issue = issueService.saveOrUpdateIssue(issue, activeUser);
     }
 
     public IssueDTO getIssue() {

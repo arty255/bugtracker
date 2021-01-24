@@ -107,7 +107,12 @@ public class Issue extends AbstractIdentity {
     }
 
     public void update(Issue newIssue) {
-
+        this.severity = newIssue.getSeverity();
+        this.productVersion = newIssue.getProductVersion();
+        this.description = newIssue.getDescription();
+        this.reproduceSteps = newIssue.getReproduceSteps();
+        this.existedResult = newIssue.getExistedResult();
+        this.expectedResult = newIssue.getExpectedResult();
     }
 
     public String getIssueNumber() {
