@@ -28,9 +28,9 @@ public interface IssueService {
     //issue - selected issue to change State
     //newState - new issue state
     //assignedTo - user to who issue will be assigned
-    boolean changeIssueState(Issue issue, IssueState newIssueState, User user);
+    void changeIssueState(Issue issue, IssueState newIssueState, User user);
 
-    boolean changeIssueState(IssueDTO issueDTO, IssueState newIssueState, UserDTO userDTO);
+    void changeIssueState(IssueDTO issueDTO, IssueState newIssueState, UserDTO userDTO);
 
     void changeIssueAssignedUser(Issue issue, User assignedTo, User user);
 
