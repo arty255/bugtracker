@@ -117,19 +117,19 @@ public class DefaultIssueService implements IssueService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public boolean changeIssueState(IssueDTO issueDTO, IssueState newIssueState, UserDTO userDTO) {
+    public void changeIssueState(IssueDTO issueDTO, IssueState newIssueState, UserDTO userDTO) {
         if (issueDTO == null || issueDTO.getUuid().isEmpty()) {
             throw new IllegalArgumentException("incorrect issue: issue can not be null");
         }
         if (userDTO == null || userDTO.getUuid().isEmpty()) {
             throw new IllegalArgumentException("incorrect user: user can not be null");
         }
-        return changeIssueState(IssueConverter.getIssue(issueDTO), newIssueState, UserConvertor.getUser(userDTO));
+        changeIssueState(IssueConverter.getIssue(issueDTO), newIssueState, UserConvertor.getUser(userDTO));
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public boolean changeIssueState(Issue issue, IssueState newIssueState, User user) {
+    public void changeIssueState(Issue issue, IssueState newIssueState, User user) {
         if (issue == null || (issue = issueDAO.getIssueById(issue.getUuid())) == null) {
             throw new IllegalArgumentException("issue argument can not be null or not persisted");
         }
@@ -142,17 +142,17 @@ public class DefaultIssueService implements IssueService {
         if (user == null || user.getUuid().isEmpty() || (user = userService.getUserById(user.getUuid())) == null) {
             throw new IllegalArgumentException("incorrect user: user can not be null or not persisted");
         }
-        changeStateIfChangedAndSaveHistory(issue, newIssueState, user);
-        return true;
+        changeIssueStateAndSaveHistory(issue, newIssueState, user);
     }
 
-    private boolean changeStateIfChangedAndSaveHistory(Issue issue, IssueState newIssueState, User editor) {
+    private void changeIssueStateAndSaveHistory(Issue issue, IssueState newIssueState, User editor) {
         if (isStateChanged(issue, newIssueState)) {
+            if (issue.getCurrentIssueState() == IssueState.FIXED && newIssueState == IssueState.OPEN) {
+                throw new IllegalArgumentException("new state for FIXED before issue can be only REOPEN");
+            }
             issue.setCurrentIssueState(newIssueState);
             generateAndSaveStateChangeEvent(issue, newIssueState, editor);
-            return true;
         }
-        return false;
     }
 
     private boolean isStateChanged(Issue issue, IssueState newIssueState) {
@@ -193,19 +193,44 @@ public class DefaultIssueService implements IssueService {
         if (issue == null) {
             throw new IllegalArgumentException("issue argument can not be null or not persisted");
         }
-        /*todo: add assignation history event*/
         if (isAssignedUserChanged(issue, assignedTo)) {
-            issue.setAssignedTo(assignedTo);
-            if (issue.getCurrentIssueState() == IssueState.OPEN && assignedTo != null) {
-                changeStateIfChangedAndSaveHistory(issue, IssueState.ASSIGNED, user);
-            } else if (assignedTo == null) {
-                changeStateIfChangedAndSaveHistory(issue, IssueState.OPEN, user);
-            }
+            processAssignation(issue, assignedTo, user);
         }
     }
 
     private boolean isAssignedUserChanged(Issue issue, User newAssignedTo) {
         return issue.getAssignedTo() != newAssignedTo;
+    }
+
+    private void processAssignation(Issue issue, User newAssignedTo, User stateEditor) {
+        if (isIssueInFixedState(issue)) {
+            /*todo: implement different strategy*/
+            throw new IllegalArgumentException("issue in FIXED state can not be assigned to new user");
+        } else {
+            issue.setAssignedTo(newAssignedTo);
+            if (isIssueInOpenOrReopenState(issue)) {
+                changeIssueStateAndSaveHistory(issue, IssueState.ASSIGNED, stateEditor);
+            } else if (isIssueInAssignedState(issue) || newAssignedTo == null) {
+                IssueState previousState = getPreviousState(issue);
+                changeIssueStateAndSaveHistory(issue, previousState, stateEditor);
+            }
+        }
+    }
+
+    public IssueState getPreviousState(Issue issue){
+        return historyEventDAO.getPreviousOpenOrReopenStateForIssue(issue);
+    }
+
+    private boolean isIssueInOpenOrReopenState(Issue issue) {
+        return issue.getCurrentIssueState() == IssueState.OPEN || issue.getCurrentIssueState() == IssueState.REOPEN;
+    }
+
+    private boolean isIssueInFixedState(Issue issue) {
+        return issue.getCurrentIssueState() == IssueState.FIXED;
+    }
+
+    private boolean isIssueInAssignedState(Issue issue) {
+        return issue.getCurrentIssueState() == IssueState.ASSIGNED;
     }
 
     public void addIssueMessage(IssueDTO issueDTO, MessageDTO messageDTO, UserDTO userDTO) {

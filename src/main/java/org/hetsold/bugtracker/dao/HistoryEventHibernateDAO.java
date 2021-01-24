@@ -79,6 +79,26 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
     }
 
     @Override
+    public IssueState getPreviousOpenOrReopenStateForIssue(Issue issue) {
+        IssueStateChangeEvent stateChangeEvent = hibernateTemplate.execute(session -> {
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<IssueStateChangeEvent> query = builder.createQuery(IssueStateChangeEvent.class);
+            Root<IssueStateChangeEvent> root = query.from(IssueStateChangeEvent.class);
+            query.where(builder.or(
+                    builder.equal(root.get(IssueStateChangeEvent_.issueState), IssueState.OPEN),
+                    builder.equal(root.get(IssueStateChangeEvent_.issueState), IssueState.REOPEN)
+            ));
+            query.select(root);
+            query.orderBy(builder.desc(root.get(IssueEvent_.eventDate)));
+            return session.createQuery(query).setMaxResults(1).getSingleResult();
+        });
+        if (stateChangeEvent == null) {
+            return IssueState.OPEN;
+        }
+        return stateChangeEvent.getState();
+    }
+
+    @Override
     public List<IssueEvent> getHistoryIssueEventsByIssue(Issue issue, int firstResult, int limit) {
         if (limit < 1) {
             throw new IllegalArgumentException("limit cannot be negative");
