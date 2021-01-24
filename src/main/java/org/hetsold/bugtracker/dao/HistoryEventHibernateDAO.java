@@ -56,6 +56,7 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<Long> query = builder.createQuery(Long.class);
             Root<IssueEvent> root = query.from(IssueEvent.class);
+            query.where(builder.equal(root.get(IssueEvent_.issue), issue));
             query.select(builder.count(root));
             return session.createQuery(query).getSingleResult();
         });
