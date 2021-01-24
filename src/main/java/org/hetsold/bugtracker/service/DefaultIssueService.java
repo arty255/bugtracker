@@ -3,6 +3,7 @@ package org.hetsold.bugtracker.service;
 import org.hetsold.bugtracker.dao.HistoryEventDAO;
 import org.hetsold.bugtracker.dao.IssueDAO;
 import org.hetsold.bugtracker.facade.IssueConverter;
+import org.hetsold.bugtracker.facade.MessageConvertor;
 import org.hetsold.bugtracker.facade.TicketConvertor;
 import org.hetsold.bugtracker.facade.UserConvertor;
 import org.hetsold.bugtracker.model.*;
@@ -209,18 +210,17 @@ public class DefaultIssueService implements IssueService {
 
     public void addIssueMessage(IssueDTO issueDTO, MessageDTO messageDTO, UserDTO userDTO) {
         Issue issue;
-        Message message;
         if (issueDTO == null || issueDTO.getUuid().isEmpty() || (issue = getIssueById(issueDTO.getUuid())) == null) {
             throw new IllegalArgumentException("issue incorrect: issue cannot be null or not persisted");
         }
-        if (messageDTO == null || messageDTO.getContent().isEmpty() || (message = messageService.getMessageById(messageDTO.getUuid())) == null) {
-            throw new IllegalArgumentException("message can not be null/empty content or not persisted");
+        if (messageDTO == null || messageDTO.getContent().isEmpty()) {
+            throw new IllegalArgumentException("message can not be null/empty content");
         }
         User user;
         if (userDTO == null || (user = userService.getUserById(userDTO.getUuid())) == null) {
             throw new IllegalArgumentException("user argument can not be null or not persisted");
         }
-        addIssueMessage(issue, message, user);
+        addIssueMessage(issue, MessageConvertor.getMessage(messageDTO), user);
     }
 
     @Override
@@ -235,10 +235,13 @@ public class DefaultIssueService implements IssueService {
             throw new IllegalArgumentException("user argument can not be null or not persisted");
         }
         Message savedMessage = messageService.saveNewMessage(message, user);
+        generateAndSaveMessageEvent(issue, savedMessage);
+    }
+
+    private void generateAndSaveMessageEvent(Issue issue, Message message) {
         IssueMessageEvent messageEvent = new IssueMessageEvent();
-        messageEvent.setMessage(savedMessage);
+        messageEvent.setMessage(message);
         messageEvent.setIssue(issue);
-        messageEvent.setEventDate(new Date());
         historyEventDAO.saveIssueMessage(messageEvent);
     }
 
