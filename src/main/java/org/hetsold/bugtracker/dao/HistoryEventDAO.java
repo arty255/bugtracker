@@ -11,6 +11,8 @@ public interface HistoryEventDAO {
 
     IssueMessageEvent getMessageEventById(String uuid);
 
+    IssueMessageEvent getMessageEventByMessage(Message message);
+
     void saveStateChange(IssueStateChangeEvent stateChangeEvent);
 
     IssueStateChangeEvent getStateChangeEventById(String uuid);

@@ -1,8 +1,10 @@
 package org.hetsold.bugtracker.view;
 
-import org.hetsold.bugtracker.model.IssueEventDTO;
 import org.hetsold.bugtracker.model.IssueDTO;
+import org.hetsold.bugtracker.model.IssueEventDTO;
+import org.hetsold.bugtracker.model.MessageDTO;
 import org.hetsold.bugtracker.service.IssueService;
+import org.hetsold.bugtracker.service.MessageService;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
@@ -12,10 +14,12 @@ import java.util.Map;
 
 public class HistoryEventLazyDataModel extends LazyDataModel<IssueEventDTO> {
     private IssueService issueService;
+    private MessageService messageService;
     private IssueDTO issueDTO;
 
-    public HistoryEventLazyDataModel(IssueService issueService, IssueDTO issueDTO) {
+    public HistoryEventLazyDataModel(IssueService issueService, MessageService messageService, IssueDTO issueDTO) {
         this.issueService = issueService;
+        this.messageService = messageService;
         this.issueDTO = issueDTO;
     }
 
@@ -27,11 +31,19 @@ public class HistoryEventLazyDataModel extends LazyDataModel<IssueEventDTO> {
 
     @Override
     public IssueEventDTO getRowData(String rowKey) {
-        return null;
+        if (!rowKey.isEmpty()) {
+            return new IssueEventDTO(IssueEventDTO.EventType.MessageEvent
+                    , new MessageDTO(messageService.getMessageById(rowKey)));
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public Object getRowKey(IssueEventDTO object) {
-        return null;
+    public String getRowKey(IssueEventDTO object) {
+        if (object.getEventType() == IssueEventDTO.EventType.MessageEvent) {
+            return ((MessageDTO) object.getEntityDTO()).getUuid();
+        }
+        return "";
     }
 }

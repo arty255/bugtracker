@@ -5,9 +5,9 @@ package org.hetsold.bugtracker.model;
  */
 public enum IssueState {
     OPEN("open"),
+    REOPEN("reopen"),
     ASSIGNED("assigned"),
-    FIXED("fixed"),
-    REOPENED("reopened");
+    FIXED("fixed");
 
     private String label;
 

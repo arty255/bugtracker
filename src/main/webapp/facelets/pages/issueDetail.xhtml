@@ -111,7 +111,11 @@
                                        onCommentActionUpdateSelectors="@form:listContainer"
                                        onPreviewActionUpdateSelectors="@(.issueMessagePreview)">
                     <h:panelGroup layout="block" styleClass="issueMessagePreview">
-                        <!--<message:messageContent message=""/>-->
+                        <p:panel id="commentPreview" header="#{detailedIssueBean.selectedToEditMessage.uuid}"
+                                 styleClass="commentPreview">
+                            <message:messageContent message="#{detailedIssueBean.selectedToEditMessage}"
+                                                    disableControls="true"/>
+                        </p:panel>
                     </h:panelGroup>
                 </message:messageEditor>
                 <h:panelGroup id="listContainer" layout="block">
@@ -126,6 +130,8 @@
                                                      deleteMessageAction="#{detailedIssueBean.deleteMessageAction()}"
                                                      editMessagePrepareAction="#{detailedIssueBean.editMessagePrepareAction()}"
                                                      editMode="#{detailedIssueBean.editMode}"
+                                                     onEditActionUpdateSelectors="@(.messageEditorWrappedArea)"
+                                                     onDeleteActionUpdateSelectors="@(.messageEditorWrappedArea),@(.issueHistoryList),@(.commentPreview)"
                                                      rendered="#{appUtilBean.isMessageInHistory(issueEvent.eventType)}"/>
                         <issue:stateChangeMessage stateChangeEvent="#{issueEvent.entityDTO}"
                                                   rendered="#{not appUtilBean.isMessageInHistory(issueEvent.eventType)}"/>
@@ -150,6 +156,7 @@
                         <p:column>
                             <p:commandButton value="Select"
                                              action="#{detailedIssueBean.reAssignUser}"
+                                             process="@this"
                                              onsuccess="PF('selectToAssignDialog').hide();">
                                 <f:setPropertyActionListener value="#{user}"
                                                              target="#{detailedIssueBean.selectedToAssignUser}"/>

@@ -55,13 +55,16 @@ public class DetailedIssueBean implements Serializable {
     }
 
     public void preInitIssue() {
-        issue = issueService.getIssueDTOById(uuid);
-        originalIssueState = issue.getCurrentIssueState();
-        initHistory();
+        if(!FacesContext.getCurrentInstance().isPostback()) {
+            issue = issueService.getIssueDTOById(uuid);
+            originalIssueState = issue.getCurrentIssueState();
+            initHistory();
+            initMessageListener();
+        }
     }
 
     public void initHistory() {
-        historyEventDataModel = new HistoryEventLazyDataModel(issueService, issue);
+        historyEventDataModel = new HistoryEventLazyDataModel(issueService, messageService, issue);
     }
 
     public void issueStateChanged() {
@@ -90,19 +93,27 @@ public class DetailedIssueBean implements Serializable {
     }
 
     public void editMessageAction() {
-
+        messageService.saveOrUpdateMessage(selectedToEditMessage, activeUser);
+        initMessageListener();
+        editMode = false;
     }
 
     public void saveMessageAction() {
         issueService.addIssueMessage(issue, selectedToEditMessage, activeUser);
+        initMessageListener();
+        editMode = false;
+
     }
 
     public void deleteMessageAction() {
-
+        issueService.deleteIssueMessage(selectedToDeleteMessage);
+        if (selectedToEditMessage == selectedToDeleteMessage) {
+            cancelEditAction();
+        }
     }
 
     public void editMessagePrepareAction() {
-
+        editMode = true;
     }
 
     public void cancelEditAction() {
