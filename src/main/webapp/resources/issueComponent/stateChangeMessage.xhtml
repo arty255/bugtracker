@@ -24,9 +24,9 @@
                     <f:convertDateTime pattern="#{appUtilBean.dateFormat}"/>
                 </h:outputText>
             </div>
-            <div style="display: flex;flex-direction: row;">
+            <div class="stateEventTextContentWrapper">
                 <div>
-                    <h:outputText value="#{cc.attrs.textContent}"/>
+                    <h:outputText value="#{cc.attrs.textContent}" styleClass="stateEventTextContent"/>
                 </div>
                 <issue:issueState issueState="#{cc.attrs.stateChangeEvent.issueState}"/>
             </div>

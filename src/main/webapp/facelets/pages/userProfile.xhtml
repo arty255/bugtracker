@@ -25,6 +25,12 @@
     <ui:define name="content">
         <h:form>
             <p:panel>
+                <f:facet name="header">
+                    <!--todo: change with spring security-->
+                    <h:outputText value="#{userProfileBean.user.firstName} #{userProfileBean.user.lastName} profile"
+                                  rendered="#{userProfileBean.user.uuid ne userProfileBean.activeUser.uuid}"/>
+                    <h:outputText value="Your profile" rendered="#{userProfileBean.user.uuid eq userProfileBean.activeUser.uuid}"/>
+                </f:facet>
                 <div style="display: flex; flex-direction: row;">
                     <div class="imageWrapper">
                         <p:graphicImage library="images" name="no_image.jpg" rendered="#{true}"/>

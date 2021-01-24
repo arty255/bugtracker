@@ -94,7 +94,7 @@ public class DetailedIssueBean implements Serializable {
     }
 
     public void saveMessageAction() {
-
+        issueService.addIssueMessage(issue, selectedToEditMessage, activeUser);
     }
 
     public void deleteMessageAction() {

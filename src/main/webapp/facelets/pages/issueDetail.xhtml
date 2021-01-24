@@ -116,7 +116,10 @@
                 </message:messageEditor>
                 <h:panelGroup id="listContainer" layout="block">
                     <p:dataList var="issueEvent" value="#{detailedIssueBean.historyEventDataModel}"
-                                lazy="true" rows="10" paginator="true" styleClass="issueHistoryList">
+                                lazy="true" rows="10"
+                                paginator="#{detailedIssueBean.historyEventDataModel.rowCount gt 0}"
+                                emptyMessage="Issue has to messages or state changes"
+                                styleClass="issueHistoryList">
                         <message:messageWithControls message="#{issueEvent.entityDTO}"
                                                      selectedToEdit="#{detailedIssueBean.selectedToEditMessage}"
                                                      selectedToDelte="#{detailedIssueBean.selectedToDeleteMessage}"

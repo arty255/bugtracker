@@ -27,11 +27,14 @@ public class UserProfileBean implements Serializable {
     private LazyDataModel<TicketDTO> reportedTickets;
     private int totalReportedTickets;
 
+    private UserDTO activeUser;
+
     @PostConstruct
     public void init() {
         FacesContextUtils.getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
-
+        /*todo: change with spring security integration*/
+        activeUser = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
     }
 
     public void initUserData() {
@@ -72,5 +75,9 @@ public class UserProfileBean implements Serializable {
 
     public int getTotalReportedTickets() {
         return totalReportedTickets;
+    }
+
+    public UserDTO getActiveUser() {
+        return activeUser;
     }
 }
