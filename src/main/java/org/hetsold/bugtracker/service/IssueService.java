@@ -7,7 +7,11 @@ import java.util.List;
 public interface IssueService {
     void save(Issue issue);
 
-    IssueDTO saveOrUpdateIssue(IssueDTO issueDTO);
+    Issue updateIssue(Issue issue);
+
+    Issue saveOrUpdateIssue(Issue issue, User user);
+
+    IssueDTO saveOrUpdateIssue(IssueDTO issueDTO, UserDTO userDTO);
 
     Issue getIssueById(String uuid);
 
