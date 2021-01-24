@@ -22,4 +22,6 @@ public interface HistoryEventDAO {
     List<IssueEvent> getHistoryIssueEventsByIssue(Issue issue, int firstResult, int limit);
 
     long getHistoryIssueEventsCountForIssue(Issue issue);
+
+    IssueState getPreviousOpenOrReopenStateForIssue(Issue issue);
 }

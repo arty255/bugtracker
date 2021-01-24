@@ -72,12 +72,13 @@ public class DetailedIssueBean implements Serializable {
     }
 
     public void changeIssueState() {
-        boolean changeResult = issueService.changeIssueState(issue, issue.getCurrentIssueState(), activeUser);
-        issue = issueService.getIssueDTOById(uuid);
-        if (changeResult) {
+        try {
+            issueService.changeIssueState(issue, issue.getCurrentIssueState(), activeUser);
+        }catch (IllegalArgumentException e){
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "state changed", "state changed to " + issue.getCurrentIssueState().getLabel()));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "issue state can not be changed", "issue state can not be changed to " + issue.getCurrentIssueState().getLabel()));
         }
+        issue = issueService.getIssueDTOById(uuid);
     }
 
     public void unAssignUser() {
