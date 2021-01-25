@@ -1,0 +1,87 @@
+package org.hetsold.bugtracker.view;
+
+import org.hetsold.bugtracker.model.IssueDTO;
+import org.hetsold.bugtracker.model.IssueState;
+import org.hetsold.bugtracker.model.UserDTO;
+import org.hetsold.bugtracker.service.IssueService;
+import org.hetsold.bugtracker.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.jsf.FacesContextUtils;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+@ManagedBean
+@ViewScoped
+public class AddIssueBean implements Serializable {
+    @Autowired
+    private IssueService issueService;
+    @Autowired
+    private UserService userService;
+
+    private IssueDTO issue;
+    private List<UserDTO> userList;
+    private UserDTO activeUser;
+
+    @PostConstruct
+    public void preInit() {
+        FacesContextUtils.getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
+                .getAutowireCapableBeanFactory().autowireBean(this);
+        /*todo: change with spring security integration*/
+        activeUser = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
+        userList = new ArrayList<>();
+        initIssueListener();
+    }
+
+    public void initIssueListener() {
+        issue = new IssueDTO();
+        userList = userService.getAllUsers();
+    }
+
+    public void addIssueAction() {
+        issueService.saveOrUpdateIssue(issue, activeUser);
+    }
+
+    public void issueStateChangeListener() {
+        if (isIssueAssignOrFixed() && issue.getAssignedTo() == null) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "User need to be assigned", "User need to be assigned"));
+        }
+    }
+
+    public void issueAssignationChangeListener() {
+        UserDTO assignedTo = issue.getAssignedTo();
+        if (assignedTo != null && isIssueOpenOrReopen()) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "State need to be ASSIGNED or FIXED", "State need to be ASSIGNED or FIXED"));
+        } else {
+            issueStateChangeListener();
+        }
+    }
+
+    public boolean isIssueAssignOrFixed() {
+        return issue.getCurrentIssueState() == IssueState.ASSIGNED || issue.getCurrentIssueState() == IssueState.FIXED;
+    }
+
+    private boolean isIssueOpenOrReopen() {
+        return issue.getCurrentIssueState() == IssueState.OPEN || issue.getCurrentIssueState() == IssueState.REOPEN;
+    }
+
+    public IssueDTO getIssue() {
+        return issue;
+    }
+
+    public void setIssue(IssueDTO issue) {
+        this.issue = issue;
+    }
+
+    public List<UserDTO> getUserList() {
+        return userList;
+    }
+}

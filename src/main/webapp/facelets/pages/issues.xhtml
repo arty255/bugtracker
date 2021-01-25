@@ -20,52 +20,136 @@
         <h:outputStylesheet library="css" name="issues.css"/>
     </ui:define>
     <ui:define name="content">
-        <p:dataTable var="issue" value="#{issueListBean.issuesLazyDataModel}" lazy="true"
-                     paginator="true" rowsPerPageTemplate="10,25,50" rows="10"
-                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-                     styleClass="issuesTable"  >
-            <f:facet name="header">
-                <div style="width: 100%; display: flex; flex-direction: row">
-                    <p:commandButton value="Add Issue" icon="pi pi-plus"
-                    />
-                </div>
-            </f:facet>
-            <p:column headerText="ID" styleClass="issueUUIDColumn" >
-                <div>
+        <h:form>
+            <p:dataTable var="issue" value="#{issueListBean.issuesLazyDataModel}" lazy="true"
+                         paginator="true" rowsPerPageTemplate="10,25,50" rows="10"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                         styleClass="issuesTable">
+                <f:facet name="header">
+                    <div style="width: 100%; display: flex; flex-direction: row">
+                        <p:commandButton value="Add Issue" icon="pi pi-plus"
+                                         onclick="PF('addIssueDialog').show()"/>
+                    </div>
+                </f:facet>
+                <p:column headerText="ID" styleClass="issueUUIDColumn">
                     <div>
-                        <issue:linkedIssue uuid="#{issue.uuid}"/>
+                        <div>
+                            <issue:linkedIssue uuid="#{issue.uuid}"/>
+                        </div>
+                        <div>
+                            <issue:issueState issueState="#{issue.currentIssueState}"/>
+                        </div>
                     </div>
-                    <div>
-                        <issue:issueState issueState="#{issue.currentIssueState}"/>
+                </p:column>
+                <p:column headerText="Description">
+                    <div class="descriptionSection">
+                        <div class="descriptionContent">
+                            <h:outputText value="#{issue.description}"/>
+                        </div>
+                        <div class="ticketBaseWrapper">
+                            <h:outputText value="Base on ticket:"/>
+                            <ticket:linkedTicket uuid="#{issue.ticketId}"/>
+                        </div>
                     </div>
+                </p:column>
+                <p:column headerText="Reported By" styleClass="minimalWidthColumn assignColumn">
+                    <!--todo: show user group: forum, tester or other -based on department-->
+                    <user:linkedUser user="#{issue.reportedBy}"/>
+                </p:column>
+                <p:column headerText="Assigned to" styleClass="minimalWidthColumn">
+                    <user:linkedUser user="#{issue.assignedTo}" rendered="#{not empty issue.assignedTo}"/>
+                    <!--todo: show warning with time=cur.time-creat.time and color range-->
+                </p:column>
+                <p:column headerText="Creation date" styleClass="minimalWidthColumn">
+                    <h:outputText value="#{issue.creationTime}">
+                        <f:convertDateTime pattern="#{appUtilBean.dateFormat}"/>
+                    </h:outputText>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+
+        <p:dialog widgetVar="addIssueDialog" dynamic="true" header="New Issue"
+                  appendTo="@(body)" resizable="false" width="700">
+            <h:form id="dialogForm">
+                <p:messages id="warningMessage" severity="warning"/>
+                <p:panelGrid columns="2" styleClass="newIssuePanelGrid">
+                    <h:outputText value="Current issue state:"/>
+                    <h:panelGroup layout="block" styleClass="newIssueStateContentWrapper">
+                        <p:messages id="errorStateMessage" closable="false"
+                                    severity="error"
+                                    styleClass="newIssueStateMessage">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <div class="newIssueStateSelectorsWrapper">
+                            <p:selectOneMenu id="newIssueStateOneMenu"
+                                             value="#{addIssueBean.issue.currentIssueState}">
+                                <p:ajax event="valueChange"
+                                        process="@this"
+                                        update="@form:warningMessage newIssueAssignedOneMenuWrapper"
+                                        listener="#{addIssueBean.issueStateChangeListener}"/>
+                                <f:selectItems var="issueState" value="#{appUtilBean.issueStates}"
+                                               itemLabel="#{issueState.label}" itemValue="#{issueState}"/>
+                            </p:selectOneMenu>
+                            <h:panelGroup layout="block" id="newIssueAssignedOneMenuWrapper"
+                                          styleClass="newIssueAssignedOneMenuWrapper">
+                                <p:selectOneMenu id="newIssueAssignedOneMenu"
+                                                 filter="true" filterMatchMode="startsWith"
+                                                 converter="org.hetsold.bugtracker.UserConverter"
+                                                 var="u" value="#{addIssueBean.issue.assignedTo}"
+                                                 styleClass="newIssueAssignedOneMenu"
+                                                 appendTo="@this"
+                                                 rendered="#{addIssueBean.issueAssignOrFixed}">
+                                    <p:ajax event="valueChange"
+                                            process="@this"
+                                            update="@form:warningMessage"
+                                            listener="#{addIssueBean.issueAssignationChangeListener}"/>
+                                    <f:selectItem itemLabel="not selected" itemValue="#{null}"/>
+                                    <f:selectItems var="user" value="#{addIssueBean.userList}"
+                                                   itemLabel="#{user.firstName} #{user.lastName}" itemValue="#{user}"/>
+                                    <p:column headerText="name">
+                                        <user:linkedUser user="#{u}" isDisabled="true"/>
+                                    </p:column>
+                                    <p:column headerText="UUID">
+                                        <h:outputText value="#{u.uuid}"/>
+                                    </p:column>
+                                </p:selectOneMenu>
+                            </h:panelGroup>
+                        </div>
+                    </h:panelGroup>
+
+                    <h:outputText value="Product version:"/>
+                    <p:inputText id="newIssueProductVersion" value="#{addIssueBean.issue.productVersion}"/>
+
+                    <h:outputText value="Description:"/>
+                    <p:inputTextarea id="newIssueDescription" value="#{addIssueBean.issue.description}"/>
+
+                    <h:outputText value="Reproduce steps:"/>
+                    <p:inputTextarea id="newIssueReproduceSteps" value="#{addIssueBean.issue.reproduceSteps}"/>
+
+                    <h:outputText value="Existed result:"/>
+                    <p:inputTextarea id="newIssueExistedResult" value="#{addIssueBean.issue.existedResult}"/>
+
+                    <h:outputText value="Expected result:"/>
+                    <p:inputTextarea id="newIssueExpectedResult" value="#{addIssueBean.issue.expectedResult}"/>
+
+                    <!--todo: rework Severity-->
+                    <h:outputText value="Severity:"/>
+                    <p:inputTextarea id="newIssueSeverity" value="#{addIssueBean.issue.severity}"/>
+                </p:panelGrid>
+                <div class="newIssueControlsWrapper">
+                    <p:commandButton value="Clear"
+                                     process="@this"
+                                     update="@form"
+                                     actionListener="#{addIssueBean.initIssueListener}"
+                                     styleClass="newIssueClearButton"/>
+                    <p:commandButton value="Save"
+                                     process="@form @this"
+                                     action="#{addIssueBean.addIssueAction}"
+                                     onsuccess="PF('addIssueDialog').hide();"/>
                 </div>
-            </p:column>
-            <p:column headerText="Description">
-                <div class="descriptionSection">
-                    <div class="descriptionContent">
-                        <h:outputText value="#{issue.description}"/>
-                    </div>
-                    <div class="ticketBaseWrapper">
-                        <h:outputText value="Base on ticket:"/>
-                        <ticket:linkedTicket uuid="#{issue.ticketId}"/>
-                    </div>
-                </div>
-            </p:column>
-            <p:column headerText="Reported By" styleClass="minimalWidthColumn assignColumn">
-                <!--todo: show user group: forum, tester or other -based on department-->
-                <user:linkedUser user="#{issue.reportedBy}"/>
-            </p:column>
-            <p:column headerText="Assigned to" styleClass="minimalWidthColumn">
-                <user:linkedUser user="#{issue.assignedTo}" rendered="#{not empty issue.assignedTo}"/>
-                <!--todo: show warning with time=cur.time-creat.time and color range-->
-            </p:column>
-            <p:column headerText="Creation date" styleClass="minimalWidthColumn">
-                <h:outputText value="#{issue.creationTime}">
-                    <f:convertDateTime pattern="#{appUtilBean.dateFormat}"/>
-                </h:outputText>
-            </p:column>
-        </p:dataTable>
+            </h:form>
+        </p:dialog>
     </ui:define>
 </ui:composition>
 </html>
