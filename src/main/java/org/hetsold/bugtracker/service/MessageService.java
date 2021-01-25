@@ -1,9 +1,8 @@
 package org.hetsold.bugtracker.service;
 
-import org.hetsold.bugtracker.model.Message;
-import org.hetsold.bugtracker.model.MessageDTO;
-import org.hetsold.bugtracker.model.User;
-import org.hetsold.bugtracker.model.UserDTO;
+import org.hetsold.bugtracker.model.*;
+
+import java.util.List;
 
 public interface MessageService {
     Message saveNewMessage(Message message, User user);
@@ -21,4 +20,10 @@ public interface MessageService {
     Message getMessageById(Message message);
 
     Message getMessageById(String uuid);
+
+    MessageDTO getMessageDTOById(String uuid);
+
+    long getMessageCountByTicket(Ticket ticket);
+
+    List<Message> getMessageListByTicket(Ticket ticket, int fromIndex, int limit, boolean inverseDateOrder);
 }
