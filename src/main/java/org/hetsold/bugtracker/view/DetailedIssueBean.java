@@ -1,7 +1,10 @@
 package org.hetsold.bugtracker.view;
 
 
-import org.hetsold.bugtracker.model.*;
+import org.hetsold.bugtracker.model.IssueDTO;
+import org.hetsold.bugtracker.model.IssueState;
+import org.hetsold.bugtracker.model.MessageDTO;
+import org.hetsold.bugtracker.model.UserDTO;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.MessageService;
 import org.hetsold.bugtracker.service.UserService;
@@ -15,11 +18,10 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.util.Date;
 
 @ManagedBean
 @ViewScoped
-public class DetailedIssueBean implements Serializable {
+public class DetailedIssueBean extends ListableMessageBean implements Serializable {
     private String uuid;
     private IssueDTO issue;
     @Autowired
@@ -37,12 +39,6 @@ public class DetailedIssueBean implements Serializable {
     private LazyDataModel<UserDTO> userDTODataModel;
     private UserDTO selectedToAssignUser;
 
-    private MessageDTO selectedToEditMessage;
-    private MessageDTO selectedToDeleteMessage;
-    private boolean editMode;
-
-    private UserDTO activeUser;
-
     @PostConstruct
     public void initBean() {
         FacesContextUtils.getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
@@ -51,7 +47,7 @@ public class DetailedIssueBean implements Serializable {
         selectedToAssignUser = null;
         userDTODataModel = new UserDTOLazyDataModel(userService);
         /*todo: change with spring security integration*/
-        activeUser = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
+        this.activeUser = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
         initMessageListener();
     }
 
@@ -90,58 +86,30 @@ public class DetailedIssueBean implements Serializable {
         issueService.changeIssueAssignedUser(issue, selectedToAssignUser, activeUser);
     }
 
-    public void initMessageListener() {
-        selectedToEditMessage = new MessageDTO();
+    @Override
+    public void preformUpdateOperation(MessageDTO messageDTO) {
+        messageService.saveOrUpdateMessage(messageDTO, activeUser);
     }
 
-    public void editMessageAction() {
-        messageService.saveOrUpdateMessage(selectedToEditMessage, activeUser);
-        initMessageListener();
-        editMode = false;
+    @Override
+    public void preformSaveOperation(MessageDTO messageDTO) {
+        issueService.addIssueMessage(issue, messageDTO, activeUser);
     }
 
-    public void saveMessageAction() {
-        issueService.addIssueMessage(issue, selectedToEditMessage, activeUser);
-        initMessageListener();
-        editMode = false;
-
-    }
-
-    public void deleteMessageAction() {
-        issueService.deleteIssueMessage(selectedToDeleteMessage);
-        if (selectedToEditMessage == selectedToDeleteMessage) {
-            cancelEditAction();
-        }
-    }
-
-    public void editMessagePrepareAction() {
-        editMode = true;
-    }
-
-    public void cancelEditAction() {
-        editMode = false;
-        initMessageListener();
-    }
-
-    public void initPreviewListener() {
-        if (editMode) {
-            selectedToEditMessage.setEditor(activeUser);
-            selectedToEditMessage.setEditDate(new Date());
-        } else {
-            selectedToEditMessage.setCreator(activeUser);
-            selectedToEditMessage.setCreateDate(new Date());
-        }
+    @Override
+    public void preformDeleteOperation(MessageDTO messageDTO) {
+        issueService.deleteIssueMessage(messageDTO);
     }
 
     public void save() {
         issue = issueService.saveOrUpdateIssue(issue, activeUser);
     }
 
-    public void messageDateAscendingInListListener(){
+    public void messageDateAscendingInListListener() {
         historyEventDataModel.setInverseDateOrder(false);
     }
 
-    public void messageDateDescendingInListListener(){
+    public void messageDateDescendingInListListener() {
         historyEventDataModel.setInverseDateOrder(true);
     }
 
@@ -173,33 +141,7 @@ public class DetailedIssueBean implements Serializable {
         return userDTODataModel;
     }
 
-    public MessageDTO getSelectedToEditMessage() {
-        return selectedToEditMessage;
-    }
-
-    public void setSelectedToEditMessage(MessageDTO selectedToEditMessage) {
-        this.selectedToEditMessage = selectedToEditMessage;
-    }
-
     public HistoryEventLazyDataModel getHistoryEventDataModel() {
         return historyEventDataModel;
     }
-
-    public MessageDTO getSelectedToDeleteMessage() {
-        return selectedToDeleteMessage;
-    }
-
-    public void setSelectedToDeleteMessage(MessageDTO selectedToDeleteMessage) {
-        this.selectedToDeleteMessage = selectedToDeleteMessage;
-    }
-
-    public boolean isEditMode() {
-        return editMode;
-    }
-
-    public void setEditMode(boolean editMode) {
-        this.editMode = editMode;
-    }
-
-
 }

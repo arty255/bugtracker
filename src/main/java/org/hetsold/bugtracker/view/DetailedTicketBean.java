@@ -3,12 +3,10 @@ package org.hetsold.bugtracker.view;
 import org.hetsold.bugtracker.model.IssueShortDTO;
 import org.hetsold.bugtracker.model.MessageDTO;
 import org.hetsold.bugtracker.model.TicketDTO;
-import org.hetsold.bugtracker.model.UserDTO;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.MessageService;
 import org.hetsold.bugtracker.service.TicketService;
 import org.hetsold.bugtracker.service.UserService;
-import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.jsf.FacesContextUtils;
 
@@ -19,20 +17,14 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import java.io.Serializable;
-import java.util.Date;
 
 @ManagedBean
 @ViewScoped
-public class DetailedTicketBean implements Serializable {
+public class DetailedTicketBean extends ListableMessageBean implements Serializable {
     private String uuid;
     private TicketDTO ticket;
     private TicketMessageLazyDataModel messageLazyDataModel;
-    private MessageDTO selectedToEditMessage;
-    private MessageDTO selectedToDeleteMessage;
     private IssueShortDTO createdIssue;
-    private boolean editMode;
-
-    private UserDTO activeUser;
 
     @Autowired
     private TicketService ticketService;
@@ -48,7 +40,7 @@ public class DetailedTicketBean implements Serializable {
         FacesContextUtils
                 .getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
-        initMessageAction();
+        initMessageListener();
         /*todo: getUser FromSecurityContext*/
         activeUser = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
     }
@@ -58,6 +50,10 @@ public class DetailedTicketBean implements Serializable {
             ticket = ticketService.getTicketDTO(uuid);
             initMessages();
         }
+    }
+
+    public void initMessages() {
+        messageLazyDataModel = new TicketMessageLazyDataModel(ticketService, messageService, ticket);
     }
 
     public void createIssueFromTicket() {
@@ -76,56 +72,26 @@ public class DetailedTicketBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Warning!", "Ticked changed. Dont forget save."));
     }
 
-    public void addMessageToTicketAction() {
-        ticketService.addTicketMessage(ticket, selectedToEditMessage, activeUser);
-        initMessageAction();
+    @Override
+    public void preformUpdateOperation(MessageDTO messageDTO) {
+        messageService.saveOrUpdateMessage(messageDTO, activeUser);
     }
 
-    public void editTicketMessageAction() {
-        messageService.saveOrUpdateMessage(selectedToEditMessage, activeUser);
-        initMessageAction();
-        editMode = false;
+    @Override
+    public void preformSaveOperation(MessageDTO messageDTO) {
+        ticketService.addTicketMessage(ticket, messageDTO, activeUser);
     }
 
-    public void deleteMessageAction() {
-        messageService.deleteMessage(selectedToDeleteMessage);
-        if (selectedToDeleteMessage == selectedToEditMessage) {
-            cancelEditAction();
-        }
+    @Override
+    public void preformDeleteOperation(MessageDTO messageDTO) {
+        messageService.deleteMessage(messageDTO);
     }
 
-    public void initMessages() {
-        messageLazyDataModel = new TicketMessageLazyDataModel(ticketService, messageService, ticket);
-    }
-
-    public void initMessageAction() {
-        selectedToEditMessage = new MessageDTO("");
-    }
-
-    public void editMessagePrepareAction() {
-        editMode = true;
-    }
-
-    public void cancelEditAction() {
-        editMode = false;
-        initMessageAction();
-    }
-
-    public void initPreviewListener() {
-        if (editMode) {
-            selectedToEditMessage.setEditor(activeUser);
-            selectedToEditMessage.setEditDate(new Date());
-        } else {
-            selectedToEditMessage.setCreator(activeUser);
-            selectedToEditMessage.setCreateDate(new Date());
-        }
-    }
-
-    public void messageDateAscendingInListListener(){
+    public void messageDateAscendingInListListener() {
         messageLazyDataModel.setInverseDateOrder(false);
     }
 
-    public void messageDateDescendingInListListener(){
+    public void messageDateDescendingInListListener() {
         messageLazyDataModel.setInverseDateOrder(true);
     }
 
@@ -137,32 +103,12 @@ public class DetailedTicketBean implements Serializable {
         return messageLazyDataModel;
     }
 
-    public MessageDTO getSelectedToEditMessage() {
-        return selectedToEditMessage;
-    }
-
-    public void setSelectedToEditMessage(MessageDTO selectedToEditMessage) {
-        this.selectedToEditMessage = selectedToEditMessage;
-    }
-
-    public MessageDTO getSelectedToDeleteMessage() {
-        return selectedToDeleteMessage;
-    }
-
-    public void setSelectedToDeleteMessage(MessageDTO selectedToDeleteMessage) {
-        this.selectedToDeleteMessage = selectedToDeleteMessage;
-    }
-
     public IssueShortDTO getCreatedIssue() {
         return createdIssue;
     }
 
     public void onCloseCreatedIssueDialog() {
         createdIssue = null;
-    }
-
-    public boolean isEditMode() {
-        return editMode;
     }
 
     public String getUuid() {
