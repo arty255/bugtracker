@@ -99,7 +99,7 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
     }
 
     @Override
-    public List<IssueEvent> getHistoryIssueEventsByIssue(Issue issue, int firstResult, int limit) {
+    public List<IssueEvent> getHistoryIssueEventsByIssue(Issue issue, int firstResult, int limit, boolean inverseDateOrder) {
         if (limit < 1) {
             throw new IllegalArgumentException("limit cannot be negative");
         }
@@ -109,7 +109,11 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
             Root<IssueEvent> root = query.from(IssueEvent.class);
             query.where(criteriaBuilder.equal(root.get(IssueEvent_.issue), issue));
             query.select(root);
-            query.orderBy(criteriaBuilder.asc(root.get(IssueEvent_.eventDate)));
+            if (inverseDateOrder) {
+                query.orderBy(criteriaBuilder.asc(root.get(IssueEvent_.eventDate)));
+            } else {
+                query.orderBy(criteriaBuilder.desc(root.get(IssueEvent_.eventDate)));
+            }
             return session.createQuery(query).setFirstResult(firstResult).setMaxResults(limit).list();
         });
     }

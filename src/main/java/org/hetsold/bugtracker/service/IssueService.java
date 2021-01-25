@@ -52,9 +52,9 @@ public interface IssueService {
 
     void updateIssueState(Issue issue, User user);
 
-    List<IssueEvent> getIssueEvents(Issue issue, int startPosition, int limit);
+    List<IssueEvent> getIssueEvents(Issue issue, int startPosition, int limit, boolean inverseDateOrder);
 
-    List<IssueEventDTO> getIssueHistoryEventsDTO(IssueDTO issueDTO, int startPosition, int limit);
+    List<IssueEventDTO> getIssueHistoryEventsDTO(IssueDTO issueDTO, int startPosition, int limit, boolean inverseDateOrder);
 
     long getIssueHistoryEventsCount(Issue issue);
 
