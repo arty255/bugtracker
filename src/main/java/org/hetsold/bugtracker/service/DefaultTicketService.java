@@ -152,15 +152,24 @@ public class DefaultTicketService implements TicketService {
     }
 
     @Override
-    public List<MessageDTO> getTicketMessages(TicketDTO ticketDTO, int fromIndex, int limitIndex) {
+    public List<MessageDTO> getTicketMessages(TicketDTO ticketDTO, int fromIndex, int limit, boolean inverseDateOrder) {
         Ticket ticket;
         if (ticketDTO == null || (ticket = ticketDao.getTicketById(ticketDTO.getUuid())) == null) {
             throw new IllegalArgumentException("ticket can not be empty");
         }
-        if (fromIndex + limitIndex >= ticket.getMessageList().size()) {
-            limitIndex = ticket.getMessageList().size();
+        return messageService.getMessageListByTicket(ticket, fromIndex, limit, inverseDateOrder)
+                .stream()
+                .map(MessageDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public long getMessagesCountByTicket(TicketDTO ticketDTO) {
+        Ticket ticket;
+        if (ticketDTO == null || (ticket = ticketDao.getTicketById(ticketDTO.getUuid())) == null) {
+            throw new IllegalArgumentException("ticket can not be empty");
         }
-        return ticket.getMessageList().subList(fromIndex, limitIndex).stream().map(MessageDTO::new).collect(Collectors.toList());
+        return messageService.getMessageCountByTicket(ticket);
     }
 
     @Override

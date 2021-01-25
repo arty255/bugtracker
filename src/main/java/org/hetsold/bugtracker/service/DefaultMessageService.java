@@ -3,14 +3,13 @@ package org.hetsold.bugtracker.service;
 import org.hetsold.bugtracker.dao.MessageDAO;
 import org.hetsold.bugtracker.facade.MessageConvertor;
 import org.hetsold.bugtracker.facade.UserConvertor;
-import org.hetsold.bugtracker.model.Message;
-import org.hetsold.bugtracker.model.MessageDTO;
-import org.hetsold.bugtracker.model.User;
-import org.hetsold.bugtracker.model.UserDTO;
+import org.hetsold.bugtracker.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -99,6 +98,24 @@ public class DefaultMessageService implements MessageService {
             return null;
         }
         return messageDAO.getMessageById(uuid);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public MessageDTO getMessageDTOById(String uuid) {
+        return MessageConvertor.getMessageDTO(getMessageById(uuid));
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public long getMessageCountByTicket(Ticket ticket) {
+        return messageDAO.getMessageCountByTicket(ticket);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public List<Message> getMessageListByTicket(Ticket ticket, int fromIndex, int limit, boolean inverseDateOrder) {
+        return messageDAO.getMessageListByTicket(ticket, fromIndex, limit, inverseDateOrder);
     }
 
     @Override
