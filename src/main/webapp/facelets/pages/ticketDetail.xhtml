@@ -129,7 +129,27 @@
                                     rows="10"
                                     emptyMessage="Discussion not started yet." styleClass="ticketMessages">
                             <f:facet name="header">
-                                <h:outputText value="Messages:"/>
+                                <div>
+                                    <h:outputText value="Messages:"/>
+                                </div>
+                                <h:panelGroup id="orderContainer">
+                                    <p:commandLink
+                                            styleClass="ui-panel-titlebar-icon ui-corner-all ui-issueState-default"
+                                            process="@this"
+                                            update="@(.ticketMessages) orderContainer"
+                                            actionListener="#{detailedTicketBean.messageDateAscendingInListListener}"
+                                            rendered="#{detailedTicketBean.messageLazyDataModel.inverseDateOrder}">
+                                        <h:outputText styleClass="ui-icon pi pi-sort-numeric-up"/>
+                                    </p:commandLink>
+                                    <p:commandLink
+                                            styleClass="ui-panel-titlebar-icon ui-corner-all ui-issueState-default"
+                                            process="@this"
+                                            update="@(.ticketMessages) orderContainer"
+                                            actionListener="#{detailedTicketBean.messageDateDescendingInListListener}"
+                                            rendered="#{not detailedTicketBean.messageLazyDataModel.inverseDateOrder}">
+                                        <h:outputText styleClass="ui-icon pi pi-sort-numeric-down"/>
+                                    </p:commandLink>
+                                </h:panelGroup>
                             </f:facet>
                             <message:messageWithControls message="#{message}" editMode="#{detailedTicketBean.editMode}"
                                                          deleteMessageAction="#{detailedTicketBean.deleteMessageAction()}"

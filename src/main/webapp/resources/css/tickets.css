@@ -100,6 +100,14 @@
     padding: 0;
 }
 
+.ticketMessages .ui-datalist-header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .ticketMessages ul {
     margin: 0.1em;
     list-style: none;

@@ -26,7 +26,7 @@ import java.util.Date;
 public class DetailedTicketBean implements Serializable {
     private String uuid;
     private TicketDTO ticket;
-    private LazyDataModel<MessageDTO> messageLazyDataModel;
+    private TicketMessageLazyDataModel messageLazyDataModel;
     private MessageDTO selectedToEditMessage;
     private MessageDTO selectedToDeleteMessage;
     private IssueShortDTO createdIssue;
@@ -49,6 +49,7 @@ public class DetailedTicketBean implements Serializable {
                 .getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
         initMessageAction();
+        /*todo: getUser FromSecurityContext*/
         activeUser = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
     }
 
@@ -59,20 +60,7 @@ public class DetailedTicketBean implements Serializable {
         }
     }
 
-    public TicketDTO getTicket() {
-        return ticket;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
     public void createIssueFromTicket() {
-        /*todo: getUser FromSecurityContext*/
         try {
             createdIssue = issueService.createIssueFromTicket(ticket, activeUser);
         } catch (IllegalArgumentException e) {
@@ -81,7 +69,6 @@ public class DetailedTicketBean implements Serializable {
     }
 
     public void updateTicket() {
-        /*todo: getUser FromSecurityContext*/
         ticketService.updateTicket(ticket, activeUser);
     }
 
@@ -90,28 +77,22 @@ public class DetailedTicketBean implements Serializable {
     }
 
     public void addMessageToTicketAction() {
-        /*todo: getUser FromSecurityContext*/
         ticketService.addTicketMessage(ticket, selectedToEditMessage, activeUser);
         initMessageAction();
-        initMessages();
     }
 
     public void editTicketMessageAction() {
-        /*todo: getUser FromSecurityContext*/
         messageService.saveOrUpdateMessage(selectedToEditMessage, activeUser);
         initMessageAction();
-        initMessages();
         editMode = false;
     }
 
     public void deleteMessageAction() {
         messageService.deleteMessage(selectedToDeleteMessage);
-        initMessages();
         if (selectedToDeleteMessage == selectedToEditMessage) {
             cancelEditAction();
         }
     }
-
 
     public void initMessages() {
         messageLazyDataModel = new TicketMessageLazyDataModel(ticketService, messageService, ticket);
@@ -140,7 +121,19 @@ public class DetailedTicketBean implements Serializable {
         }
     }
 
-    public LazyDataModel<MessageDTO> getMessageLazyDataModel() {
+    public void messageDateAscendingInListListener(){
+        messageLazyDataModel.setInverseDateOrder(false);
+    }
+
+    public void messageDateDescendingInListListener(){
+        messageLazyDataModel.setInverseDateOrder(true);
+    }
+
+    public TicketDTO getTicket() {
+        return ticket;
+    }
+
+    public TicketMessageLazyDataModel getMessageLazyDataModel() {
         return messageLazyDataModel;
     }
 
@@ -170,5 +163,13 @@ public class DetailedTicketBean implements Serializable {
 
     public boolean isEditMode() {
         return editMode;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }

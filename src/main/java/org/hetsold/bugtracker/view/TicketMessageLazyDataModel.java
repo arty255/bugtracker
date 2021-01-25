@@ -27,6 +27,10 @@ public class TicketMessageLazyDataModel extends LazyDataModel<MessageDTO> {
         this.inverseDateOrder = inverseDateOrder;
     }
 
+    public boolean isInverseDateOrder() {
+        return inverseDateOrder;
+    }
+
     @Override
     public List<MessageDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
         this.setRowCount((int) ticketService.getMessagesCountByTicket(ticket));
