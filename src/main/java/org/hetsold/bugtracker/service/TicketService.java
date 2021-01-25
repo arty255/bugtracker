@@ -33,7 +33,9 @@ public interface TicketService {
 
     void addTicketMessage(Ticket ticket, Message message, User user);
 
-    List<MessageDTO> getTicketMessages(TicketDTO ticket, int fromIndex, int size);
+    List<MessageDTO> getTicketMessages(TicketDTO ticket, int fromIndex, int limit, boolean inverseDateOrder);
+
+    long getMessagesCountByTicket(TicketDTO ticketDTO);
 
     void updateTicket(TicketDTO ticketDTO, UserDTO user);
 }

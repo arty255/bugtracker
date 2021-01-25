@@ -124,7 +124,9 @@
                     </message:messageEditor>
 
                     <h:panelGroup layout="block" styleClass="ticketMessagesWrapper">
-                        <p:dataList id="ticketMessages" var="message" value="#{detailedTicketBean.ticketMessages}"
+                        <p:dataList id="ticketMessages" var="message" value="#{detailedTicketBean.messageLazyDataModel}"
+                                    lazy="true" paginator="#{detailedTicketBean.messageLazyDataModel.rowCount > 1}"
+                                    rows="10"
                                     emptyMessage="Discussion not started yet." styleClass="ticketMessages">
                             <f:facet name="header">
                                 <h:outputText value="Messages:"/>
