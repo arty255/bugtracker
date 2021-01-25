@@ -19,7 +19,7 @@ public interface HistoryEventDAO {
 
     void deleteIssueMessageEvent(IssueMessageEvent messageEvent);
 
-    List<IssueEvent> getHistoryIssueEventsByIssue(Issue issue, int firstResult, int limit);
+    List<IssueEvent> getHistoryIssueEventsByIssue(Issue issue, int firstResult, int limit, boolean inverseDateOrder);
 
     long getHistoryIssueEventsCountForIssue(Issue issue);
 

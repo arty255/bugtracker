@@ -29,7 +29,7 @@ public class DetailedIssueBean implements Serializable {
     @Autowired
     private UserService userService;
 
-    private LazyDataModel<IssueEventDTO> historyEventDataModel;
+    private HistoryEventLazyDataModel historyEventDataModel;
 
     private boolean isOriginalStateChanged;
     private IssueState originalIssueState;
@@ -50,6 +50,7 @@ public class DetailedIssueBean implements Serializable {
         isOriginalStateChanged = false;
         selectedToAssignUser = null;
         userDTODataModel = new UserDTOLazyDataModel(userService);
+        /*todo: change with spring security integration*/
         activeUser = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
         initMessageListener();
     }
@@ -136,6 +137,14 @@ public class DetailedIssueBean implements Serializable {
         issue = issueService.saveOrUpdateIssue(issue, activeUser);
     }
 
+    public void messageDateAscendingInListListener(){
+        historyEventDataModel.setInverseDateOrder(false);
+    }
+
+    public void messageDateDescendingInListListener(){
+        historyEventDataModel.setInverseDateOrder(true);
+    }
+
     public IssueDTO getIssue() {
         return issue;
     }
@@ -172,7 +181,7 @@ public class DetailedIssueBean implements Serializable {
         this.selectedToEditMessage = selectedToEditMessage;
     }
 
-    public LazyDataModel<IssueEventDTO> getHistoryEventDataModel() {
+    public HistoryEventLazyDataModel getHistoryEventDataModel() {
         return historyEventDataModel;
     }
 

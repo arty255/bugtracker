@@ -373,18 +373,18 @@ public class DefaultIssueService implements IssueService {
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public List<IssueEvent> getIssueEvents(Issue issue, int startPosition, int limit) {
-        return historyEventDAO.getHistoryIssueEventsByIssue(issue, startPosition, limit);
+    public List<IssueEvent> getIssueEvents(Issue issue, int startPosition, int limit, boolean inverseDateOrder) {
+        return historyEventDAO.getHistoryIssueEventsByIssue(issue, startPosition, limit, inverseDateOrder);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public List<IssueEventDTO> getIssueHistoryEventsDTO(IssueDTO issueDTO, int startPosition, int limit) {
+    public List<IssueEventDTO> getIssueHistoryEventsDTO(IssueDTO issueDTO, int startPosition, int limit, boolean inverseDateOrder) {
         Issue issue;
         if (issueDTO == null || issueDTO.getUuid().isEmpty() || (issue = getIssueById(issueDTO.getUuid())) == null) {
             throw new IllegalArgumentException("incorrect issue: issue can not be null or not persisted");
         }
-        return getIssueEvents(issue, startPosition, limit)
+        return getIssueEvents(issue, startPosition, limit, inverseDateOrder)
                 .stream()
                 .map(IssueEventDTO::new)
                 .collect(Collectors.toList());

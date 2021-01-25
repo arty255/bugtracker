@@ -16,6 +16,7 @@ public class HistoryEventLazyDataModel extends LazyDataModel<IssueEventDTO> {
     private IssueService issueService;
     private MessageService messageService;
     private IssueDTO issueDTO;
+    private boolean inverseDateOrder;
 
     public HistoryEventLazyDataModel(IssueService issueService, MessageService messageService, IssueDTO issueDTO) {
         this.issueService = issueService;
@@ -23,10 +24,18 @@ public class HistoryEventLazyDataModel extends LazyDataModel<IssueEventDTO> {
         this.issueDTO = issueDTO;
     }
 
+    public boolean isInverseDateOrder() {
+        return inverseDateOrder;
+    }
+
+    public void setInverseDateOrder(boolean inverseDateOrder) {
+        this.inverseDateOrder = inverseDateOrder;
+    }
+
     @Override
     public List<IssueEventDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
         this.setRowCount((int) issueService.getIssueHistoryEventsCount(issueDTO));
-        return issueService.getIssueHistoryEventsDTO(issueDTO, first, pageSize);
+        return issueService.getIssueHistoryEventsDTO(issueDTO, first, pageSize, inverseDateOrder);
     }
 
     @Override

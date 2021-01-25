@@ -142,6 +142,30 @@
                                 paginator="#{detailedIssueBean.historyEventDataModel.rowCount gt 0}"
                                 emptyMessage="Issue has to messages or state changes"
                                 styleClass="issueHistoryList">
+                        <f:facet name="header">
+                            <h:panelGroup layout="block" id="headerMessageContainer">
+                                <h:outputText value="Issue History:" rendered="#{true}"/>
+                                <h:outputText value="Issue Messages:" rendered="#{false}"/>
+                            </h:panelGroup>
+                            <h:panelGroup layout="bloc" id="orderContainer">
+                                <p:commandLink
+                                        styleClass="ui-panel-titlebar-icon ui-corner-all ui-issueState-default"
+                                        process="@this"
+                                        update="@(.issueHistoryList) orderContainer"
+                                        actionListener="#{detailedIssueBean.messageDateAscendingInListListener}"
+                                        rendered="#{detailedIssueBean.historyEventDataModel.inverseDateOrder}">
+                                    <h:outputText styleClass="ui-icon pi pi-sort-numeric-up"/>
+                                </p:commandLink>
+                                <p:commandLink
+                                        styleClass="ui-panel-titlebar-icon ui-corner-all ui-issueState-default"
+                                        process="@this"
+                                        update="@(.issueHistoryList) orderContainer"
+                                        actionListener="#{detailedIssueBean.messageDateDescendingInListListener}"
+                                        rendered="#{not detailedIssueBean.historyEventDataModel.inverseDateOrder}">
+                                    <h:outputText styleClass="ui-icon pi pi-sort-numeric-down"/>
+                                </p:commandLink>
+                            </h:panelGroup>
+                        </f:facet>
                         <message:messageWithControls message="#{issueEvent.entityDTO}"
                                                      selectedToEdit="#{detailedIssueBean.selectedToEditMessage}"
                                                      selectedToDelte="#{detailedIssueBean.selectedToDeleteMessage}"
