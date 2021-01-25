@@ -18,6 +18,9 @@ public class IssueDTO {
     private UserDTO assignedTo;
     private TicketDTO ticket;
 
+    public IssueDTO() {
+    }
+
     public IssueDTO(Issue issue) {
         this.uuid = issue.getUuid();
         this.issueNumber = issue.getIssueNumber();

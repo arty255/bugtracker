@@ -40,9 +40,6 @@ public class DefaultIssueService implements IssueService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void save(Issue issue) {
-        if (issue.getCreationTime() == null) {
-            throw new IllegalArgumentException("issue creationTime can not be null");
-        }
         if (issue.getReportedBy() == null || userService.getUserById(issue.getReportedBy().getUuid()) == null) {
             throw new IllegalArgumentException("issueReporter argument can not be null or not persisted");
         }
@@ -71,13 +68,31 @@ public class DefaultIssueService implements IssueService {
         if (user == null || user.getUuid().isEmpty()) {
             throw new IllegalArgumentException("invalid user: user cannot be empty");
         }
-        if (issue.getUuid().isEmpty()) {
+        if (issue.getUuid() == null || issue.getUuid().isEmpty()) {
             issue.setReportedBy(user);
-            save(issue);
+            save(prepareIssueToSave(issue));
         } else {
             issue = updateIssue(issue);
         }
         return issue;
+    }
+
+    private Issue prepareIssueToSave(Issue issue) {
+        Issue newIssue = new Issue();
+        newIssue.setReportedBy(issue.getReportedBy());
+        newIssue.setDescription(issue.getDescription());
+        newIssue.setReproduceSteps(issue.getReproduceSteps());
+        newIssue.setProductVersion(issue.getProductVersion());
+        newIssue.setSeverity(issue.getSeverity());
+        newIssue.setIssueNumber(issue.getIssueNumber());
+        newIssue.setExpectedResult(issue.getExpectedResult());
+        newIssue.setExistedResult(issue.getExistedResult());
+        if (issue.getCurrentIssueState() == null) {
+            newIssue.setCurrentIssueState(IssueState.OPEN);
+        }else {
+            newIssue.setCurrentIssueState(issue.getCurrentIssueState());
+        }
+        return newIssue;
     }
 
     @Override
