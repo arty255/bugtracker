@@ -12,12 +12,16 @@
     margin-right: 0.5em;
 }
 
-.stateText{
+.coloredStateLabel{
     text-transform: capitalize;
 }
 
 .red {
     background-color: #ff0000;
+}
+
+.yellow{
+    background-color: #ffff00;
 }
 
 .orange {

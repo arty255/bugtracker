@@ -11,11 +11,11 @@
                          required="true"/>
 </composite:interface>
 <composite:implementation>
-    <h:outputStylesheet library="css" name="stateView.css"/>
+    <h:outputStylesheet library="css" name="coloredStateLabel.css"/>
     <h:panelGroup layout="block" styleClass="stateContainer">
         <div class="stateIndicator #{cc.attrs.verificationState == 'NotVerified' ? 'gray' :
         (cc.attrs.verificationState == 'Verified' ? 'green': 'gray')}"></div>
-        <h:outputText value="#{cc.attrs.verificationState.label}" styleClass="stateText"/>
+        <h:outputText value="#{cc.attrs.verificationState.label}" styleClass="coloredStateLabel"/>
     </h:panelGroup>
 </composite:implementation>
 </html>

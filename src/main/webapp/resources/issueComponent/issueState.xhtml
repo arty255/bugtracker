@@ -10,11 +10,11 @@
     <composite:attribute name="issueState" type="org.hetsold.bugtracker.model.IssueState" required="true"/>
 </composite:interface>
 <composite:implementation>
-    <h:outputStylesheet library="css" name="stateView.css"/>
+    <h:outputStylesheet library="css" name="coloredStateLabel.css"/>
     <h:panelGroup layout="block" styleClass="stateContainer">
         <div class="stateIndicator #{cc.attrs.issueState.label == 'assigned' ? 'orange' :
         (cc.attrs.issueState.label == 'fixed' ? 'green': 'red')}"></div>
-        <h:outputText value="#{cc.attrs.issueState.label}" styleClass="stateText"/>
+        <h:outputText value="#{cc.attrs.issueState.label}" styleClass="coloredStateLabel"/>
     </h:panelGroup>
 </composite:implementation>
 </html>

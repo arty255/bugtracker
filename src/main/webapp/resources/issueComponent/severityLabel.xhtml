@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xml:lang="en" lang="en">
+<composite:interface>
+    <composite:attribute name="issueSeverity" type="org.hetsold.bugtracker.model.Severity" required="true"/>
+</composite:interface>
+<composite:implementation>
+    <h:outputStylesheet library="css" name="coloredStateLabel.css"/>
+    <h:panelGroup layout="block" styleClass="stateContainer">
+        <div class="stateIndicator #{cc.attrs.issueSeverity.label == 'unrated' ? 'gray' :
+        cc.attrs.issueSeverity.label == 'tirvial' ? 'green':
+        cc.attrs.issueSeverity.label == 'minor' ? 'yellow':
+        cc.attrs.issueSeverity.label == 'medium' ? 'orange':
+        cc.attrs.issueSeverity.label == 'critical' ? 'red':
+        cc.attrs.issueSeverity.label == 'blocker' ? 'black' : 'gray'}"></div>
+        <h:outputText value="#{cc.attrs.issueSeverity.label}" styleClass="coloredStateLabel"/>
+    </h:panelGroup>
+</composite:implementation>
+</html>

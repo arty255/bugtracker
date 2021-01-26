@@ -96,7 +96,7 @@
     display: flex;flex-direction: row; flex-wrap: wrap;
 }
 
-.stateEventTextContentWrapper .stateText{
+.stateEventTextContentWrapper .coloredStateLabel{
     font-weight: bold;
 }
 

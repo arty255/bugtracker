@@ -1,10 +1,7 @@
 package org.hetsold.bugtracker.view;
 
 
-import org.hetsold.bugtracker.model.IssueEventDTO;
-import org.hetsold.bugtracker.model.IssueState;
-import org.hetsold.bugtracker.model.TicketResolveState;
-import org.hetsold.bugtracker.model.TicketVerificationState;
+import org.hetsold.bugtracker.model.*;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -23,6 +20,10 @@ public class AppUtilBean implements Serializable {
 
     public IssueState[] getIssueStates() {
         return IssueState.values();
+    }
+
+    public Severity[] getSeverities() {
+        return Severity.values();
     }
 
     public String getDateFormat() {

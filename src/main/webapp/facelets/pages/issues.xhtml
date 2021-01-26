@@ -22,7 +22,8 @@
     <ui:define name="content">
         <h:form>
             <p:dataTable var="issue" value="#{issueListBean.issuesLazyDataModel}" lazy="true"
-                         paginator="true" rowsPerPageTemplate="10,25,50" rows="10"
+                         rowsPerPageTemplate="10,25,50" rows="10"
+                         paginator="#{issueListBean.issuesLazyDataModel.rowCount > 3}"
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                          styleClass="issuesTable">
@@ -53,15 +54,18 @@
                         </div>
                     </div>
                 </p:column>
-                <p:column headerText="Reported By" styleClass="minimalWidthColumn assignColumn">
+                <p:column headerText="Severity" styleClass="minimalWidthColumn centeredColumn">
+                    <issue:severityLabel issueSeverity="#{issue.severity}"/>
+                </p:column>
+                <p:column headerText="Reported By" styleClass="minimalWidthColumn centeredColumn">
                     <!--todo: show user group: forum, tester or other -based on department-->
                     <user:linkedUser user="#{issue.reportedBy}"/>
                 </p:column>
-                <p:column headerText="Assigned to" styleClass="minimalWidthColumn">
+                <p:column headerText="Assigned to" styleClass="minimalWidthColumn centeredColumn">
                     <user:linkedUser user="#{issue.assignedTo}" rendered="#{not empty issue.assignedTo}"/>
                     <!--todo: show warning with time=cur.time-creat.time and color range-->
                 </p:column>
-                <p:column headerText="Creation date" styleClass="minimalWidthColumn">
+                <p:column headerText="Creation date" styleClass="minimalWidthColumn centeredColumn">
                     <h:outputText value="#{issue.creationTime}">
                         <f:convertDateTime pattern="#{appUtilBean.dateFormat}"/>
                     </h:outputText>
@@ -133,9 +137,11 @@
                     <h:outputText value="Expected result:"/>
                     <p:inputTextarea id="newIssueExpectedResult" value="#{addIssueBean.issue.expectedResult}"/>
 
-                    <!--todo: rework Severity-->
                     <h:outputText value="Severity:"/>
-                    <p:inputTextarea id="newIssueSeverity" value="#{addIssueBean.issue.severity}"/>
+                    <p:selectOneMenu id="newIssueSeverity" value="#{addIssueBean.issue.severity}">
+                        <f:selectItems value="#{appUtilBean.severities}" var="severity"
+                                       itemLabel="#{severity.label}" itemValue="#{severity}"/>
+                    </p:selectOneMenu>
                 </p:panelGrid>
                 <div class="newIssueControlsWrapper">
                     <p:commandButton value="Clear"
