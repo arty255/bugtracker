@@ -62,6 +62,7 @@ create table if not exists issue
     severity          tinyint,
     fixVersion        varchar(70),
     currentIssueState tinyint,
+    archived          char(1) default 'N',
     primary key (uuid)
 );
 
@@ -109,7 +110,7 @@ drop table if exists issueMessageEvent;
 create table if not exists issueMessageEvent
 (
     uuid      varchar(40) not null,
-    messageId varchar(40)        not null,
+    messageId varchar(40) not null,
     primary key (uuid),
     foreign key (messageId) references message (uuid) on delete cascade
 );
@@ -127,7 +128,7 @@ create table if not exists issueStateChangeEvent
 drop table if exists issue_issueEvent;
 create table if not exists issue_issueEvent
 (
-    issueId   varchar(40) not null,
+    issueId      varchar(40) not null,
     issueEventId varchar(40) not null,
     primary key (issueId, issueEventId),
     foreign key (issueId) references issue (uuid) on delete cascade,
