@@ -87,9 +87,12 @@ public class DefaultIssueService implements IssueService {
         newIssue.setIssueNumber(issue.getIssueNumber());
         newIssue.setExpectedResult(issue.getExpectedResult());
         newIssue.setExistedResult(issue.getExistedResult());
+        if (issue.getSeverity() == null) {
+            newIssue.setSeverity(Severity.UNRATED);
+        }
         if (issue.getCurrentIssueState() == null) {
             newIssue.setCurrentIssueState(IssueState.OPEN);
-        }else {
+        } else {
             newIssue.setCurrentIssueState(issue.getCurrentIssueState());
         }
         return newIssue;
