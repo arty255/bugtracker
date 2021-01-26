@@ -1,5 +1,6 @@
 package org.hetsold.bugtracker.view;
 
+import org.hetsold.bugtracker.model.IssueDTO;
 import org.hetsold.bugtracker.model.IssueShortDTO;
 import org.hetsold.bugtracker.service.IssueService;
 import org.primefaces.model.FilterMeta;
@@ -11,9 +12,15 @@ import java.util.Map;
 
 public class IssuesLazyDataModel extends LazyDataModel<IssueShortDTO> {
     private IssueService issueService;
+    private IssueDTO filterIssue;
 
     public IssuesLazyDataModel(IssueService issueService) {
         this.issueService = issueService;
+        this.filterIssue = new IssueDTO();
+    }
+
+    public void setFilterIssue(IssueDTO filterIssue) {
+        this.filterIssue = filterIssue;
     }
 
     @Override
@@ -23,7 +30,7 @@ public class IssuesLazyDataModel extends LazyDataModel<IssueShortDTO> {
 
     @Override
     public List<IssueShortDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-        this.setRowCount((int) issueService.getIssuesCount());
-        return issueService.getIssueList(first, pageSize);
+        this.setRowCount((int) issueService.getIssuesCount(filterIssue));
+        return issueService.getIssueList(filterIssue, first, pageSize);
     }
 }

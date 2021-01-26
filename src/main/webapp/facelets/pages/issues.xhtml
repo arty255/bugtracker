@@ -10,6 +10,7 @@
       xmlns:user="http://xmlns.jcp.org/jsf/composite/userComponent"
       xmlns:ticket="http://xmlns.jcp.org/jsf/composite/ticketComponent"
       xmlns:issue="http://xmlns.jcp.org/jsf/composite/issueComponent"
+      xmlns:controls="http://java.sun.com/jsf/composite/generalComponent"
 
       xml:lang="en" lang="en">
 <ui:composition template="../templates/simpleTemplate.xhtml">
@@ -18,6 +19,7 @@
     </ui:define>
     <ui:define name="headArea">
         <h:outputStylesheet library="css" name="issues.css"/>
+        <h:outputStylesheet library="css" name="listControls.css"/>
     </ui:define>
     <ui:define name="content">
         <h:form>
@@ -26,6 +28,7 @@
                          paginator="#{issueListBean.issuesLazyDataModel.rowCount > 3}"
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                         rowStyleClass="#{issue.archived ? 'archivedTableRow' : ''}"
                          styleClass="issuesTable">
                 <f:facet name="header">
                     <div style="width: 100%; display: flex; flex-direction: row">
@@ -69,6 +72,19 @@
                     <h:outputText value="#{issue.creationTime}">
                         <f:convertDateTime pattern="#{appUtilBean.dateFormat}"/>
                     </h:outputText>
+                </p:column>
+                <!--todo: change with spring security integration-->
+                <p:column styleClass="minimalWidthColumn centeredColumn controlsColumn"
+                          headerText="Controls"
+                          rendered="#{true}">
+                    <controls:archiveButtonsComponent itemSource="#{issue}"
+                                                      selectedItem="#{issueListBean.issue}"
+                                                      removeAction="#{issueListBean.preformDeleteAction()}"
+                                                      archiveAction="#{issueListBean.preformArchiveAction()}"
+                                                      unArchiveAction="#{issueListBean.preformUnarchiveAction}"
+                                                      selectorsToUpdateOnArchiveAction="@(.issuesTable)"
+                                                      selectorsToUpdateOnUnarchiveAction="@(.issuesTable)"
+                                                      selectorsToUpdateOnRemoveAction="@(.issuesTable)"/>
                 </p:column>
             </p:dataTable>
         </h:form>
@@ -148,10 +164,11 @@
                                      process="@this"
                                      update="@form"
                                      actionListener="#{addIssueBean.initIssueListener}"
-                                     styleClass="newIssueClearButton"/>
+                                     styleClass="yellowButton"/>
                     <p:commandButton value="Save"
                                      process="@form @this"
                                      action="#{addIssueBean.addIssueAction}"
+                                     update="@(.issuesTable)"
                                      onsuccess="PF('addIssueDialog').hide();"/>
                 </div>
             </h:form>

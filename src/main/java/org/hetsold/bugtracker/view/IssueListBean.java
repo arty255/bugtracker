@@ -1,11 +1,13 @@
 package org.hetsold.bugtracker.view;
 
+import org.hetsold.bugtracker.model.Issue;
 import org.hetsold.bugtracker.model.IssueShortDTO;
+import org.hetsold.bugtracker.model.UserDTO;
 import org.hetsold.bugtracker.service.IssueService;
+import org.hetsold.bugtracker.service.UserService;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.jsf.FacesContextUtils;
-
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -17,14 +19,19 @@ import java.io.Serializable;
 @ViewScoped
 public class IssueListBean implements Serializable {
     private LazyDataModel<IssueShortDTO> issuesLazyDataModel;
+    private IssueShortDTO issue;
     @Autowired
     private IssueService issueService;
+    @Autowired
+    private UserService userService;
+    private UserDTO activeUser;
 
     @PostConstruct
     public void init() {
         FacesContextUtils.getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
         initIssueList();
+        activeUser = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
     }
 
     public void initIssueList() {
@@ -33,5 +40,25 @@ public class IssueListBean implements Serializable {
 
     public LazyDataModel<IssueShortDTO> getIssuesLazyDataModel() {
         return issuesLazyDataModel;
+    }
+
+    public void preformArchiveAction() {
+        issueService.makeIssueArchived(issue, activeUser);
+    }
+
+    public void preformDeleteAction() {
+        issueService.deleteIssue(new Issue.Builder().withIssueUuid(issue.getUuid()).build());
+    }
+
+    public void preformUnarchiveAction() {
+        issueService.makeIssueUnArchived(issue, activeUser);
+    }
+
+    public IssueShortDTO getIssue() {
+        return issue;
+    }
+
+    public void setIssue(IssueShortDTO issue) {
+        this.issue = issue;
     }
 }

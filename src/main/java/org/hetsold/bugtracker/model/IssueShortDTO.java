@@ -2,7 +2,7 @@ package org.hetsold.bugtracker.model;
 
 import java.util.Date;
 
-public class IssueShortDTO {
+public class IssueShortDTO extends ArchivedIdentity {
     private String uuid;
     private String issueNumber;
     private String description;
@@ -20,6 +20,7 @@ public class IssueShortDTO {
         this.creationTime = issue.getCreationTime();
         this.currentIssueState = issue.getCurrentIssueState();
         this.severity = issue.getSeverity();
+        this.setArchived(issue.getArchived());
         if (issue.getReportedBy() != null) {
             this.reportedBy = new UserDTO(issue.getReportedBy());
         }

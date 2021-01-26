@@ -1,10 +1,7 @@
 package org.hetsold.bugtracker.view;
 
 
-import org.hetsold.bugtracker.model.IssueDTO;
-import org.hetsold.bugtracker.model.IssueState;
-import org.hetsold.bugtracker.model.MessageDTO;
-import org.hetsold.bugtracker.model.UserDTO;
+import org.hetsold.bugtracker.model.*;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.MessageService;
 import org.hetsold.bugtracker.service.UserService;
@@ -53,11 +50,15 @@ public class DetailedIssueBean extends ListableMessageBean implements Serializab
 
     public void preInitIssue() {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            issue = issueService.getIssueDTOById(uuid);
+            reloadIssue();
             originalIssueState = issue.getCurrentIssueState();
             initHistory();
             initMessageListener();
         }
+    }
+
+    private void reloadIssue() {
+        issue = issueService.getIssueDTOById(uuid);
     }
 
     public void initHistory() {
@@ -75,7 +76,7 @@ public class DetailedIssueBean extends ListableMessageBean implements Serializab
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "issue state can not be changed", "issue state can not be changed to " + issue.getCurrentIssueState().getLabel()));
         }
-        issue = issueService.getIssueDTOById(uuid);
+        reloadIssue();
     }
 
     public void unAssignUser() {
@@ -99,6 +100,21 @@ public class DetailedIssueBean extends ListableMessageBean implements Serializab
     @Override
     public void preformDeleteOperation(MessageDTO messageDTO) {
         issueService.deleteIssueMessage(messageDTO);
+    }
+
+    public void archiveIssueAction() {
+        issueService.makeIssueArchived(new IssueShortDTO(issue.getUuid()), activeUser);
+        reloadIssue();
+    }
+
+    public void unarchiveAction() {
+        issueService.makeIssueUnArchived(new IssueShortDTO(issue.getUuid()), activeUser);
+        reloadIssue();
+    }
+
+    public String deleteIssueAction() {
+        issueService.deleteIssue(new Issue.Builder().withIssueUuid(issue.getUuid()).build());
+        return "issues";
     }
 
     public void save() {

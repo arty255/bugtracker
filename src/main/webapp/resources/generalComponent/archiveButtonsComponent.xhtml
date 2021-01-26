@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:composite="http://java.sun.com/jsf/composite" xmlns:f="http://java.sun.com/jsf/core"
+      xml:lang="en" lang="en">
+<composite:interface>
+    <composite:attribute name="itemSource" type="org.hetsold.bugtracker.model.ArchivedIdentity" required="true"/>
+    <composite:attribute name="archiveAction" method-signature="void action()" required="true"/>
+    <composite:attribute name="unArchiveAction" method-signature="void action()" required="true"/>
+    <composite:attribute name="removeAction" method-signature="void action()" required="true"/>
+    <composite:attribute name="selectedItem" required="true"/>
+    <composite:attribute name="selectorsToUpdateOnArchiveAction"/>
+    <composite:attribute name="selectorsToUpdateOnRemoveAction"/>
+    <composite:attribute name="selectorsToUpdateOnUnarchiveAction"/>
+</composite:interface>
+<composite:implementation>
+    <h:panelGroup layout="block" styleClass="controlsWrapper">
+        <p:commandButton icon="pi pi-eye-slash" value="Archive"
+                         update="#{cc.attrs.selectorsToUpdateOnArchiveAction}"
+                         process="@this"
+                         action="#{cc.attrs.archiveAction}"
+                         styleClass="yellowHoverButton"
+                         rendered="#{not cc.attrs.itemSource.archived}">
+
+            <f:setPropertyActionListener value="#{cc.attrs.itemSource}"
+                                         target="#{cc.attrs.selectedItem}"/>
+
+        </p:commandButton>
+        <p:commandButton value="Delete" icon="pi pi-trash"
+                         update="#{cc.attrs.selectorsToUpdateOnRemoveAction}"
+                         process="@this"
+                         action="#{cc.attrs.removeAction}"
+                         styleClass="redHoverButton"
+                         rendered="#{cc.attrs.itemSource.archived}">
+            <f:setPropertyActionListener value="#{cc.attrs.itemSource}"
+                                         target="#{cc.attrs.selectedItem}"/>
+        </p:commandButton>
+        <p:commandButton value="UnArchive" icon="pi pi-eye"
+                         process="@this"
+                         update="#{cc.attrs.selectorsToUpdateOnUnarchiveAction}"
+                         action="#{cc.attrs.unArchiveAction}"
+                         styleClass="yellowHoverButton"
+                         rendered="#{cc.attrs.itemSource.archived}">
+            <f:setPropertyActionListener value="#{cc.attrs.itemSource}"
+                                         target="#{cc.attrs.selectedItem}"/>
+        </p:commandButton>
+    </h:panelGroup>
+</composite:implementation>
+</html>

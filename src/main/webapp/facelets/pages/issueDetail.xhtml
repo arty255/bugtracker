@@ -23,10 +23,31 @@
     <ui:define name="headArea">
         <h:outputStylesheet library="css" name="reusable.css"/>
         <h:outputStylesheet library="css" name="detailedIssue.css"/>
+        <h:outputStylesheet library="css" name="listControls.css"/>
     </ui:define>
     <ui:define name="content">
         <h:form>
             <p:panel header="Issue: #{detailedIssueBean.issue.uuid}" styleClass="issue">
+                <h:panelGroup id="archiveControlsContainer" layout="block"
+                              styleClass="issueArchiveControlsWrapper">
+                    <p:commandButton value="Archivate"
+                                     process="@this"
+                                     update="archiveControlsContainer"
+                                     action="#{detailedIssueBean.archiveIssueAction}"
+                                     styleClass="yellowHoverButton"
+                                     rendered="#{not detailedIssueBean.issue.archived}"/>
+                    <p:commandButton value="Delete"
+                                     process="@this"
+                                     action="#{detailedIssueBean.deleteIssueAction}"
+                                     styleClass="redHoverButton"
+                                     rendered="#{detailedIssueBean.issue.archived}"/>
+                    <p:commandButton value="Unarchivate"
+                                     process="@this"
+                                     update="archiveControlsContainer"
+                                     action="#{detailedIssueBean.unarchiveAction}"
+                                     styleClass="yellowHoverButton"
+                                     rendered="#{detailedIssueBean.issue.archived}"/>
+                </h:panelGroup>
                 <p:panelGrid columns="2" style="width: 100%" columnClasses="minimalWidthColumn,autoWidthColumn">
                     <h:outputText value="Current issue state:"/>
                     <p:inplace widgetVar="issueStateInplaceWidget" styleClass="noPaddingInplace"

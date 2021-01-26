@@ -12,7 +12,7 @@
     margin-right: 0.5em;
 }
 
-.coloredStateLabel{
+.coloredStateLabel {
     text-transform: capitalize;
 }
 
@@ -20,7 +20,7 @@
     background-color: #ff0000;
 }
 
-.yellow{
+.yellow {
     background-color: #ffff00;
 }
 
@@ -34,4 +34,8 @@
 
 .green {
     background-color: #008000;
+}
+
+.black {
+    background-color: #000000;
 }

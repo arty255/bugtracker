@@ -1,0 +1,32 @@
+.controlsColumn {
+    vertical-align: middle!important;
+}
+
+.controlsWrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.controlsWrapper > button:nth-child(2) {
+    margin-top: 0.5em;
+}
+
+.yellowHoverButton{
+
+}
+
+.yellowHoverButton.ui-state-hover{
+    background-color: #ff5722 !important;
+    border-color: #ff5722 !important;
+    color: #fff;
+}
+
+.redHoverButton {
+
+}
+
+.redHoverButton.ui-state-hover {
+    background-color: #e01937 !important;
+    color: #fff;
+    border: 1px solid #be0c0c !important;
+}
