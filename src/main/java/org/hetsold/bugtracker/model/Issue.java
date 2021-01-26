@@ -96,6 +96,9 @@ public class Issue extends AbstractIdentity {
             joinColumns = @JoinColumn(name = "issueId", referencedColumnName = "uuid"),
             inverseJoinColumns = @JoinColumn(name = "ticketId", referencedColumnName = "uuid"))
     private Ticket ticket;
+    @Column(name = "archived")
+    @Convert(converter = BooleanToStringConverter.class)
+    private Boolean archived;
 
     public Issue() {
         history = new ArrayList<>();
@@ -225,6 +228,14 @@ public class Issue extends AbstractIdentity {
 
     public void setTicket(Ticket ticket) {
         this.ticket = ticket;
+    }
+
+    public Boolean getArchived() {
+        return archived;
+    }
+
+    public void setArchived(Boolean archived) {
+        this.archived = archived;
     }
 
     public static class Builder {
