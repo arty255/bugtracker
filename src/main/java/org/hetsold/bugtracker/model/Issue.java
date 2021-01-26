@@ -116,6 +116,7 @@ public class Issue extends AbstractIdentity {
         this.reproduceSteps = newIssue.getReproduceSteps();
         this.existedResult = newIssue.getExistedResult();
         this.expectedResult = newIssue.getExpectedResult();
+        this.archived = newIssue.getArchived();
     }
 
     public String getIssueNumber() {

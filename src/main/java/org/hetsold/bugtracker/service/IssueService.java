@@ -13,6 +13,12 @@ public interface IssueService {
 
     IssueDTO saveOrUpdateIssue(IssueDTO issueDTO, UserDTO userDTO);
 
+    void changeIssueArchiveState(Issue issue, User user, boolean newState);
+
+    void makeIssueArchived(IssueShortDTO issueShortDTO, UserDTO userDTO);
+
+    void makeIssueUnArchived(IssueShortDTO issueShortDTO, UserDTO userDTO);
+
     Issue getIssueById(String uuid);
 
     IssueDTO getIssueDTOById(String uuid);
@@ -59,4 +65,5 @@ public interface IssueService {
     long getIssueHistoryEventsCount(IssueDTO issueDTO);
 
     void deleteIssueMessage(MessageDTO selectedToDeleteMessage);
+
 }

@@ -112,6 +112,43 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void changeIssueArchiveState(Issue issue, User user, boolean newState) {
+        Issue oldIssue;
+        if (issue == null || issue.getUuid().isEmpty() || (oldIssue = getIssueById(issue.getUuid())) == null) {
+            throw new IllegalArgumentException("issue can not be null or not persisted");
+        }
+        if (user == null || user.getUuid().isEmpty() || (user = userService.getUserById(user.getUuid())) == null) {
+            throw new IllegalArgumentException("incorrect user: user can not be null or not persisted");
+        }
+        /*todo: future archive event implementation.*/
+        oldIssue.setArchived(newState);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void makeIssueArchived(IssueShortDTO issueShortDTO, UserDTO userDTO) {
+        if (issueShortDTO == null || issueShortDTO.getUuid().isEmpty()) {
+            throw new IllegalArgumentException("incorrect issue: issue can not be null");
+        }
+        if (userDTO == null || userDTO.getUuid().isEmpty()) {
+            throw new IllegalArgumentException("incorrect user: user can not be null");
+        }
+        changeIssueArchiveState(IssueConverter.getIssue(issueShortDTO), UserConvertor.getUser(userDTO), true);
+    }
+
+    @Override
+    public void makeIssueUnArchived(IssueShortDTO issueShortDTO, UserDTO userDTO) {
+        if (issueShortDTO == null || issueShortDTO.getUuid().isEmpty()) {
+            throw new IllegalArgumentException("incorrect issue: issue can not be null");
+        }
+        if (userDTO == null || userDTO.getUuid().isEmpty()) {
+            throw new IllegalArgumentException("incorrect user: user can not be null");
+        }
+        changeIssueArchiveState(IssueConverter.getIssue(issueShortDTO), UserConvertor.getUser(userDTO), false);
+    }
+
+    @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public Issue getIssueById(String uuid) {
         if (uuid == null || uuid.isEmpty()) {
