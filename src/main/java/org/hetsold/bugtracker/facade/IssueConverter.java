@@ -21,7 +21,11 @@ public class IssueConverter {
                     .withIssueSeverity(issueDTO.getSeverity())
                     .withFixVersion(issueDTO.getFixVersion())
                     .withIssueState(issueDTO.getCurrentIssueState())
+                    .wittArchived(issueDTO.getArchived())
                     .build();
+            if (issueDTO.getAssignedTo() != null) {
+                issue.setAssignedTo(UserConvertor.getUser(issueDTO.getAssignedTo()));
+            }
         }
         return issue;
     }
