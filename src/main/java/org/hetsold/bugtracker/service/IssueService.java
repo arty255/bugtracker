@@ -21,11 +21,9 @@ public interface IssueService {
 
     List<Issue> findIssueByFilter(Issue issue);
 
-    List<Issue> getIssueList();
+    List<IssueShortDTO> getIssueList(IssueDTO issue, int startPosition, int limit);
 
-    List<IssueShortDTO> getIssueList(int startPosition, int limit);
-
-    long getIssuesCount();
+    long getIssuesCount(IssueDTO issue);
 
     Issue getIssueForViewById(String uuid);
 

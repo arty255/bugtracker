@@ -88,7 +88,7 @@ public class IssueHibernateDAOTest {
     @Test
     public void checkIssueCorrectCount() {
         issueList.forEach(issue -> issueDAO.save(issue));
-        assertEquals(issueDAO.getIssueCount(), issueList.size());
+        assertEquals(issueDAO.getIssueCount(new Issue.Builder().withIssueEmpty().build()), issueList.size());
     }
 
     @Test
