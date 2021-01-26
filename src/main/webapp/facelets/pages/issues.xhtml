@@ -28,7 +28,7 @@
                          paginator="#{issueListBean.issuesLazyDataModel.rowCount > 3}"
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-                         rowStyleClass="#{issue.archived ? 'archivedTableRow' : ''}"
+                         rowStyleClass="#{issue.archived eq true ? 'archivedTableRow' : ''}"
                          styleClass="issuesTable">
                 <f:facet name="header">
                     <div style="width: 100%; display: flex; flex-direction: row">

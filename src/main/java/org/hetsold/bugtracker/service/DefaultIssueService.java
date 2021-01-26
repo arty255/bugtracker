@@ -24,17 +24,19 @@ public class DefaultIssueService implements IssueService {
     private MessageService messageService;
     private TicketService ticketService;
     private UserService userService;
+    private IssueStateValidationStrategy stateValidationStrategy;
 
     public DefaultIssueService() {
     }
 
     @Autowired
-    public DefaultIssueService(IssueDAO issueDAO, UserService userService, HistoryEventDAO historyEventDAO, MessageService messageService, TicketService ticketService) {
+    public DefaultIssueService(IssueDAO issueDAO, UserService userService, HistoryEventDAO historyEventDAO, MessageService messageService, TicketService ticketService, IssueStateValidationStrategy stateValidationStrategy) {
         this.issueDAO = issueDAO;
         this.userService = userService;
         this.historyEventDAO = historyEventDAO;
         this.messageService = messageService;
         this.ticketService = ticketService;
+        this.stateValidationStrategy = stateValidationStrategy;
     }
 
     @Override
@@ -68,6 +70,10 @@ public class DefaultIssueService implements IssueService {
         if (user == null || user.getUuid().isEmpty()) {
             throw new IllegalArgumentException("invalid user: user cannot be empty");
         }
+        preInitAssignedTo(issue);
+        if (!stateValidationStrategy.isValid(issue)) {
+            throw new IllegalArgumentException("invalid issue state");
+        }
         if (issue.getUuid() == null || issue.getUuid().isEmpty()) {
             issue.setReportedBy(user);
             save(prepareIssueToSave(issue));
@@ -75,6 +81,14 @@ public class DefaultIssueService implements IssueService {
             issue = updateIssue(issue);
         }
         return issue;
+    }
+
+    private void preInitAssignedTo(Issue issue) {
+        User assignedTo = null;
+        if (issue.getAssignedTo() != null && (assignedTo = userService.getUserById(issue.getAssignedTo().getUuid())) == null) {
+            throw new IllegalArgumentException("incorrect assigned user");
+        }
+        issue.setAssignedTo(assignedTo);
     }
 
     private Issue prepareIssueToSave(Issue issue) {
@@ -94,6 +108,7 @@ public class DefaultIssueService implements IssueService {
             newIssue.setCurrentIssueState(IssueState.OPEN);
         } else {
             newIssue.setCurrentIssueState(issue.getCurrentIssueState());
+            newIssue.setAssignedTo(issue.getAssignedTo());
         }
         return newIssue;
     }

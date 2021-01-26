@@ -311,6 +311,11 @@ public class Issue extends AbstractIdentity {
             return this;
         }
 
+        public Builder wittArchived(Boolean archived) {
+            newIssue.setArchived(archived);
+            return this;
+        }
+
         public Issue build() {
             return newIssue;
         }
