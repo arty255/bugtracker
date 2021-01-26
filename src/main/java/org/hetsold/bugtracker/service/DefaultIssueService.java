@@ -145,21 +145,15 @@ public class DefaultIssueService implements IssueService {
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public List<Issue> getIssueList() {
-        return issueDAO.listAll();
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public List<IssueShortDTO> getIssueList(int startPosition, int limit) {
-        return issueDAO.getIssueList(startPosition, limit)
+    public List<IssueShortDTO> getIssueList(IssueDTO issueDTO, int startPosition, int limit) {
+        return issueDAO.getIssueList(IssueConverter.getIssue(issueDTO), startPosition, limit)
                 .stream()
                 .map(IssueConverter::getIssueShortDTO)
                 .collect(Collectors.toList());
     }
 
-    public long getIssuesCount() {
-        return issueDAO.getIssueCount();
+    public long getIssuesCount(IssueDTO issueDTO) {
+        return issueDAO.getIssueCount(IssueConverter.getIssue(issueDTO));
     }
 
     @Override

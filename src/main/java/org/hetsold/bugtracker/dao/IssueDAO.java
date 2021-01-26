@@ -9,11 +9,11 @@ public interface IssueDAO {
 
     List<Issue> listAll();
 
-    List<Issue> getIssueList(int startPosition, int limit);
+    List<Issue> getIssueList(Issue issue, int startPosition, int limit);
 
     void delete(Issue issue);
 
-    long getIssueCount();
+    long getIssueCount(Issue issue);
 
     Issue getIssueById(String uuid);
 

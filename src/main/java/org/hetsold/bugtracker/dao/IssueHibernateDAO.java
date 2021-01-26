@@ -43,12 +43,16 @@ public class IssueHibernateDAO implements IssueDAO {
     * */
 
     @Override
-    public List<Issue> getIssueList(int startPosition, int limit) {
+    public List<Issue> getIssueList(Issue issue, int startPosition, int limit) {
         return hibernateTemplate.execute(session -> {
             EntityGraph issueEntityGraph = session.getEntityGraph("IssueEntityGraphToShortView");
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<Issue> query = builder.createQuery(Issue.class);
             Root<Issue> root = query.from(Issue.class);
+            Predicate[] predicates = getPredicates(issue, root, builder);
+            if (predicates.length > 0) {
+                query.where(predicates);
+            }
             TypedQuery<Issue> typedQuery = session.createQuery(query);
             typedQuery.setHint("javax.persistence.loadgraph", issueEntityGraph);
             return typedQuery.setFirstResult(startPosition).setMaxResults(limit).getResultList();
@@ -61,19 +65,22 @@ public class IssueHibernateDAO implements IssueDAO {
     }
 
     @Override
-    public long getIssueCount() {
+    public long getIssueCount(Issue issue) {
         Long count = hibernateTemplate.execute(session -> {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
             Root<Issue> root = query.from(Issue.class);
+            Predicate[] predicates = getPredicates(issue, root, criteriaBuilder);
+            if (predicates.length > 0) {
+                query.where(predicates);
+            }
             query.select(criteriaBuilder.count(root));
             return session.createQuery(query).getSingleResult();
         });
         if (count != null) {
             return count;
-        } else {
-            return 0;
         }
+        return 0;
     }
 
     @Override
@@ -90,8 +97,6 @@ public class IssueHibernateDAO implements IssueDAO {
             query.select(root);
             Predicate[] predicates = getPredicates(issue, root, criteriaBuilder);
             if (predicates.length > 1) {
-                query.where(criteriaBuilder.and(predicates));
-            } else {
                 query.where(predicates);
             }
             return session.createQuery(query).getResultList();
@@ -113,9 +118,12 @@ public class IssueHibernateDAO implements IssueDAO {
     }
 
     private Predicate[] getPredicates(Issue issue, Root<Issue> root, CriteriaBuilder criteriaBuilder) {
+        if (issue == null) {
+            return new Predicate[0];
+        }
         List<Predicate> predicateList = new ArrayList<>();
         if (issue.getCurrentIssueState() != null) {
-            predicateList.add(criteriaBuilder.equal(root.get(Issue_.currentState), issue.getCurrentIssueState()));
+            predicateList.add(criteriaBuilder.equal(root.get(Issue_.currentIssueState), issue.getCurrentIssueState()));
         }
         if (issue.getDescription() != null) {
             predicateList.add(criteriaBuilder.like(root.get(Issue_.description), issue.getDescription()));
@@ -123,8 +131,14 @@ public class IssueHibernateDAO implements IssueDAO {
         if (issue.getCreationTime() != null) {
             predicateList.add(criteriaBuilder.lessThan(root.get(Issue_.creationTime), issue.getCreationTime()));
         }
+        if (issue.getSeverity() != null) {
+            predicateList.add(criteriaBuilder.equal(root.get(Issue_.severity), issue.getSeverity()));
+        }
         if (issue.getReportedBy() != null) {
             predicateList.add(criteriaBuilder.equal(root.get(Issue_.reportedBy), issue.getReportedBy()));
+        }
+        if (issue.getArchived() != null) {
+            predicateList.add(criteriaBuilder.equal(root.get(Issue_.archived), issue.getArchived()));
         }
         return predicateList.toArray(new Predicate[0]);
     }
