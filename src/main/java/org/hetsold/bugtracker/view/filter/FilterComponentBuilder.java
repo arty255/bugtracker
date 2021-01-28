@@ -11,6 +11,14 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class FilterComponentBuilder {
+    private static final Map<String, String> labelMap = Map.of(
+            "currentIssueState", "Issue state",
+            "severity", "Severity",
+            "verificationState", "Verification state",
+            "resolveState", "Resolve state",
+            "productVersion", "Product version"
+    );
+
     public static List<DisplayableFieldFilter> buildWrappers(Class<?> aClass) {
         return buildWrappers(aClass, "");
     }
@@ -28,13 +36,11 @@ public class FilterComponentBuilder {
         List<Field> fields = getFields(aClass).stream()
                 .filter(finalPredicate)
                 .collect(Collectors.toList());
-
-        Function<Field, DisplayableFieldFilter> mappingFunction = item -> new DisplayableFieldFilter(
-                new FieldFilter(item.getName(), null, null),
-                getType(item),
-                getAvailableOperations(item));
-
-
+        Function<Field, DisplayableFieldFilter> mappingFunction = field -> new DisplayableFieldFilter(
+                new FieldFilter(field.getName(), null, null),
+                field.getType().getSimpleName(),
+                getFieldLabel(field.getName()),
+                getAvailableOperations(field));
         return fields.stream()
                 .map(mappingFunction)
                 .collect(Collectors.toList());
@@ -56,7 +62,7 @@ public class FilterComponentBuilder {
     private static List<FilterOperation> getAvailableOperations(Field field) {
         Map<Class<?>, List<FilterOperation>> typeOperationMap =
                 Map.of(Boolean.class, List.of(FilterOperation.EQUAL, FilterOperation.NOT_EQUAL),
-                        String.class, List.of(FilterOperation.EQUAL, FilterOperation.LIKE),
+                        String.class, List.of(FilterOperation.LIKE, FilterOperation.EQUAL),
                         Date.class, List.of(
                                 FilterOperation.EQUAL,
                                 FilterOperation.LESS,
@@ -64,7 +70,6 @@ public class FilterComponentBuilder {
                                 FilterOperation.BETWEEN
                         )
                 );
-
         if (field.getType().isEnum()) {
             return typeOperationMap.get(Boolean.class);
         } else if (field.getType().isPrimitive()) {
@@ -74,7 +79,11 @@ public class FilterComponentBuilder {
         }
     }
 
-    private static Class<?> getType(Field field) {
-        return field.getType();
+    private static String getFieldLabel(String name) {
+        String value;
+        if ((value = labelMap.get(name)) != null) {
+            return value;
+        }
+        return name;
     }
 }

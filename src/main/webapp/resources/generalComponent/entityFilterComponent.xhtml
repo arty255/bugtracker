@@ -15,7 +15,7 @@
     <composite:attribute name="afterApplyActionUpdateSelectors"/>
 </composite:interface>
 <composite:implementation>
-    <h:panelGroup layout="block" style="display: flex; flex-direction: row; align-items: center;">
+    <h:panelGroup layout="block" styleClass="filterPanelGroup">
         <p:commandButton id="filterButton" value="Filter" icon="pi pi-sliders-h" type="button"/>
     </h:panelGroup>
     <p:overlayPanel for="filterButton" hideEffect="fade" dynamic="true" showEffect="fade"
@@ -23,34 +23,56 @@
         <p:dataTable id="fieldTable" var="item" value="#{cc.attrs.fields}"
                      styleClass="filterDataTable">
             <p:column headerText="field" styleClass="fieldNameColumn">
-                <h:outputText value="#{item.fieldFilter.fieldName}"/>
+                <h:outputText value="#{item.label}"/>
             </p:column>
             <p:column styleClass="maxWidthColumn"
-                      rendered="#{not issueListBean.isBooleanType(item.type.name)}">
+                      rendered="#{item.type ne 'Boolean'}">
                 <p:selectOneMenu value="#{item.fieldFilter.filterOperation}">
                     <f:selectItem itemLabel="" itemValue="#{null}"/>
                     <f:selectItems var="operation" value="#{item.availableOperations}"
                                    itemLabel="#{operation.label}" itemValue="#{operation}"/>
                 </p:selectOneMenu>
             </p:column>
-            <p:column colspan="2" rendered="#{issueListBean.isBooleanType(item.type.name)}">
+            <p:column colspan="2" rendered="#{item.type eq 'Boolean'}">
                 <p:triStateCheckbox value="#{item.fieldFilter.value}"
-                                    rendered="#{issueListBean.isBooleanType(item.type.name)}"/>
+                                    rendered="#{item.type eq 'Boolean'}"/>
             </p:column>
             <p:column styleClass="maxWidthColumn"
-                      rendered="#{not issueListBean.isBooleanType(item.type.name)}">
+                      rendered="#{item.type ne 'Boolean'}">
                 <p:inputText value="#{item.fieldFilter.value}"
-                             rendered="#{issueListBean.isStringType(item.type.name)}"/>
+                             rendered="#{item.type eq 'String'}"/>
+
                 <p:selectOneMenu value="#{item.fieldFilter.value}"
-                                 rendered="#{issueListBean.isSeverityEnum(item.type.name)}">
+                                 rendered="#{item.type eq 'Severity'}">
                     <f:selectItem itemLabel="" itemValue="#{null}"/>
                     <f:selectItems value="#{appUtilBean.severities}" var="severity"
-                                   itemLabel="#{severity.label}" itemValue="#{severity.valueOf(severity)}"/>
+                                   itemLabel="#{severity.label}" itemValue="#{severity}"/>
+                </p:selectOneMenu>
+
+                <p:selectOneMenu value="#{item.fieldFilter.value}"
+                                 rendered="#{item.type eq 'IssueState'}">
+                    <f:selectItem itemLabel="" itemValue="#{null}"/>
+                    <f:selectItems value="#{appUtilBean.issueStates}" var="state"
+                                   itemLabel="#{state.label}" itemValue="#{state}"/>
+                </p:selectOneMenu>
+
+                <p:selectOneMenu value="#{item.fieldFilter.value}"
+                                 rendered="#{item.type eq 'TicketResolveState'}">
+                    <f:selectItem itemLabel="" itemValue="#{null}"/>
+                    <f:selectItems value="#{appUtilBean.ticketResolveStates}" var="state"
+                                   itemLabel="#{state.label}" itemValue="#{state}"/>
+                </p:selectOneMenu>
+
+                <p:selectOneMenu value="#{item.fieldFilter.value}"
+                                 rendered="#{item.type eq 'TicketVerificationState'}">
+                    <f:selectItem itemLabel="" itemValue="#{null}"/>
+                    <f:selectItems value="#{appUtilBean.ticketVerificationStates}" var="state"
+                                   itemLabel="#{state.label}" itemValue="#{state}"/>
                 </p:selectOneMenu>
             </p:column>
         </p:dataTable>
-        <div>
-            <p:commandButton value="Apply" icon="pi pi-save"
+        <div class="filterButtonsWrapper">
+            <p:commandButton value="Apply" icon="pi pi-check"
                              process="fieldTable @this"
                              update="#{cc.attrs.afterApplyActionUpdateSelectors}"
                              action="#{cc.attrs.applyAction}"/>

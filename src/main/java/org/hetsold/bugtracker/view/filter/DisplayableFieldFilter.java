@@ -7,12 +7,14 @@ import java.util.List;
 
 public class DisplayableFieldFilter {
     private FieldFilter fieldFilter;
-    private Class<?> type;
+    private String type;
+    private String label;
     private List<FilterOperation> availableOperations;
 
-    public DisplayableFieldFilter(FieldFilter fieldFilter, Class<?> type, List<FilterOperation> availableOperations) {
+    public DisplayableFieldFilter(FieldFilter fieldFilter, String type, String label, List<FilterOperation> availableOperations) {
         this.fieldFilter = fieldFilter;
         this.type = type;
+        this.label = label;
         this.availableOperations = availableOperations;
     }
 
@@ -20,8 +22,12 @@ public class DisplayableFieldFilter {
         return fieldFilter;
     }
 
-    public Class<?> getType() {
+    public String getType() {
         return type;
+    }
+
+    public String getLabel() {
+        return label;
     }
 
     public List<FilterOperation> getAvailableOperations() {

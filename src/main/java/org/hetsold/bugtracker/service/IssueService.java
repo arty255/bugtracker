@@ -34,6 +34,8 @@ public interface IssueService {
 
     long getIssuesCount(IssueDTO issue);
 
+    long getIssuesCount(Contract contract);
+
     Issue getIssueForViewById(String uuid);
 
     //issue - selected issue to change State

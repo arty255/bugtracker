@@ -36,8 +36,7 @@ public class IssuesLazyDataModel extends LazyDataModel<IssueShortDTO> {
 
     @Override
     public List<IssueShortDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-        //this.setRowCount((int) issueService.getIssuesCount(filterIssue));
-        this.setRowCount(100);
+        this.setRowCount((int) issueService.getIssuesCount(contract));
         return issueService.getIssueList(contract, first, pageSize);
     }
 }

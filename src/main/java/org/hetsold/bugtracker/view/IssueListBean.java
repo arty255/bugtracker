@@ -51,7 +51,7 @@ public class IssueListBean implements Serializable {
 
     public void createIssueFilterWrappersAction() {
         displayableFieldFilters = FilterComponentBuilder.buildWrappers(IssueShortDTO.class,
-                "description currentIssueState severity archived");
+                "uuid description currentIssueState severity archived");
     }
 
     public void modelFiltersUpdateAction() {
@@ -80,17 +80,5 @@ public class IssueListBean implements Serializable {
 
     public List<DisplayableFieldFilter> getIssueFilterList() {
         return displayableFieldFilters;
-    }
-
-    public boolean isStringType(String typeName) {
-        return "java.lang.String".equals(typeName);
-    }
-
-    public boolean isSeverityEnum(String typeName) {
-        return "org.hetsold.bugtracker.model.Severity".equals(typeName);
-    }
-
-    public boolean isBooleanType(String typeName) {
-        return "java.lang.Boolean".equals(typeName);
     }
 }

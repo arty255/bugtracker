@@ -18,6 +18,8 @@ public interface IssueDAO {
 
     long getIssueCount(Issue issue);
 
+    long getIssueCount(Contract contract);
+
     Issue getIssueById(String uuid);
 
     List<Issue> getIssueByCriteria(Issue issue);

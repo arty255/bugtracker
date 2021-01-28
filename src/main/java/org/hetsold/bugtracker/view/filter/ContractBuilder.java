@@ -1,50 +1,48 @@
 package org.hetsold.bugtracker.view.filter;
 
+import org.hetsold.bugtracker.model.IssueState;
+import org.hetsold.bugtracker.model.Severity;
+import org.hetsold.bugtracker.model.TicketResolveState;
+import org.hetsold.bugtracker.model.TicketVerificationState;
 import org.hetsold.bugtracker.model.filter.Contract;
 import org.hetsold.bugtracker.model.filter.FieldFilter;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ContractBuilder {
+    private static final Map<String, Function<Object, ?>> mappingFunctionMap = Map.of(
+            "String", Object::toString,
+            "IssueState", i -> IssueState.valueOf(i.toString()),
+            "Severity", i -> Severity.valueOf(i.toString()),
+            "TicketResolveState", i -> TicketResolveState.valueOf(i.toString()),
+            "TicketVerificationState", i -> TicketVerificationState.valueOf(i.toString())
+    );
+
     public static Contract buildContact(List<DisplayableFieldFilter> list) {
         Contract contract = new Contract();
-        Predicate<FieldFilter> filterPredicate = item ->
-                item != null
-                        && item.getValue() != null
-                        && item.getFilterOperation() != null;
-
+        Predicate<DisplayableFieldFilter> filterPredicate = item ->
+                item.getFieldFilter().getValue() != null && item.getFieldFilter().getFilterOperation() != null;
         contract.getFilters()
                 .addAll(list.stream()
-                        .map(ContractBuilder::getFieldFilter)
                         .filter(filterPredicate)
+                        .map(ContractBuilder::updateFieldFilter)
                         .collect(Collectors.toList()));
         return contract;
     }
 
-    private static FieldFilter getFieldFilter(DisplayableFieldFilter item) {
-        FieldFilter fieldFilter = item.getFieldFilter();
-        fieldFilter.setValue(packEnumFromTypeAndValue(item.getType(),
-                item.getFieldFilter().getValue())
-        );
-        return fieldFilter;
-    }
-
-    private static Object packEnumFromTypeAndValue(Class<?> typeClass, Object value) {
-        if (typeClass.isEnum() && value != null) {
-            Class<Enum<?>> enumClass = null;
-            try {
-                enumClass = (Class<Enum<?>>) Class.forName(typeClass.getName());
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            for (int i = 0; i < enumClass.getEnumConstants().length; i++) {
-                if (enumClass.getEnumConstants()[i].name().equals(value.toString())) {
-                    return enumClass.getEnumConstants()[i];
-                }
-            }
+    private static FieldFilter updateFieldFilter(DisplayableFieldFilter item) {
+        Function<Object, ?> objectMappingFunction;
+        FieldFilter filter = item.getFieldFilter();
+        if (mappingFunctionMap.containsKey(item.getType())) {
+            objectMappingFunction = mappingFunctionMap.get(item.getType());
+            filter.setValue(objectMappingFunction.apply(filter.getValue()));
+        }else {
+            throw new IllegalArgumentException("unsupported argument type");
         }
-        return null;
+        return item.getFieldFilter();
     }
 }

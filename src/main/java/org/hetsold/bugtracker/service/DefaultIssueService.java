@@ -184,6 +184,7 @@ public class DefaultIssueService implements IssueService {
         if (issue == null || issue.getUuid().isEmpty()) {
             throw new IllegalArgumentException("issue and uuid cannot be empty");
         }
+        issue = getIssueById(issue.getUuid());
         issueDAO.delete(issue);
     }
 
@@ -216,6 +217,11 @@ public class DefaultIssueService implements IssueService {
 
     public long getIssuesCount(IssueDTO issueDTO) {
         return issueDAO.getIssueCount(IssueConverter.getIssue(issueDTO));
+    }
+
+    @Override
+    public long getIssuesCount(Contract contract) {
+        return issueDAO.getIssueCount(contract);
     }
 
     @Override
