@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xml:lang="en" lang="en">
+<composite:interface>
+    <composite:attribute name="fields" type="java.util.List" required="true"/>
+    <composite:attribute name="fiedsString" type="java.lang.String"/>
+    <composite:attribute name="applyAction" method-signature="void action()" required="true"/>
+    <composite:attribute name="afterApplyActionUpdateSelectors"/>
+</composite:interface>
+<composite:implementation>
+    <h:panelGroup layout="block" style="display: flex; flex-direction: row; align-items: center;">
+        <p:commandButton id="filterButton" value="Filter" icon="pi pi-sliders-h" type="button"/>
+    </h:panelGroup>
+    <p:overlayPanel for="filterButton" hideEffect="fade" dynamic="true" showEffect="fade"
+                    widgetVar="moviePicker">
+        <p:dataTable id="fieldTable" var="item" value="#{cc.attrs.fields}"
+                     styleClass="filterDataTable">
+            <p:column headerText="field" styleClass="fieldNameColumn">
+                <h:outputText value="#{item.fieldFilter.fieldName}"/>
+            </p:column>
+            <p:column styleClass="maxWidthColumn"
+                      rendered="#{not issueListBean.isBooleanType(item.type.name)}">
+                <p:selectOneMenu value="#{item.fieldFilter.filterOperation}">
+                    <f:selectItem itemLabel="" itemValue="#{null}"/>
+                    <f:selectItems var="operation" value="#{item.availableOperations}"
+                                   itemLabel="#{operation.label}" itemValue="#{operation}"/>
+                </p:selectOneMenu>
+            </p:column>
+            <p:column colspan="2" rendered="#{issueListBean.isBooleanType(item.type.name)}">
+                <p:triStateCheckbox value="#{item.fieldFilter.value}"
+                                    rendered="#{issueListBean.isBooleanType(item.type.name)}"/>
+            </p:column>
+            <p:column styleClass="maxWidthColumn"
+                      rendered="#{not issueListBean.isBooleanType(item.type.name)}">
+                <p:inputText value="#{item.fieldFilter.value}"
+                             rendered="#{issueListBean.isStringType(item.type.name)}"/>
+                <p:selectOneMenu value="#{item.fieldFilter.value}"
+                                 rendered="#{issueListBean.isSeverityEnum(item.type.name)}">
+                    <f:selectItem itemLabel="" itemValue="#{null}"/>
+                    <f:selectItems value="#{appUtilBean.severities}" var="severity"
+                                   itemLabel="#{severity.label}" itemValue="#{severity.valueOf(severity)}"/>
+                </p:selectOneMenu>
+            </p:column>
+        </p:dataTable>
+        <div>
+            <p:commandButton value="Apply" icon="pi pi-save"
+                             process="fieldTable @this"
+                             update="#{cc.attrs.afterApplyActionUpdateSelectors}"
+                             action="#{cc.attrs.applyAction}"/>
+        </div>
+    </p:overlayPanel>
+</composite:implementation>
+</html>

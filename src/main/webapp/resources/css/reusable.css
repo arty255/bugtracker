@@ -9,3 +9,19 @@
 .noPaddingWrapper .linkWrapper {
     padding: 0 !important;
 }
+
+.filterDataTable {
+}
+
+.filterDataTable table {
+    width: auto !important;
+}
+
+.maxWidthColumn div {
+    width: 100%;
+}
+
+.fieldNameColumn {
+    text-align: left;
+    vertical-align: middle !important;
+}

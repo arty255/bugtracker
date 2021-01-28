@@ -5,6 +5,9 @@ import org.hetsold.bugtracker.model.IssueShortDTO;
 import org.hetsold.bugtracker.model.UserDTO;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.UserService;
+import org.hetsold.bugtracker.view.filter.ContractBuilder;
+import org.hetsold.bugtracker.view.filter.DisplayableFieldFilter;
+import org.hetsold.bugtracker.view.filter.FilterComponentBuilder;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.jsf.FacesContextUtils;
@@ -14,6 +17,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
+import java.util.List;
 
 @ManagedBean
 @ViewScoped
@@ -26,11 +30,14 @@ public class IssueListBean implements Serializable {
     private UserService userService;
     private UserDTO activeUser;
 
+    private List<DisplayableFieldFilter> displayableFieldFilters;
+
     @PostConstruct
     public void init() {
         FacesContextUtils.getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
         initIssueList();
+        createIssueFilterWrappersAction();
         activeUser = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
     }
 
@@ -40,6 +47,15 @@ public class IssueListBean implements Serializable {
 
     public LazyDataModel<IssueShortDTO> getIssuesLazyDataModel() {
         return issuesLazyDataModel;
+    }
+
+    public void createIssueFilterWrappersAction() {
+        displayableFieldFilters = FilterComponentBuilder.buildWrappers(IssueShortDTO.class,
+                "description currentIssueState severity archived");
+    }
+
+    public void modelFiltersUpdateAction() {
+        ((IssuesLazyDataModel) issuesLazyDataModel).setContract(ContractBuilder.buildContact(displayableFieldFilters));
     }
 
     public void preformArchiveAction() {
@@ -60,5 +76,21 @@ public class IssueListBean implements Serializable {
 
     public void setIssue(IssueShortDTO issue) {
         this.issue = issue;
+    }
+
+    public List<DisplayableFieldFilter> getIssueFilterList() {
+        return displayableFieldFilters;
+    }
+
+    public boolean isStringType(String typeName) {
+        return "java.lang.String".equals(typeName);
+    }
+
+    public boolean isSeverityEnum(String typeName) {
+        return "org.hetsold.bugtracker.model.Severity".equals(typeName);
+    }
+
+    public boolean isBooleanType(String typeName) {
+        return "java.lang.Boolean".equals(typeName);
     }
 }

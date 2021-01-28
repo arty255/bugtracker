@@ -1,6 +1,7 @@
 package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.model.Issue;
+import org.hetsold.bugtracker.model.filter.Contract;
 
 import java.util.List;
 
@@ -10,6 +11,8 @@ public interface IssueDAO {
     List<Issue> listAll();
 
     List<Issue> getIssueList(Issue issue, int startPosition, int limit);
+
+    List<Issue> getIssueList(Contract contract, int startPosition, int limit);
 
     void delete(Issue issue);
 

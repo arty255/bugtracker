@@ -2,6 +2,7 @@ package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.model.Issue;
 import org.hetsold.bugtracker.model.Issue_;
+import org.hetsold.bugtracker.model.filter.Contract;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
@@ -50,6 +51,23 @@ public class IssueHibernateDAO implements IssueDAO {
             CriteriaQuery<Issue> query = builder.createQuery(Issue.class);
             Root<Issue> root = query.from(Issue.class);
             Predicate[] predicates = getPredicates(issue, root, builder);
+            if (predicates.length > 0) {
+                query.where(predicates);
+            }
+            TypedQuery<Issue> typedQuery = session.createQuery(query);
+            typedQuery.setHint("javax.persistence.loadgraph", issueEntityGraph);
+            return typedQuery.setFirstResult(startPosition).setMaxResults(limit).getResultList();
+        });
+    }
+
+    @Override
+    public List<Issue> getIssueList(Contract contract, int startPosition, int limit) {
+        return hibernateTemplate.execute(session -> {
+            EntityGraph issueEntityGraph = session.getEntityGraph("IssueEntityGraphToShortView");
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<Issue> query = builder.createQuery(Issue.class);
+            Root<Issue> root = query.from(Issue.class);
+            Predicate[] predicates = ContractReader.readContract(contract, root, builder);
             if (predicates.length > 0) {
                 query.where(predicates);
             }

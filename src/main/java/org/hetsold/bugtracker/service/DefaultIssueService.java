@@ -7,6 +7,7 @@ import org.hetsold.bugtracker.facade.MessageConvertor;
 import org.hetsold.bugtracker.facade.TicketConvertor;
 import org.hetsold.bugtracker.facade.UserConvertor;
 import org.hetsold.bugtracker.model.*;
+import org.hetsold.bugtracker.model.filter.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -199,6 +200,15 @@ public class DefaultIssueService implements IssueService {
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<IssueShortDTO> getIssueList(IssueDTO issueDTO, int startPosition, int limit) {
         return issueDAO.getIssueList(IssueConverter.getIssue(issueDTO), startPosition, limit)
+                .stream()
+                .map(IssueConverter::getIssueShortDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public List<IssueShortDTO> getIssueList(Contract contract, int startPosition, int limit) {
+        return issueDAO.getIssueList(contract, startPosition, limit)
                 .stream()
                 .map(IssueConverter::getIssueShortDTO)
                 .collect(Collectors.toList());

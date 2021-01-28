@@ -2,6 +2,7 @@ package org.hetsold.bugtracker.view;
 
 
 import org.hetsold.bugtracker.model.*;
+import org.hetsold.bugtracker.model.filter.FilterOperation;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -24,6 +25,10 @@ public class AppUtilBean implements Serializable {
 
     public Severity[] getSeverities() {
         return Severity.values();
+    }
+
+    public FilterOperation[] getFilterOperations() {
+        return FilterOperation.values();
     }
 
     public String getDateFormat() {
