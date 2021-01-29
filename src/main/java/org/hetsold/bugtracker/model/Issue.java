@@ -74,7 +74,7 @@ public class Issue extends AbstractIdentity {
     private String reproduceSteps;
     private String existedResult;
     private String expectedResult;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "issue_reportedBy",
             joinColumns = @JoinColumn(name = "issueId", referencedColumnName = "uuid"),
             inverseJoinColumns = @JoinColumn(name = "userId", referencedColumnName = "uuid"))
@@ -89,7 +89,7 @@ public class Issue extends AbstractIdentity {
     @Enumerated
     @Column(columnDefinition = "tinyint")
     private IssueState currentIssueState;
-    @OneToMany(mappedBy = "issue", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "issue", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<IssueEvent> history;
     @OneToOne
     @JoinTable(name = "issue_ticket",
