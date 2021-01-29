@@ -18,7 +18,7 @@ public interface IssueFacade {
 
     IssueShortDTO getIssue(String issueUUID);
 
-    List<IssueShortDTO> getIssue(IssueShortDTO issueShortDTO);
+    List<IssueShortDTO> getIssueList(IssueShortDTO issueShortDTO);
 
     void deleteIssue(String issueUUID, boolean includeTicket);
 }

@@ -84,7 +84,6 @@ public class IssueHibernateDAO implements IssueDAO {
 
     @Override
     public long getIssueCount(Issue issue) {
-    public long getIssueCount(Issue issue) {
         Long count = hibernateTemplate.execute(session -> {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
