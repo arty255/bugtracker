@@ -1,6 +1,7 @@
 package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.model.*;
+import org.hetsold.bugtracker.model.filter.Contract;
 
 import java.util.List;
 
@@ -22,6 +23,8 @@ public interface IssueService {
     List<Issue> findIssueByFilter(Issue issue);
 
     List<IssueShortDTO> getIssueList(IssueDTO issue, int startPosition, int limit);
+
+    List<IssueShortDTO> getIssueList(Contract contract, int startPosition, int limit);
 
     long getIssuesCount(IssueDTO issue);
 

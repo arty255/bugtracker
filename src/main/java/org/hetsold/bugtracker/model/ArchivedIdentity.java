@@ -1,13 +1,13 @@
 package org.hetsold.bugtracker.model;
 
 public abstract class ArchivedIdentity {
-    private Boolean isArchived;
+    private Boolean archived;
 
     public Boolean getArchived() {
-        return isArchived;
+        return archived;
     }
 
     public void setArchived(Boolean archived) {
-        isArchived = archived;
+        this.archived = archived;
     }
 }
