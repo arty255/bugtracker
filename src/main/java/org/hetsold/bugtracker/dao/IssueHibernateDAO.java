@@ -102,6 +102,25 @@ public class IssueHibernateDAO implements IssueDAO {
     }
 
     @Override
+    public long getIssueCount(Contract contract) {
+        Long count = hibernateTemplate.execute(session -> {
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
+            Root<Issue> root = query.from(Issue.class);
+            Predicate[] predicates = ContractReader.readContract(contract, root, criteriaBuilder);
+            if (predicates.length > 0) {
+                query.where(predicates);
+            }
+            query.select(criteriaBuilder.count(root));
+            return session.createQuery(query).getSingleResult();
+        });
+        if (count != null) {
+            return count;
+        }
+        return 0;
+    }
+
+    @Override
     public Issue getIssueById(String uuid) {
         return hibernateTemplate.get(Issue.class, uuid);
     }
