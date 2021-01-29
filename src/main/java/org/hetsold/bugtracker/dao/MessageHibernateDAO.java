@@ -31,7 +31,7 @@ public class MessageHibernateDAO implements MessageDAO {
 
     @Override
     public Message getMessageById(String uuid) {
-        return hibernateTemplate.load(Message.class, uuid);
+        return hibernateTemplate.get(Message.class, uuid);
     }
 
     @Override

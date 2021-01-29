@@ -37,7 +37,7 @@ public class UserHibernateDAO implements UserDAO {
 
     @Override
     public User getUserById(String uuid) {
-        return hibernateTemplate.load(User.class, uuid);
+        return hibernateTemplate.get(User.class, uuid);
     }
 
     @Override

@@ -39,7 +39,7 @@ public class AppConfig {
 
     @Bean
     @Autowired
-    public LocalSessionFactoryBean getSessionFactoryBean(DataSource dataSource) {
+    public LocalSessionFactoryBean getSessionFactory(DataSource dataSource) {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
         sessionFactory.setPackagesToScan("org.hetsold.bugtracker.model");

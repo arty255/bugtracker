@@ -15,7 +15,9 @@ create table if not exists message
     version        int,
     content        varchar(1500),
     messageCreator varchar(40) not null,
-    messageDate    datetime    not null,
+    createDate     datetime    not null,
+    messageEditor  varchar(40) default null,
+    editDate       datetime    default null,
     primary key (uuid),
     foreign key (messageCreator) references user (uuid) on delete cascade
 );

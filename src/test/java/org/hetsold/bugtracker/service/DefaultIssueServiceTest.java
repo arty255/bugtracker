@@ -59,7 +59,6 @@ public class DefaultIssueServiceTest {
     public void checkIncorrectIssueDateSaveThrowException() {
         Issue factoryIssue = issueFactory.getIssue(IssueFactoryCreatedIssueType.InvalidCreationDateIssue);
         issueService.save(factoryIssue);
-        Mockito.verify(issueDAO, Mockito.never()).save(factoryIssue);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -67,14 +66,12 @@ public class DefaultIssueServiceTest {
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.InvalidUserIssue);
         Mockito.when(userService.getUserById(issue.getUuid())).thenReturn(user);
         issueService.save(issue);
-        Mockito.verify(issueDAO, Mockito.never()).save(issue);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkEmptyIssueDescriptionAndShortDescriptionSaveThrowException() {
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.InvalidDescriptionIssue);
         issueService.save(issue);
-        Mockito.verify(issueDAO, Mockito.never()).save(issue);
     }
 
     @Test
@@ -97,7 +94,6 @@ public class DefaultIssueServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void checkEmptyIssueDeleteThrowException() {
         issueService.deleteIssue(null);
-        Mockito.verify(issueService, Mockito.never()).deleteIssue(null);
     }
 
     @Test

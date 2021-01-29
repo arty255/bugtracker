@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {org.hetsold.bugtracker.AppConfig.class, org.hetsold.bugtracker.TestAppConfig.class})
-@ActiveProfiles("test")
+@ActiveProfiles(profiles = {"test", ""})
 @Transactional
 public class MessageHibernateDAOTest {
     @Autowired

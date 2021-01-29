@@ -31,11 +31,11 @@ public class DefaultTicketServiceTest {
     @InjectMocks
     private TicketService ticketService = new DefaultTicketService();
     @Mock
-    private UserService userService;
-    @Mock
     private TicketDAO ticketDao;
     @Mock
     private MessageService messageService;
+    @Mock
+    private UserService userService;
 
     private final User user = new User("First Name", "Last Name");
     private final TicketFactory ticketFactory = new TicketFactory(user);
@@ -55,7 +55,6 @@ public class DefaultTicketServiceTest {
     public void checkIfTicketWithNoDescriptionCanBeSaved() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.IncorrectTicketEmptyDescription);
         ticketService.save(ticket, user);
-        Mockito.verify(ticketDao, Mockito.never()).save(ticket);
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -84,6 +84,7 @@ public class IssueHibernateDAO implements IssueDAO {
 
     @Override
     public long getIssueCount(Issue issue) {
+    public long getIssueCount(Issue issue) {
         Long count = hibernateTemplate.execute(session -> {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
@@ -128,9 +129,6 @@ public class IssueHibernateDAO implements IssueDAO {
     @Override
     public List<Issue> getIssueByCriteria(Issue issue) {
         return hibernateTemplate.execute(session -> {
-            EntityGraph<Issue> issueEntityGraph = session.createEntityGraph(Issue.class);
-            issueEntityGraph.addAttributeNodes("uuid");
-            issueEntityGraph.addSubgraph("reportedBy").addAttributeNodes("firstName", "lastName");
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Issue> query = criteriaBuilder.createQuery(Issue.class);
             Root<Issue> root = query.from(Issue.class);
@@ -139,9 +137,7 @@ public class IssueHibernateDAO implements IssueDAO {
             if (predicates.length > 1) {
                 query.where(predicates);
             }
-            TypedQuery<Issue> typedQuery = session.createQuery(query);
-            typedQuery.setHint("javax.persistence.fetchgraph", issueEntityGraph);
-            return typedQuery.getResultList();
+            return session.createQuery(query).getResultList();
         });
     }
 

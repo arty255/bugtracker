@@ -28,7 +28,7 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestAppConfig.class, AppConfig.class})
-@ActiveProfiles("test")
+@ActiveProfiles(profiles = {"test", ""})
 @Transactional
 public class IssueHibernateDAOTest {
     @Autowired
