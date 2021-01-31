@@ -61,7 +61,7 @@ public class IssueHibernateDAOTest {
     public void checkIfIssueCanBeSaved() {
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
         issueDAO.save(issue);
-        List<Issue> issues = issueDAO.listAll();
+        List<Issue> issues = issueDAO.getIssueList(null, 0, 100);
         assertEquals(issues.size(), 1);
     }
 
@@ -70,7 +70,7 @@ public class IssueHibernateDAOTest {
         Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
         issueDAO.save(issue);
         issueDAO.delete(issue);
-        List<Issue> issues = issueDAO.listAll();
+        List<Issue> issues = issueDAO.getIssueList(null, 0, 100);
         assertEquals(issues.size(), 0);
     }
 
@@ -86,25 +86,8 @@ public class IssueHibernateDAOTest {
     }
 
     @Test
-    public void checkIssueCorrectCount() {
-        issueList.forEach(issue -> issueDAO.save(issue));
-        assertEquals(issueDAO.getIssueCount(new Issue.Builder().withIssueEmpty().build()), issueList.size());
-    }
-
-    @Test
-    public void checkIssueAgeCorrectCount() {
-        Date filterDate = Date.from(LocalDateTime.now().minusWeeks(3).atZone(ZoneId.systemDefault()).toInstant());
-        List<Issue> resultList = issueList.stream().filter(issue -> issue.getCreationTime().before(filterDate)).collect(Collectors.toList());
-        issueList.forEach(issue -> issueDAO.save(issue));
-        Issue criteriaIssue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
-        criteriaIssue.setCreationTime(filterDate);
-        assertEquals(resultList.size(), issueDAO.getIssueByCriteria(criteriaIssue).size());
-    }
-
-    @Test
     public void checkIfLoadedIssueHasCorrectScope() {
         Issue testIssue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
-        testIssue.setReportedBy(userDAO.listAll().get(0));
         issueDAO.save(testIssue);
         Issue resultIssue = issueDAO.getIssueToDetailedViewById(testIssue.getUuid());
         assertEquals(resultIssue.getReportedBy(), testIssue.getReportedBy());
