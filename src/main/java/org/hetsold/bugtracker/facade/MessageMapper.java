@@ -3,7 +3,10 @@ package org.hetsold.bugtracker.facade;
 import org.hetsold.bugtracker.model.Message;
 import org.hetsold.bugtracker.model.MessageDTO;
 
-public class MessageConvertor {
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class MessageMapper {
 
     public static MessageDTO getMessageDTO(Message message) {
         return new MessageDTO(message);
@@ -15,11 +18,15 @@ public class MessageConvertor {
             message = new Message();
             message.setUuid(messageDTO.getUuid());
             message.setContent(messageDTO.getContent());
-            message.setMessageEditor(UserConvertor.getUser(messageDTO.getEditor()));
-            message.setMessageCreator(UserConvertor.getUser(messageDTO.getCreator()));
+            message.setMessageEditor(UserMapper.getUser(messageDTO.getEditor()));
+            message.setMessageCreator(UserMapper.getUser(messageDTO.getCreator()));
             message.setCreateDate(messageDTO.getCreateDate());
             message.setEditDate(messageDTO.getEditDate());
         }
         return message;
+    }
+
+    public static List<MessageDTO> getMessageDTOList(List<Message> messages) {
+        return messages.stream().map(MessageDTO::new).collect(Collectors.toList());
     }
 }
