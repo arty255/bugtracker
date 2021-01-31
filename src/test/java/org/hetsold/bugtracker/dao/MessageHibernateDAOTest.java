@@ -1,5 +1,6 @@
 package org.hetsold.bugtracker.dao;
 
+import org.hetsold.bugtracker.TestAppConfig;
 import org.hetsold.bugtracker.model.Message;
 import org.hetsold.bugtracker.model.User;
 import org.hetsold.bugtracker.util.MessageFactory;
@@ -20,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {org.hetsold.bugtracker.AppConfig.class, org.hetsold.bugtracker.TestAppConfig.class})
+@ContextConfiguration(classes = {org.hetsold.bugtracker.AppConfig.class, TestAppConfig.class})
 @ActiveProfiles(profiles = {"test", ""})
 @Transactional
 public class MessageHibernateDAOTest {
@@ -59,6 +60,4 @@ public class MessageHibernateDAOTest {
         List<Message> messageList = messageDAO.loadAll();
         assertEquals(messageList.size(), 0);
     }
-
-
 }
