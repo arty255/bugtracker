@@ -2,28 +2,31 @@ package org.hetsold.bugtracker.service;
 
 
 import org.hetsold.bugtracker.model.*;
+import org.hetsold.bugtracker.model.filter.Contract;
 
 import java.util.List;
 
 public interface TicketService {
 
-    void save(Ticket ticket, User user);
+    TicketDTO addTicket(TicketDTO ticketDTO, UserDTO userDTO);
 
-    void addNewTicket(TicketDTO ticketDTO, UserDTO userDTO);
+    TicketDTO updateTicket(TicketDTO ticketDTO);
 
-    List<Ticket> getTickets();
+    List<Ticket> getTickets(Contract contract, int startPosition, int limit);
 
-    List<TicketDTO> getTicketDtoList();
+    List<TicketDTO> getTicketDTOList(Contract contract, int startPosition, int limit);
 
-    List<TicketDTO> getTicketDtoListReportedByUser(UserDTO userDTO, int startPosition, int limit);
+    long getTicketsCount(Contract contract);
 
-    long getTicketCountReportedByUser(UserDTO userDTO);
+    List<TicketDTO> getTicketDTOListReportedByUser(UserDTO userDTO, Contract contract, int startPosition, int limit);
+
+    long getTicketCountReportedByUser(UserDTO userDTO, Contract contract);
 
     Ticket getTicketById(String uuid);
 
-    TicketDTO getTicketDTO(String uuid);
+    TicketDTO getTicketDTOById(String uuid);
 
-    void delete(Ticket ticket);
+    void delete(TicketDTO ticketDTO);
 
     void delete(String uuid);
 
@@ -36,6 +39,4 @@ public interface TicketService {
     List<MessageDTO> getTicketMessages(TicketDTO ticket, int fromIndex, int limit, boolean inverseDateOrder);
 
     long getMessagesCountByTicket(TicketDTO ticketDTO);
-
-    void updateTicket(TicketDTO ticketDTO, UserDTO user);
 }
