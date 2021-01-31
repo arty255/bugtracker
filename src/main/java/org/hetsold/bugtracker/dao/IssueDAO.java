@@ -8,21 +8,13 @@ import java.util.List;
 public interface IssueDAO {
     void save(Issue issue);
 
-    List<Issue> listAll();
-
-    List<Issue> getIssueList(Issue issue, int startPosition, int limit);
-
     List<Issue> getIssueList(Contract contract, int startPosition, int limit);
-
-    void delete(Issue issue);
-
-    long getIssueCount(Issue issue);
 
     long getIssueCount(Contract contract);
 
-    Issue getIssueById(String uuid);
+    void delete(Issue issue);
 
-    List<Issue> getIssueByCriteria(Issue issue);
+    Issue getIssueById(String uuid);
 
     Issue getIssueToDetailedViewById(String uuid);
 }
