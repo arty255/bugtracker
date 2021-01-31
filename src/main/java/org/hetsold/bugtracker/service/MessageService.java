@@ -9,15 +9,13 @@ public interface MessageService {
 
     Message updateMessage(Message message, User user);
 
-    Message saveOrUpdateMessage(MessageDTO messageDTO, UserDTO userDTO);
+    MessageDTO saveOrUpdateMessage(MessageDTO messageDTO, UserDTO userDTO);
 
     Message saveOrUpdateMessage(Message message, User user);
 
-    void deleteMessage(MessageDTO messageDTO);
+    void delete(MessageDTO messageDTO);
 
-    void deleteMessage(Message message);
-
-    Message getMessageById(Message message);
+    void delete(Message message);
 
     Message getMessageById(String uuid);
 

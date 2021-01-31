@@ -1,8 +1,8 @@
 package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dao.MessageDAO;
-import org.hetsold.bugtracker.facade.MessageConvertor;
-import org.hetsold.bugtracker.facade.UserConvertor;
+import org.hetsold.bugtracker.facade.MessageMapper;
+import org.hetsold.bugtracker.facade.UserMapper;
 import org.hetsold.bugtracker.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class DefaultMessageService implements MessageService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Message saveNewMessage(Message message, User user) {
-        if (user == null || (user = userService.getUserById(user.getUuid())) == null) {
+        if (user == null || user.getUuid() == null || user.getUuid().isEmpty() || (user = userService.getUserById(user.getUuid())) == null) {
             throw new IllegalArgumentException("incorrect user: user is null or deleted");
         }
         Message newMessage = new Message();
@@ -46,7 +46,7 @@ public class DefaultMessageService implements MessageService {
         if (message == null || (oldMessage = messageDAO.getMessageById(message.getUuid())) == null) {
             throw new IllegalArgumentException("incorrect message: message is null or deleted");
         }
-        if (user == null || (user = userService.getUserById(user.getUuid())) == null) {
+        if (user == null || user.getUuid() == null || user.getUuid().isEmpty() || (user = userService.getUserById(user.getUuid())) == null) {
             throw new IllegalArgumentException("incorrect user: user is null or deleted");
         }
         oldMessage.update(message, user);
@@ -72,30 +72,21 @@ public class DefaultMessageService implements MessageService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public Message saveOrUpdateMessage(MessageDTO messageDTO, UserDTO userDTO) {
-        if (messageDTO == null || messageDTO.getContent().isEmpty()) {
+    public MessageDTO saveOrUpdateMessage(MessageDTO messageDTO, UserDTO userDTO) {
+        if (messageDTO == null || messageDTO.getContent() == null || messageDTO.getContent().isEmpty()) {
             throw new IllegalArgumentException("invalid message: message or message content can not be empty");
         }
-        if (userDTO == null || userDTO.getUuid().isEmpty()) {
+        if (userDTO == null || userDTO.getUuid() == null || userDTO.getUuid().isEmpty()) {
             throw new IllegalArgumentException("invalid user: user cannot be empty");
         }
-        return saveOrUpdateMessage(MessageConvertor.getMessage(messageDTO), UserConvertor.getUser(userDTO));
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public Message getMessageById(Message message) {
-        if (message == null || message.getUuid() == null || message.getUuid().isEmpty()) {
-            return null;
-        }
-        return messageDAO.getMessageById(message.getUuid());
+        return new MessageDTO(saveOrUpdateMessage(MessageMapper.getMessage(messageDTO), UserMapper.getUser(userDTO)));
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public Message getMessageById(String uuid) {
-        if (uuid.isEmpty()) {
-            return null;
+        if (uuid == null || uuid.isEmpty()) {
+            throw new IllegalArgumentException("invalid message: message or message content can not be empty");
         }
         return messageDAO.getMessageById(uuid);
     }
@@ -103,7 +94,7 @@ public class DefaultMessageService implements MessageService {
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public MessageDTO getMessageDTOById(String uuid) {
-        return MessageConvertor.getMessageDTO(getMessageById(uuid));
+        return MessageMapper.getMessageDTO(getMessageById(uuid));
     }
 
     @Override
@@ -119,13 +110,18 @@ public class DefaultMessageService implements MessageService {
     }
 
     @Override
-    public void deleteMessage(MessageDTO messageDTO) {
-        deleteMessage(MessageConvertor.getMessage(messageDTO));
+    public void delete(MessageDTO messageDTO) {
+        if(messageDTO == null){
+            throw new IllegalArgumentException("invalid message: message or message content can not be empty");
+        }
+        delete(MessageMapper.getMessage(messageDTO));
     }
 
     @Override
-    public void deleteMessage(Message message) {
-        message = getMessageById(message);
+    public void delete(Message message) {
+        if (message == null || message.getUuid() == null || message.getUuid().isEmpty() || (message = getMessageById(message.getUuid())) == null) {
+            throw new IllegalArgumentException("invalid message: message or message content can not be empty");
+        }
         messageDAO.delete(message);
     }
 }
