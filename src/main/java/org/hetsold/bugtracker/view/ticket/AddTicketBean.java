@@ -1,4 +1,4 @@
-package org.hetsold.bugtracker.view;
+package org.hetsold.bugtracker.view.ticket;
 
 import org.hetsold.bugtracker.model.TicketDTO;
 import org.hetsold.bugtracker.model.TicketResolveState;
@@ -11,7 +11,6 @@ import org.springframework.web.jsf.FacesContextUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
@@ -25,8 +24,6 @@ public class AddTicketBean implements Serializable {
     private TicketService ticketService;
     @Autowired
     private UserService userService;
-    @ManagedProperty("#{ticketListBean}")
-    private TicketListBean ticketListBean;
 
 
     @PostConstruct
@@ -58,16 +55,11 @@ public class AddTicketBean implements Serializable {
         //for now get hardcoded user from db, registered user will be obtained after spring security integration
         UserDTO user = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
         ticket.setCreationTime(new Date());
-        ticketService.addNewTicket(ticket, user);
+        ticketService.addTicket(ticket, user);
         clearTicket();
-        ticketListBean.updateTicketsList();
     }
 
     public void clearTicket() {
         initTicket();
-    }
-
-    public void setTicketListBean(TicketListBean ticketListBean) {
-        this.ticketListBean = ticketListBean;
     }
 }

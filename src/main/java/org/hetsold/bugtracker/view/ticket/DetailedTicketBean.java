@@ -1,4 +1,4 @@
-package org.hetsold.bugtracker.view;
+package org.hetsold.bugtracker.view.ticket;
 
 import org.hetsold.bugtracker.model.IssueShortDTO;
 import org.hetsold.bugtracker.model.MessageDTO;
@@ -7,6 +7,7 @@ import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.MessageService;
 import org.hetsold.bugtracker.service.TicketService;
 import org.hetsold.bugtracker.service.UserService;
+import org.hetsold.bugtracker.view.ListableMessageBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.jsf.FacesContextUtils;
 
@@ -47,7 +48,7 @@ public class DetailedTicketBean extends ListableMessageBean implements Serializa
 
     public void initData() {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            ticket = ticketService.getTicketDTO(uuid);
+            ticket = ticketService.getTicketDTOById(uuid);
             initMessages();
         }
     }
@@ -65,7 +66,7 @@ public class DetailedTicketBean extends ListableMessageBean implements Serializa
     }
 
     public void updateTicket() {
-        ticketService.updateTicket(ticket, activeUser);
+        ticketService.updateTicket(ticket);
     }
 
     public void tickedChangedListener(ValueChangeEvent event) {

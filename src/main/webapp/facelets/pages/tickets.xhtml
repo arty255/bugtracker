@@ -8,23 +8,29 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ticket="http://java.sun.com/jsf/composite/ticketComponent"
+      xmlns:controls="http://java.sun.com/jsf/composite/generalComponent"
       xmlns:user="http://java.sun.com/jsf/composite/userComponent"
       xml:lang="en" lang="en">
 <ui:composition template="../templates/simpleTemplate.xhtml">
     <ui:define name="title">Ticket List</ui:define>
     <ui:define name="headArea">
         <h:outputStylesheet name="tickets.css" library="css"/>
+        <h:outputStylesheet library="css" name="reusable.css"/>
     </ui:define>
     <ui:define name="content">
         <h:form id="viewForm">
             <p:dataView id="ticketsDataView"
-                        var="ticket" value="#{ticketListBean.ticketDTOList}"
+                        var="ticket" value="#{ticketListBean.ticketLazyDataModel}"
+                        lazy="true" rows="10" paginator="#{ticketListBean.ticketLazyDataModel.rowCount > 10}"
                         gridIcon="pi pi-th-large" listIcon="pi pi-bars" styleClass="ticketDataView">
                 <f:facet name="header">
-                    <div style="display: flex; flex-direction: row; float: left;">
+                    <div style="width:100%; display: flex; flex-direction: row; justify-content: space-between;">
                         <p:commandButton value="Add Ticket" icon="pi pi-plus"
                                          style="margin-bottom: 0.5em;"
                                          onclick="PF('PFAddTicketDialog').show()"/>
+                        <controls:entityFilterComponent fields="#{ticketListBean.issueFilterList}"
+                                                        applyAction="#{ticketListBean.modelFiltersUpdateAction()}"
+                                                        afterApplyActionUpdateSelectors="@(.ticketDataView)"/>
                     </div>
                 </f:facet>
                 <p:dataViewListItem>
