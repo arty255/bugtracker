@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class SimpleIssueFacade implements IssueFacade {
@@ -30,39 +29,35 @@ public class SimpleIssueFacade implements IssueFacade {
 
     @Override
     public IssueShortDTO getIssue(String issueUUID) {
-        return IssueConverter.getIssueShortDTO(issueService.getIssueById(issueUUID));
+        return IssueMapper.getIssueShortDTO(issueService.getIssueById(issueUUID));
     }
 
     @Override
     public void createIssue(IssueDTO issueDTO, UserDTO userDTO) {
-        Issue issue = IssueConverter.getIssue(issueDTO);
-        issueService.createNewIssue(issue, UserConvertor.getUser(userDTO));
+        Issue issue = IssueMapper.getIssue(issueDTO);
+        issueService.createNewIssue(issue, UserMapper.getUser(userDTO));
     }
 
     @Override
     public void createIssueFromTicket(TicketDTO ticketDTO, UserDTO userDTO) {
-        issueService.createIssueFromTicket(TicketConvertor.getTicket(ticketDTO), UserConvertor.getUser(userDTO));
+        issueService.createIssueFromTicket(TicketMapper.getTicket(ticketDTO), UserMapper.getUser(userDTO));
     }
 
     @Override
     public void updateIssue(IssueShortDTO issueShortDTO, UserDTO userDTO) {
-        issueService.updateIssueState(IssueConverter.getIssue(issueShortDTO), UserConvertor.getUser(userDTO));
     }
 
     @Override
     public List<IssueShortDTO> getIssue(IssueShortDTO issueShortDTO) {
-        return issueService.findIssueByFilter(IssueConverter.getIssue(issueShortDTO))
-                .stream()
-                .map(IssueConverter::getIssueShortDTO)
-                .collect(Collectors.toList());
+        return issueService.getIssueList(null, 0, 100);
     }
 
     @Override
     public void deleteIssue(String issueUUID, boolean includeTicket) {
-        Issue issue = IssueConverter.getIssue(new IssueShortDTO(issueUUID));
+        Issue issue = IssueMapper.getIssue(new IssueShortDTO(issueUUID));
         issueService.deleteIssue(issue);
         if (includeTicket) {
-            ticketService.delete(issue.getTicket());
+            ticketService.delete(issue.getTicket().getUuid());
         }
     }
 }
