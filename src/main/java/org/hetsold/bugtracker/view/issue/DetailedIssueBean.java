@@ -1,10 +1,12 @@
-package org.hetsold.bugtracker.view;
+package org.hetsold.bugtracker.view.issue;
 
 
 import org.hetsold.bugtracker.model.*;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.MessageService;
 import org.hetsold.bugtracker.service.UserService;
+import org.hetsold.bugtracker.view.ListableMessageBean;
+import org.hetsold.bugtracker.view.user.UserDTOLazyDataModel;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.jsf.FacesContextUtils;

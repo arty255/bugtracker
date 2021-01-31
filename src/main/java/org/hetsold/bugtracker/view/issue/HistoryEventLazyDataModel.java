@@ -1,4 +1,4 @@
-package org.hetsold.bugtracker.view;
+package org.hetsold.bugtracker.view.issue;
 
 import org.hetsold.bugtracker.model.IssueDTO;
 import org.hetsold.bugtracker.model.IssueEventDTO;

@@ -85,7 +85,7 @@ public class DetailedTicketBean extends ListableMessageBean implements Serializa
 
     @Override
     public void preformDeleteOperation(MessageDTO messageDTO) {
-        messageService.deleteMessage(messageDTO);
+        messageService.delete(messageDTO);
     }
 
     public void messageDateAscendingInListListener() {

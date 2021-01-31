@@ -1,4 +1,4 @@
-package org.hetsold.bugtracker.view;
+package org.hetsold.bugtracker.view.issue;
 
 import org.hetsold.bugtracker.model.IssueDTO;
 import org.hetsold.bugtracker.model.IssueState;
@@ -41,7 +41,7 @@ public class AddIssueBean implements Serializable {
 
     public void initIssueListener() {
         issue = new IssueDTO();
-        userList = userService.getAllUsers();
+        userList = userService.getUsers(null, 0, Integer.MAX_VALUE);
     }
 
     public void addIssueAction() {

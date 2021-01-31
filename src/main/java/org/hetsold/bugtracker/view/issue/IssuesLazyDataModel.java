@@ -1,4 +1,4 @@
-package org.hetsold.bugtracker.view;
+package org.hetsold.bugtracker.view.issue;
 
 import org.hetsold.bugtracker.model.IssueDTO;
 import org.hetsold.bugtracker.model.IssueShortDTO;
@@ -13,16 +13,10 @@ import java.util.Map;
 
 public class IssuesLazyDataModel extends LazyDataModel<IssueShortDTO> {
     private IssueService issueService;
-    private IssueDTO filterIssue;
     private Contract contract;
 
     public IssuesLazyDataModel(IssueService issueService) {
         this.issueService = issueService;
-        this.filterIssue = new IssueDTO();
-    }
-
-    public void setFilterIssue(IssueDTO filterIssue) {
-        this.filterIssue = filterIssue;
     }
 
     public void setContract(Contract contract) {
