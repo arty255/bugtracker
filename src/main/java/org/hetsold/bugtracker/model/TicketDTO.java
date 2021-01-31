@@ -22,7 +22,9 @@ public class TicketDTO {
         this.productVersion = ticket.getProductVersion();
         this.verificationState = ticket.getVerificationState();
         this.resolveState = ticket.getResolveState();
-        this.user = new UserDTO(ticket.getCreatedBy());
+        if (ticket.getCreatedBy() != null) {
+            this.user = new UserDTO(ticket.getCreatedBy());
+        }
         if (ticket.getIssue() != null) {
             this.issueID = ticket.getIssue().getUuid();
         }

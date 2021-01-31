@@ -12,16 +12,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.validateMockitoUsage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -38,6 +34,7 @@ public class DefaultTicketServiceTest {
     private UserService userService;
 
     private final User user = new User("First Name", "Last Name");
+    private final UserDTO userDTO = new UserDTO(user);
     private final TicketFactory ticketFactory = new TicketFactory(user);
     private MessageFactory messageFactory = new MessageFactory(user);
 
@@ -52,38 +49,72 @@ public class DefaultTicketServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void checkIfTicketWithNoDescriptionCanBeSaved() {
+    public void checkIfTicketWithNoDescriptionThrowExceptionOnSave() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.IncorrectTicketEmptyDescription);
-        ticketService.save(ticket, user);
+        TicketDTO ticketDTO = new TicketDTO(ticket);
+        ticketService.addTicket(ticketDTO, userDTO);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void checkIfTicketWithEmptyUserCantBeSaved() {
+    public void checkIfTicketWithNoDescriptionThrowExceptionOnUpdate() {
+        Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.IncorrectTicketEmptyDescription);
+        TicketDTO ticketDTO = new TicketDTO(ticket);
+        ticketService.updateTicket(ticketDTO);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkIfTicketWithEmptyUserThrowExceptionOnSave() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.IncorrectTicketNullCreator);
-        ticketService.save(ticket, user);
+        TicketDTO ticketDTO = new TicketDTO(ticket);
+        ticketService.addTicket(ticketDTO, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void checkIfTicketWithNotExistedUserCantBeSaved() {
+    public void checkIfTicketWithNotExistedUserThrowExceptionOnSave() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
-        Mockito.when(userService.getUserById(ticket.getCreatedBy().getUuid())).thenReturn(null);
-        ticketService.save(ticket, user);
-        Mockito.verify(ticketDao, Mockito.times(1)).getTicketById(ticket.getUuid());
+        TicketDTO ticketDTO = new TicketDTO(ticket);
+        Mockito.when(userService.getUserById(userDTO.getUuid())).thenReturn(null);
+        ticketService.addTicket(ticketDTO, userDTO);
     }
 
     @Test
     public void checkIfCorrectTicketCanBeSaved() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
-        Mockito.when(userService.getUserById(ticket.getCreatedBy().getUuid())).thenReturn(ticket.getCreatedBy());
-        ticketService.save(ticket, user);
-        Mockito.verify(ticketDao).save(ticket);
+        TicketDTO ticketDTO = new TicketDTO(ticket);
+        Mockito.when(userService.getUserById(userDTO.getUuid())).thenReturn(user);
+        ticketService.addTicket(ticketDTO, userDTO);
+        ArgumentCaptor<Ticket> ticketArgumentCaptor = ArgumentCaptor.forClass(Ticket.class);
+        Mockito.verify(ticketDao).save(ticketArgumentCaptor.capture());
+        assertNotEquals(ticketDTO.getUuid(), ticketArgumentCaptor.getValue().getUuid());
+    }
+
+    @Test
+    public void checkIfCorrectTicketCanBeUpdated() {
+        Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
+        TicketDTO ticketDTO = new TicketDTO(ticket);
+        ticketDTO.setDescription("changed");
+        Mockito.when(userService.getUserById(userDTO.getUuid())).thenReturn(user);
+        Mockito.when(ticketDao.getTicketById(ticketDTO.getUuid())).thenReturn(ticket);
+        TicketDTO savedDto = ticketService.updateTicket(ticketDTO);
+        assertEquals(ticketDTO.getDescription(), savedDto.getDescription());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkIfTicketWithEmptyUUIDThrowException() {
+        ticketService.delete("");
     }
 
     @Test
     public void checkIfTicketCanBeDeleted() {
         Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
-        ticketService.delete(ticket);
+        Mockito.when(ticketDao.getTicketById(ticket.getUuid())).thenReturn(ticket);
+        ticketService.delete(ticket.getUuid());
         Mockito.verify(ticketDao).delete(ticket);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkIfGetTicketByEmptyIdThrowException() {
+        ticketService.getTicketById("");
     }
 
     @Test
@@ -93,6 +124,13 @@ public class DefaultTicketServiceTest {
         ticketService.applyForIssue(ticket);
         assertEquals(TicketResolveState.Resolving, ticket.getResolveState());
         assertEquals(TicketVerificationState.Verified, ticket.getVerificationState());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkIfNotExistedTicketThrowExceptionOnApplyForIssue() {
+        Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
+        Mockito.when(ticketDao.getTicketById(ticket.getUuid())).thenReturn(null);
+        ticketService.applyForIssue(ticket);
     }
 
     @Test
@@ -107,8 +145,24 @@ public class DefaultTicketServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void checkIfTicketMessageWithEmptyTicketThrowException() {
+    public void checkIfAddTicketMessageToNotExistedTicketThrowException() {
+        Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
-        ticketService.addTicketMessage((Ticket) null, message, user);
+        Mockito.when(ticketDao.getTicketById(ticket.getUuid())).thenReturn(null);
+        ticketService.addTicketMessage(ticket, message, user);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkIfAddTicketMessageWithNullTicketThrowException() {
+        Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
+        ticketService.addTicketMessage(null, message, user);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkIfMessagesForNullTicketThrowException() {
+        Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
+        TicketDTO ticketDTO = new TicketDTO(ticket);
+        Mockito.when(ticketDao.getTicketById(ticket.getUuid())).thenReturn(null);
+        ticketService.getTicketMessages(ticketDTO, 0, 0, false);
     }
 }
