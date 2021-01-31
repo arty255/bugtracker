@@ -1,6 +1,7 @@
-package org.hetsold.bugtracker.view;
+package org.hetsold.bugtracker.view.user;
 
 import org.hetsold.bugtracker.model.UserDTO;
+import org.hetsold.bugtracker.model.filter.Contract;
 import org.hetsold.bugtracker.service.UserService;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -9,17 +10,22 @@ import org.primefaces.model.SortMeta;
 import java.util.List;
 import java.util.Map;
 
-class UserDTOLazyDataModel extends LazyDataModel<UserDTO> {
+public class UserDTOLazyDataModel extends LazyDataModel<UserDTO> {
     private UserService userService;
+    private Contract contract;
 
     public UserDTOLazyDataModel(UserService userService) {
         this.userService = userService;
     }
 
+    public void setContract(Contract contract) {
+        this.contract = contract;
+    }
+
     @Override
     public List<UserDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-        this.setRowCount((int) userService.getUserCount());
-        return userService.getUsers(first, pageSize);
+        this.setRowCount((int) userService.getUsersCount(contract));
+        return userService.getUsers(contract, first, pageSize);
     }
 
     @Override

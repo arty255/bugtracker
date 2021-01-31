@@ -7,6 +7,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:controls="http://java.sun.com/jsf/composite/generalComponent"
       xml:lang="en" lang="en">
 <ui:composition template="../templates/simpleTemplate.xhtml">
     <ui:define name="title">
@@ -14,6 +15,7 @@
     </ui:define>
     <ui:define name="headArea">
         <h:outputStylesheet library="css" name="users.css"/>
+        <h:outputStylesheet library="css" name="reusable.css"/>
     </ui:define>
     <ui:define name="content">
         <h:form id="usersForm">
@@ -21,10 +23,16 @@
                          var="user" value="#{userListBean.usersLazyDataModel}" lazy="true"
                          paginator="true" rowsPerPageTemplate="10,25,50" rows="10"
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records">
+                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                         styleClass="usersTable">
                 <f:facet name="header">
-                    <p:commandButton value="Add user" icon="pi pi-user-plus"
-                                     onclick="PF('addUserDialog').show();"/>
+                    <div style=" width: 100%;display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+                        <p:commandButton value="Add user" icon="pi pi-user-plus"
+                                         onclick="PF('addUserDialog').show();"/>
+                        <controls:entityFilterComponent fields="#{userListBean.issueFilterList}"
+                                                        applyAction="#{userListBean.modelFiltersUpdateAction()}"
+                                                        afterApplyActionUpdateSelectors="@(.usersTable)"/>
+                    </div>
                 </f:facet>
                 <p:column headerText="#ID">
                     <p:link outcome="userProfile" includeViewParams="true">

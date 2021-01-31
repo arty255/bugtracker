@@ -1,9 +1,10 @@
-package org.hetsold.bugtracker.view;
+package org.hetsold.bugtracker.view.user;
 
 import org.hetsold.bugtracker.model.TicketDTO;
 import org.hetsold.bugtracker.model.UserDTO;
 import org.hetsold.bugtracker.service.TicketService;
 import org.hetsold.bugtracker.service.UserService;
+import org.hetsold.bugtracker.view.ticket.TicketLazyDataModel;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.jsf.FacesContextUtils;
@@ -45,7 +46,7 @@ public class UserProfileBean implements Serializable {
 
     public void initUserProfileData() {
         user = userService.getUserDTOById(uuid);
-        this.totalReportedTickets = (int) ticketService.getTicketCountReportedByUser(user);
+        this.totalReportedTickets = (int) ticketService.getTicketCountReportedByUser(user, null);
         reportedTickets = new TicketLazyDataModel(ticketService, user);
     }
 
