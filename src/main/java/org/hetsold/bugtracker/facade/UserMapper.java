@@ -3,7 +3,10 @@ package org.hetsold.bugtracker.facade;
 import org.hetsold.bugtracker.model.User;
 import org.hetsold.bugtracker.model.UserDTO;
 
-public class UserConvertor {
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class UserMapper {
 
     public static User getUser(UserDTO userDTO) {
         User user = null;
@@ -28,5 +31,9 @@ public class UserConvertor {
 
     public static UserDTO getUserDTO(User user) {
         return new UserDTO(user);
+    }
+
+    public static List<UserDTO> getUserDTOS(List<User> userList){
+        return userList.stream().map(UserMapper::getUserDTO).collect(Collectors.toList());
     }
 }
