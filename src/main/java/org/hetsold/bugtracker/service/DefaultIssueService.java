@@ -127,6 +127,7 @@ public class DefaultIssueService implements IssueService {
         return IssueConverter.getIssueDTO(saveOrUpdateIssue(IssueConverter.getIssue(issueDTO), user));
     }
 
+    @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void changeIssueArchiveState(Issue issue, User user, boolean newState) {
         Issue oldIssue;
@@ -153,7 +154,6 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public void makeIssueUnArchived(IssueShortDTO issueShortDTO, UserDTO userDTO) {
         if (issueShortDTO == null || issueShortDTO.getUuid().isEmpty()) {
             throw new IllegalArgumentException("incorrect issue: issue can not be null");
