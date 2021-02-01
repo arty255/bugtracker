@@ -30,9 +30,42 @@
     padding: 0.4em 0.5em !important;
 }
 
-.minimalWidthColumn {
-    width: 10% !important;
-    vertical-align: top !important;
+.ticketDataView {
+    width: 100%;
+}
+
+.ticketDataView thead {
+    display: none;
+}
+
+.stateLabelWrapper {
+    padding-top: 0.5em;
+}
+
+.descriptionWrapper{
+
+}
+
+.reproduceStepsWrapper{
+    padding-top: 0.5em;
+}
+
+.controlsColumn {
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+    vertical-align: middle !important;
+}
+
+.controlsColumn button {
+    margin: 0 !important;
+}
+
+.timeColumn {
+    width: 10%;
+}
+
+.ticketDataView td {
+    vertical-align: initial;
 }
 
 .autoWidthColumn {
