@@ -1,6 +1,7 @@
 package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.model.User;
+import org.hetsold.bugtracker.model.filter.Contract;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
@@ -26,11 +27,6 @@ public class UserHibernateDAO implements UserDAO {
     }
 
     @Override
-    public List<User> listAll() {
-        return hibernateTemplate.loadAll(User.class);
-    }
-
-    @Override
     public void delete(User user) {
         hibernateTemplate.delete(user);
     }
@@ -41,28 +37,27 @@ public class UserHibernateDAO implements UserDAO {
     }
 
     @Override
-    public long getUsersCount() {
+    public long getUsersCount(Contract contract) {
         Long count = hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<Long> query = builder.createQuery(Long.class);
             Root<User> root = query.from(User.class);
+            query.where(ContractReader.readContract(contract, root, builder));
             query.select(builder.count(root));
             return session.createQuery(query).getSingleResult();
         });
-        if (count != null) {
-            return count;
-        }
-        return 0;
+        return count != null ? count : 0;
     }
 
     @Override
-    public List<User> getUsers(int first, int count) {
+    public List<User> getUsers(Contract contract, int first, int limit) {
         return hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<User> query = builder.createQuery(User.class);
             Root<User> root = query.from(User.class);
+            query.where(ContractReader.readContract(contract, root, builder));
             query.select(root);
-            return session.createQuery(query).setFirstResult(first).setMaxResults(count).getResultList();
+            return session.createQuery(query).setFirstResult(first).setMaxResults(limit).getResultList();
         });
     }
 }

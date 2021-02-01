@@ -5,6 +5,7 @@ import org.hetsold.bugtracker.TestAppConfig;
 import org.hetsold.bugtracker.dao.MessageDAO;
 import org.hetsold.bugtracker.model.Message;
 import org.hetsold.bugtracker.model.User;
+import org.hetsold.bugtracker.model.UserDTO;
 import org.hetsold.bugtracker.util.MessageFactory;
 import org.hetsold.bugtracker.util.MessageFactoryCreatedMessageType;
 import org.junit.After;
@@ -42,6 +43,7 @@ public class DefaultMessageServiceTest {
     @Before
     public void beforeTest() {
         MockitoAnnotations.openMocks(this);
+        userService.registerUser(new UserDTO(user));
     }
 
     @After
@@ -50,7 +52,7 @@ public class DefaultMessageServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void checkIfEmptyMessageThrowException() {
+    public void checkIfEmptyMessageThrowExceptionOnSave() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
         message.setContent("");
         messageService.saveNewMessage(message, user);
@@ -69,6 +71,13 @@ public class DefaultMessageServiceTest {
         assertEquals(capturedMessage.getMessageCreator(), user);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void checkIfEmptyMessageThrowExceptionOnUpdate(){
+        Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
+        message.setContent("");
+        messageService.updateMessage(message, user);
+    }
+
     @Test
     public void checkIfMessageCanBeUpdated() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
@@ -84,7 +93,12 @@ public class DefaultMessageServiceTest {
     public void checkIfMessageCanBeDeleted() {
         Message message = messageFactory.getMessage(MessageFactoryCreatedMessageType.CorrectMessage);
         Mockito.when(messageDAO.getMessageById(message.getUuid())).thenReturn(message);
-        messageService.deleteMessage(message);
+        messageService.delete(message);
         Mockito.verify(messageDAO, Mockito.atLeastOnce()).delete(message);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkIfEmptyUUIDMessageThrowExceptionOnGet(){
+        messageService.getMessageById(null);
     }
 }

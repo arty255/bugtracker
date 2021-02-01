@@ -6,9 +6,8 @@ import org.hetsold.bugtracker.model.filter.Contract;
 import java.util.List;
 
 public interface IssueService {
-    void save(Issue issue);
 
-    Issue updateIssue(Issue issue);
+    void setStateValidationStrategy(IssueStateValidationStrategy stateValidationStrategy);
 
     Issue saveOrUpdateIssue(Issue issue, User user);
 
@@ -26,21 +25,10 @@ public interface IssueService {
 
     void deleteIssue(Issue issue);
 
-    List<Issue> findIssueByFilter(Issue issue);
-
-    List<IssueShortDTO> getIssueList(IssueDTO issue, int startPosition, int limit);
-
     List<IssueShortDTO> getIssueList(Contract contract, int startPosition, int limit);
-
-    long getIssuesCount(IssueDTO issue);
 
     long getIssuesCount(Contract contract);
 
-    Issue getIssueForViewById(String uuid);
-
-    //issue - selected issue to change State
-    //newState - new issue state
-    //assignedTo - user to who issue will be assigned
     void changeIssueState(Issue issue, IssueState newIssueState, User user);
 
     void changeIssueState(IssueDTO issueDTO, IssueState newIssueState, UserDTO userDTO);
@@ -59,8 +47,6 @@ public interface IssueService {
 
     IssueShortDTO createIssueFromTicket(TicketDTO selectedTicketDTO, UserDTO user);
 
-    void updateIssueState(Issue issue, User user);
-
     List<IssueEvent> getIssueEvents(Issue issue, int startPosition, int limit, boolean inverseDateOrder);
 
     List<IssueEventDTO> getIssueHistoryEventsDTO(IssueDTO issueDTO, int startPosition, int limit, boolean inverseDateOrder);
@@ -70,4 +56,5 @@ public interface IssueService {
     long getIssueHistoryEventsCount(IssueDTO issueDTO);
 
     void deleteIssueMessage(MessageDTO selectedToDeleteMessage);
+
 }

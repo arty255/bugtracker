@@ -2,10 +2,7 @@ package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dao.HistoryEventDAO;
 import org.hetsold.bugtracker.dao.IssueDAO;
-import org.hetsold.bugtracker.facade.IssueConverter;
-import org.hetsold.bugtracker.facade.MessageConvertor;
-import org.hetsold.bugtracker.facade.TicketConvertor;
-import org.hetsold.bugtracker.facade.UserConvertor;
+import org.hetsold.bugtracker.facade.*;
 import org.hetsold.bugtracker.model.*;
 import org.hetsold.bugtracker.model.filter.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,20 +37,24 @@ public class DefaultIssueService implements IssueService {
         this.stateValidationStrategy = stateValidationStrategy;
     }
 
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void save(Issue issue) {
+    public void setStateValidationStrategy(IssueStateValidationStrategy stateValidationStrategy) {
+        this.stateValidationStrategy = stateValidationStrategy;
+    }
+
+    private void save(Issue issue) {
+        if (issue == null) {
+            throw new IllegalArgumentException("incorrect issue : issue can not be null");
+        }
         if (issue.getReportedBy() == null || userService.getUserById(issue.getReportedBy().getUuid()) == null) {
             throw new IllegalArgumentException("issueReporter argument can not be null or not persisted");
         }
-        if (issue.getDescription().isEmpty()) {
+        if (issue.getDescription() == null || issue.getDescription().isEmpty()) {
             throw new IllegalArgumentException("issue description description can not be empty");
         }
         issueDAO.save(issue);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public Issue updateIssue(Issue issue) {
+    private Issue updateIssue(Issue issue) {
         Issue oldIssue;
         if ((oldIssue = getIssueById(issue.getUuid())) == null) {
             throw new IllegalArgumentException("incorrect issue: update can be preform on existed issue");
@@ -124,9 +125,10 @@ public class DefaultIssueService implements IssueService {
         if (userDTO == null || userDTO.getUuid().isEmpty() || (user = userService.getUserById(userDTO.getUuid())) == null) {
             throw new IllegalArgumentException("incorrect user: user can not be null or not persisted");
         }
-        return IssueConverter.getIssueDTO(saveOrUpdateIssue(IssueConverter.getIssue(issueDTO), user));
+        return IssueMapper.getIssueDTO(saveOrUpdateIssue(IssueMapper.getIssue(issueDTO), user));
     }
 
+    @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void changeIssueArchiveState(Issue issue, User user, boolean newState) {
         Issue oldIssue;
@@ -140,7 +142,7 @@ public class DefaultIssueService implements IssueService {
         oldIssue.setArchived(newState);
     }
 
-
+    @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void makeIssueArchived(IssueShortDTO issueShortDTO, UserDTO userDTO) {
         if (issueShortDTO == null || issueShortDTO.getUuid().isEmpty()) {
@@ -149,9 +151,10 @@ public class DefaultIssueService implements IssueService {
         if (userDTO == null || userDTO.getUuid().isEmpty()) {
             throw new IllegalArgumentException("incorrect user: user can not be null");
         }
-        changeIssueArchiveState(IssueConverter.getIssue(issueShortDTO), UserConvertor.getUser(userDTO), true);
+        changeIssueArchiveState(IssueMapper.getIssue(issueShortDTO), UserMapper.getUser(userDTO), true);
     }
 
+    @Override
     public void makeIssueUnArchived(IssueShortDTO issueShortDTO, UserDTO userDTO) {
         if (issueShortDTO == null || issueShortDTO.getUuid().isEmpty()) {
             throw new IllegalArgumentException("incorrect issue: issue can not be null");
@@ -159,7 +162,7 @@ public class DefaultIssueService implements IssueService {
         if (userDTO == null || userDTO.getUuid().isEmpty()) {
             throw new IllegalArgumentException("incorrect user: user can not be null");
         }
-        changeIssueArchiveState(IssueConverter.getIssue(issueShortDTO), UserConvertor.getUser(userDTO), false);
+        changeIssueArchiveState(IssueMapper.getIssue(issueShortDTO), UserMapper.getUser(userDTO), false);
     }
 
     @Override
@@ -174,7 +177,7 @@ public class DefaultIssueService implements IssueService {
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public IssueDTO getIssueDTOById(String uuid) {
-        return IssueConverter.getIssueDTO(getIssueById(uuid));
+        return IssueMapper.getIssueDTO(getIssueById(uuid));
     }
 
     @Override
@@ -188,44 +191,13 @@ public class DefaultIssueService implements IssueService {
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public List<Issue> findIssueByFilter(Issue issue) {
-        if (issue == null) {
-            throw new IllegalArgumentException("issue can not be empty");
-        }
-        return issueDAO.getIssueByCriteria(issue);
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public List<IssueShortDTO> getIssueList(IssueDTO issueDTO, int startPosition, int limit) {
-        return issueDAO.getIssueList(IssueConverter.getIssue(issueDTO), startPosition, limit)
-                .stream()
-                .map(IssueConverter::getIssueShortDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<IssueShortDTO> getIssueList(Contract contract, int startPosition, int limit) {
-        return issueDAO.getIssueList(contract, startPosition, limit)
-                .stream()
-                .map(IssueConverter::getIssueShortDTO)
-                .collect(Collectors.toList());
-    }
-
-    public long getIssuesCount(IssueDTO issueDTO) {
-        return issueDAO.getIssueCount(IssueConverter.getIssue(issueDTO));
+        return IssueMapper.getShortDTOList(issueDAO.getIssueList(contract, startPosition, limit));
     }
 
     @Override
     public long getIssuesCount(Contract contract) {
         return issueDAO.getIssueCount(contract);
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public Issue getIssueForViewById(String uuid) {
-        return issueDAO.getIssueToDetailedViewById(uuid);
     }
 
     @Override
@@ -237,7 +209,7 @@ public class DefaultIssueService implements IssueService {
         if (userDTO == null || userDTO.getUuid().isEmpty()) {
             throw new IllegalArgumentException("incorrect user: user can not be null");
         }
-        changeIssueState(IssueConverter.getIssue(issueDTO), newIssueState, UserConvertor.getUser(userDTO));
+        changeIssueState(IssueMapper.getIssue(issueDTO), newIssueState, UserMapper.getUser(userDTO));
     }
 
     @Override
@@ -358,7 +330,7 @@ public class DefaultIssueService implements IssueService {
         if (userDTO == null || (user = userService.getUserById(userDTO.getUuid())) == null) {
             throw new IllegalArgumentException("user argument can not be null or not persisted");
         }
-        addIssueMessage(issue, MessageConvertor.getMessage(messageDTO), user);
+        addIssueMessage(issue, MessageMapper.getMessage(messageDTO), user);
     }
 
     @Override
@@ -425,8 +397,8 @@ public class DefaultIssueService implements IssueService {
         if (userDTO == null) {
             throw new IllegalArgumentException("user argument can not be null or not persisted");
         }
-        Issue issue = createIssueFromTicket(TicketConvertor.getTicket(ticketDTO), UserConvertor.getUser(userDTO));
-        return IssueConverter.getIssueShortDTO(issue);
+        Issue issue = createIssueFromTicket(TicketMapper.getTicket(ticketDTO), UserMapper.getUser(userDTO));
+        return IssueMapper.getIssueShortDTO(issue);
     }
 
     private Issue buildIssueFromTicket(Ticket ticket) {
@@ -436,17 +408,6 @@ public class DefaultIssueService implements IssueService {
                 .withProductVersion(ticket.getProductVersion())
                 .withCreationTime(new Date())
                 .withDescription(ticket.getDescription()).build();
-    }
-
-    @Override
-    public void updateIssueState(Issue issue, User user) {
-        Issue oldIssue = getIssueById(issue.getUuid());
-        if (oldIssue.getAssignedTo() != issue.getAssignedTo() || oldIssue.getSeverity() != issue.getSeverity() || !oldIssue.getFixVersion().equals(issue.getFixVersion())) {
-            IssueStateChangeEvent stateChangeEvent = new IssueStateChangeEvent();
-            stateChangeEvent.setState(issue.getCurrentIssueState());
-            stateChangeEvent.setRedactor(user);
-            stateChangeEvent.setEventDate(new Date());
-        }
     }
 
     @Override
@@ -462,10 +423,7 @@ public class DefaultIssueService implements IssueService {
         if (issueDTO == null || issueDTO.getUuid().isEmpty() || (issue = getIssueById(issueDTO.getUuid())) == null) {
             throw new IllegalArgumentException("incorrect issue: issue can not be null or not persisted");
         }
-        return getIssueEvents(issue, startPosition, limit, inverseDateOrder)
-                .stream()
-                .map(IssueEventDTO::new)
-                .collect(Collectors.toList());
+        return IssueEventMapper.getIssueEventList(getIssueEvents(issue, startPosition, limit, inverseDateOrder));
     }
 
     @Override
@@ -492,6 +450,6 @@ public class DefaultIssueService implements IssueService {
         }
         IssueMessageEvent issueMessageEvent = historyEventDAO.getMessageEventByMessage(message);
         historyEventDAO.deleteIssueMessageEvent(issueMessageEvent);
-        messageService.deleteMessage(message);
+        messageService.delete(message);
     }
 }

@@ -36,6 +36,20 @@ public class Ticket extends AbstractIdentity {
     public Ticket() {
     }
 
+    @PrePersist
+    public void prePersist() {
+        this.creationTime = new Date();
+    }
+
+    public void update(Ticket ticket) {
+        this.setDescription(ticket.getDescription());
+        this.setProductVersion(ticket.getReproduceSteps());
+        this.setProductVersion(ticket.getProductVersion());
+        this.setResolveState(ticket.getResolveState());
+        this.setVerificationState(ticket.getVerificationState());
+        this.setVoteCount(ticket.getVoteCount());
+    }
+
     public String getDescription() {
         return description;
     }
