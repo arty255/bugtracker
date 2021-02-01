@@ -8,6 +8,7 @@ import org.hetsold.bugtracker.service.MessageService;
 import org.hetsold.bugtracker.service.TicketService;
 import org.hetsold.bugtracker.service.UserService;
 import org.hetsold.bugtracker.view.ListableMessageBean;
+import org.hetsold.bugtracker.view.issue.IssuesLazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.jsf.FacesContextUtils;
 
@@ -25,7 +26,9 @@ public class DetailedTicketBean extends ListableMessageBean implements Serializa
     private String uuid;
     private TicketDTO ticket;
     private TicketMessageLazyDataModel messageLazyDataModel;
+    private IssuesLazyDataModel issuesLazyDataModel;
     private IssueShortDTO createdIssue;
+    private IssueShortDTO selectedIssue;
 
     @Autowired
     private TicketService ticketService;
@@ -48,13 +51,29 @@ public class DetailedTicketBean extends ListableMessageBean implements Serializa
 
     public void initData() {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            ticket = ticketService.getTicketDTOById(uuid);
+            initTicket();
+            issuesLazyDataModel = new IssuesLazyDataModel(issueService);
             initMessages();
         }
     }
 
+    private void initTicket() {
+        ticket = ticketService.getTicketDTOById(uuid);
+    }
+
     public void initMessages() {
         messageLazyDataModel = new TicketMessageLazyDataModel(ticketService, messageService, ticket);
+    }
+
+    public void linkIssueAction() {
+        issueService.assignIssueToTicket(selectedIssue, ticket);
+        initTicket();
+        selectedIssue = null;
+    }
+
+    public void unlinkIssueAction() {
+        issueService.assignIssueToTicket(null, ticket);
+        initTicket();
     }
 
     public void createIssueFromTicket() {
@@ -118,5 +137,17 @@ public class DetailedTicketBean extends ListableMessageBean implements Serializa
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public IssuesLazyDataModel getIssuesLazyDataModel() {
+        return issuesLazyDataModel;
+    }
+
+    public IssueShortDTO getSelectedIssue() {
+        return selectedIssue;
+    }
+
+    public void setSelectedIssue(IssueShortDTO selectedIssue) {
+        this.selectedIssue = selectedIssue;
     }
 }

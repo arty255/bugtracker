@@ -10,6 +10,7 @@
       xmlns:ticket="http://java.sun.com/jsf/composite/ticketComponent"
       xmlns:user="http://java.sun.com/jsf/composite/userComponent"
       xmlns:message="http://java.sun.com/jsf/composite/messageComponent"
+      xmlns:issue="http://java.sun.com/jsf/composite/issueComponent"
       xml:lang="en" lang="en">
 <f:metadata>
     <f:viewParam name="uuid" value="#{detailedTicketBean.uuid}" required="#{not facesContext.postback}"/>
@@ -24,7 +25,7 @@
     <ui:define name="content">
         <h:form>
             <p:panel header="Ticket: #{detailedTicketBean.ticket.uuid}" styleClass="ticket">
-                <p:panelGrid columns="2" columnClasses="minimalWidthColumn,autoWidthColumn">
+                <p:panelGrid columns="2" style="width: 100%" columnClasses="minimalWidthColumn,autoWidthColumn">
                     <h:outputText value="Ticket resolve state:"/>
                     <h:panelGroup layout="block" styleClass="resolveStateContent">
                         <p:inplace styleClass="noPaddingInplace" editor="true" effectSpeed="fast">
@@ -39,16 +40,17 @@
                                 </p:selectOneMenu>
                             </f:facet>
                         </p:inplace>
-                        <div>
+                        <h:panelGroup layout="block" styleClass="ticketAssignControls">
                             <!--todo: change with spring security integration-->
                             <p:commandButton value="Create issue" icon="pi pi-tags"
-                                             rendered="#{true}"
+                                             rendered="#{true and empty detailedTicketBean.ticket.issueID}"
                                              actionListener="#{detailedTicketBean.createIssueFromTicket}"
                                              onsuccess="PF('issueCreatedDialog').show();"/>
                             <!--todo: change with spring security integration-->
                             <p:commandButton value="Link issue" icon="pi pi-list"
-                                             rendered="#{true}"/>
-                        </div>
+                                             onclick="PF('issuesDialog').show();"
+                                             rendered="#{true and empty detailedTicketBean.ticket.issueID}"/>
+                        </h:panelGroup>
                     </h:panelGroup>
 
                     <h:outputText value="Description:"/>
@@ -171,6 +173,38 @@
                 <p:panel header="O-U-C-H!!!" rendered="#{empty detailedTicketBean.createdIssue}">
                     <h:outputText value="No issue created"/>
                 </p:panel>
+            </p:dialog>
+
+            <p:dialog header="Select issue" widgetVar="issuesDialog" dynamic="true">
+                <h:form>
+                    <p:dataTable var="issue" value="#{detailedTicketBean.issuesLazyDataModel}" lazy="true"
+                                 rows="10" paginator="#{detailedTicketBean.issuesLazyDataModel.rowCount > 10}">
+                        <p:column headerText="ID">
+                            <issue:linkedIssue uuid="#{issue.uuid}"/>
+                        </p:column>
+                        <p:column headerText="Description">
+                            <h:outputText value="#{issue.description}"/>
+                        </p:column>
+                        <p:column headerText="Reported By">
+                            <user:linkedUser user="#{issue.reportedBy}"/>
+                        </p:column>
+                        <p:column headerText="Date">
+                            <h:outputText value="#{issue.creationTime}">
+                                <f:convertDateTime pattern="#{appUtilBean.dateFormat}"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <p:commandButton icon="pi pi-link" value="Link"
+                                             process="@this"
+                                             update="@(.ticketAssignControls)"
+                                             action="#{detailedTicketBean.linkIssueAction}"
+                                             onsuccess="PF('issuesDialog').hide();">
+                                <f:setPropertyActionListener value="#{issue}"
+                                                             target="#{detailedTicketBean.selectedIssue}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
             </p:dialog>
         </h:form>
     </ui:define>
