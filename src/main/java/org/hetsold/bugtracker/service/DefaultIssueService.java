@@ -417,12 +417,13 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
-    public void assignIssueToTicket(IssueDTO issueDTO, TicketDTO ticketDTO) {
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void assignIssueToTicket(IssueShortDTO issueShortDTO, TicketDTO ticketDTO) {
         if (ticketDTO == null) {
             throw new IllegalArgumentException("ticket argument can not be null");
         }
         Issue issue;
-        if (issueDTO == null || issueDTO.getUuid().isEmpty() || (issue = getIssueById(issueDTO.getUuid())) == null) {
+        if (issueShortDTO == null || issueShortDTO.getUuid().isEmpty() || (issue = getIssueById(issueShortDTO.getUuid())) == null) {
             throw new IllegalArgumentException("incorrect issue: issue can not be null or not persisted");
         }
         assignIssueToTicket(issue, TicketMapper.getTicket(ticketDTO));

@@ -47,7 +47,7 @@ public interface IssueService {
 
     IssueShortDTO createIssueFromTicket(TicketDTO selectedTicketDTO, UserDTO user);
 
-    void assignIssueToTicket(IssueDTO issueDTO, TicketDTO ticketDTO);
+    void assignIssueToTicket(IssueShortDTO issueShortDTO, TicketDTO ticketDTO);
 
     List<IssueEvent> getIssueEvents(Issue issue, int startPosition, int limit, boolean inverseDateOrder);
 
