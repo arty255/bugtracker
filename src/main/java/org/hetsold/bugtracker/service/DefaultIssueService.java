@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -399,6 +398,34 @@ public class DefaultIssueService implements IssueService {
         }
         Issue issue = createIssueFromTicket(TicketMapper.getTicket(ticketDTO), UserMapper.getUser(userDTO));
         return IssueMapper.getIssueShortDTO(issue);
+    }
+
+    public void assignIssueToTicket(Issue issue, Ticket ticket) {
+        if (ticket == null || ticket.getUuid() == null || ticket.getUuid().isEmpty() || (ticket = ticketService.getTicketById(ticket.getUuid())) == null) {
+            throw new IllegalArgumentException("ticket argument can not be null");
+        }
+        if (ticket.getIssue() != null) {
+            throw new IllegalArgumentException("ticket already assigned");
+        }
+        if (issue == null || (issue = getIssueById(issue.getUuid())) == null) {
+            throw new IllegalArgumentException("issue argument can not be null or not persisted");
+        }
+        if (issue.getTicket() != null) {
+            throw new IllegalArgumentException("issue already assigned");
+        }
+        issue.setTicket(ticket);
+    }
+
+    @Override
+    public void assignIssueToTicket(IssueDTO issueDTO, TicketDTO ticketDTO) {
+        if (ticketDTO == null) {
+            throw new IllegalArgumentException("ticket argument can not be null");
+        }
+        Issue issue;
+        if (issueDTO == null || issueDTO.getUuid().isEmpty() || (issue = getIssueById(issueDTO.getUuid())) == null) {
+            throw new IllegalArgumentException("incorrect issue: issue can not be null or not persisted");
+        }
+        assignIssueToTicket(issue, TicketMapper.getTicket(ticketDTO));
     }
 
     private Issue buildIssueFromTicket(Ticket ticket) {
