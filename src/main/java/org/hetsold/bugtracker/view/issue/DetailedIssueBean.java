@@ -88,10 +88,12 @@ public class DetailedIssueBean extends ListableMessageBean implements Serializab
 
     public void unAssignUser() {
         issueService.changeIssueAssignedUser(issue, null, activeUser);
+        reloadIssue();
     }
 
     public void reAssignUser() {
         issueService.changeIssueAssignedUser(issue, selectedToAssignUser, activeUser);
+        reloadIssue();
     }
 
     @Override

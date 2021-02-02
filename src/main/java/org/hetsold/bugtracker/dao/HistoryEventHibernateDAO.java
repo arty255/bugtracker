@@ -83,22 +83,18 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
 
     @Override
     public IssueState getPreviousOpenOrReopenStateForIssue(Issue issue) {
-        IssueStateChangeEvent stateChangeEvent = hibernateTemplate.execute(session -> {
+        return hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
-            CriteriaQuery<IssueStateChangeEvent> query = builder.createQuery(IssueStateChangeEvent.class);
+            CriteriaQuery<IssueState> query = builder.createQuery(IssueState.class);
             Root<IssueStateChangeEvent> root = query.from(IssueStateChangeEvent.class);
             query.where(builder.or(
-                    builder.equal(root.get(IssueStateChangeEvent_.issueState), IssueState.OPEN),
-                    builder.equal(root.get(IssueStateChangeEvent_.issueState), IssueState.REOPEN)
+                    builder.equal(root.get(IssueStateChangeEvent_.ISSUE_STATE_NAME), IssueState.OPEN),
+                    builder.equal(root.get(IssueStateChangeEvent_.ISSUE_STATE_NAME), IssueState.REOPEN)
             ));
-            query.select(root);
-            query.orderBy(builder.desc(root.get(IssueEvent_.eventDate)));
-            return session.createQuery(query).setMaxResults(1).getSingleResult();
+            query.select(root.get(IssueStateChangeEvent_.ISSUE_STATE_NAME));
+            query.orderBy(builder.desc(root.get(IssueEvent_.EVENT_DATE_NAME)));
+            return session.createQuery(query).setMaxResults(1).list().stream().findFirst().orElse(IssueState.OPEN);
         });
-        if (stateChangeEvent == null) {
-            return IssueState.OPEN;
-        }
-        return stateChangeEvent.getState();
     }
 
     @Override

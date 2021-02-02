@@ -26,7 +26,7 @@
         <h:outputStylesheet library="css" name="listControls.css"/>
     </ui:define>
     <ui:define name="content">
-        <h:form>
+        <h:form id="issueDetailForm">
             <p:panel header="Issue: #{detailedIssueBean.issue.uuid}" styleClass="issue">
                 <h:panelGroup id="archiveControlsContainer" layout="block"
                               styleClass="issueArchiveControlsWrapper">
@@ -135,7 +135,7 @@
                     <user:miniUser user="#{detailedIssueBean.issue.reportedBy}"/>
 
                     <h:outputText value="Assigned to:"/>
-                    <h:panelGroup layout="block" styleClass="issueAssignContentWrapper">
+                    <h:panelGroup id="issueAssignContent" layout="block" styleClass="issueAssignContentWrapper">
                         <h:panelGroup id="assignedUserWrapper">
                             <user:linkedUser user="#{detailedIssueBean.issue.assignedTo}" emptyMessage="Not Assigned"/>
                         </h:panelGroup>
@@ -144,6 +144,7 @@
                                              onclick="PF('selectToAssignDialog').show();"
                                              rendered="#{empty detailedIssueBean.issue.assignedTo}"/>
                             <p:commandButton value="Unassign" icon="pi pi-user-minus"
+                                             update="issueAssignContent,@(.issueHistoryList)"
                                              actionListener="#{detailedIssueBean.unAssignUser}"
                                              rendered="#{not empty detailedIssueBean.issue.assignedTo}"/>
                             <p:commandButton value="Reassign" icon="pi pi-users"
@@ -152,8 +153,9 @@
                         </h:panelGroup>
                     </h:panelGroup>
 
-                    <h:outputText value="Base on Ticket:"/>
-                    <h:panelGroup layout="block" class="noPaddingWrapper">
+                    <h:outputText value="Base on Ticket:" rendered="#{not empty detailedIssueBean.issue.ticket}"/>
+                    <h:panelGroup layout="block" class="noPaddingWrapper"
+                                  rendered="#{not empty detailedIssueBean.issue.ticket}">
                         <ticket:linkedTicket uuid="#{detailedIssueBean.issue.ticket.uuid}"/>
                     </h:panelGroup>
                 </p:panelGrid>
@@ -218,7 +220,6 @@
                 </h:panelGroup>
             </p:panel>
 
-
             <p:dialog widgetVar="selectToAssignDialog" modal="true" dynamic="true"
                       appendTo="@(body)" resizable="false" width="500">
                 <h:form>
@@ -233,9 +234,11 @@
                             <h:outputText value="N"/>
                         </p:column>
                         <p:column>
+                            <!--,@issueDetailForm:listContainer @issueDetailForm:assignedUserPanelWrapper,-->
                             <p:commandButton value="Select"
                                              action="#{detailedIssueBean.reAssignUser}"
                                              process="@this"
+                                             update="@(.issueAssignContentWrapper),@(.issueHistoryList)"
                                              onsuccess="PF('selectToAssignDialog').hide();">
                                 <f:setPropertyActionListener value="#{user}"
                                                              target="#{detailedIssueBean.selectedToAssignUser}"/>

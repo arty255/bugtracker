@@ -55,9 +55,10 @@
 }
 
 .controlsColumn {
-    padding-left: 0.2em;
-    padding-right: 0.2em;
+    /*padding-left: 0.2em !important;
+    padding-right: 0.2em !important;*/
     vertical-align: middle !important;
+    width: 1% !important;
 }
 
 .controlsColumn button {

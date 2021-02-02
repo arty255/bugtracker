@@ -55,10 +55,10 @@
                         <div class="descriptionContent">
                             <h:outputText value="#{issue.description}"/>
                         </div>
-                        <div class="ticketBaseWrapper">
+                        <h:panelGroup class="ticketBaseWrapper" rendered="#{not empty issue.ticketId}">
                             <h:outputText value="Base on ticket:"/>
                             <ticket:linkedTicket uuid="#{issue.ticketId}"/>
-                        </div>
+                        </h:panelGroup>
                     </div>
                 </p:column>
                 <p:column headerText="Severity" styleClass="minimalWidthColumn centeredColumn">
