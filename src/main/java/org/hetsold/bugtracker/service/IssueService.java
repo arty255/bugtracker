@@ -1,8 +1,8 @@
 package org.hetsold.bugtracker.service;
 
-import org.hetsold.bugtracker.model.*;
-import org.hetsold.bugtracker.dto.*;
 import org.hetsold.bugtracker.dao.util.Contract;
+import org.hetsold.bugtracker.dto.*;
+import org.hetsold.bugtracker.model.*;
 
 import java.util.List;
 

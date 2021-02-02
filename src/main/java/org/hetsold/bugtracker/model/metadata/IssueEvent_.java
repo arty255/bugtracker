@@ -11,4 +11,6 @@ import java.util.Date;
 public class IssueEvent_ {
     public static volatile SingularAttribute<IssueEvent, Issue> issue;
     public static volatile SingularAttribute<IssueEvent, Date> eventDate;
+    public static String ISSUE_NAME = "issue";
+    public static String EVENT_DATE_NAME = "eventDate";
 }

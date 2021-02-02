@@ -1,9 +1,9 @@
 package org.hetsold.bugtracker.dao;
 
-import org.hetsold.bugtracker.model.Ticket;
-import org.hetsold.bugtracker.model.metadata.Ticket_;
-import org.hetsold.bugtracker.model.User;
 import org.hetsold.bugtracker.dao.util.Contract;
+import org.hetsold.bugtracker.model.Ticket;
+import org.hetsold.bugtracker.model.User;
+import org.hetsold.bugtracker.model.metadata.Ticket_;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
@@ -46,7 +46,7 @@ public class TicketHibernateDAO implements TicketDAO {
             Root<Ticket> root = query.from(Ticket.class);
             query.where(
                     builder.and(
-                            builder.equal(root.get(Ticket_.createdBy), user)),
+                            builder.equal(root.get(Ticket_.CREATED_BY_NAME), user)),
                     builder.and(ContractReader.readContract(contract, root, builder)
                     )
             );
@@ -63,7 +63,7 @@ public class TicketHibernateDAO implements TicketDAO {
             Root<Ticket> root = query.from(Ticket.class);
             query.where(
                     builder.and(
-                            builder.equal(root.get(Ticket_.createdBy), user)),
+                            builder.equal(root.get(Ticket_.CREATED_BY_NAME), user)),
                     builder.and(ContractReader.readContract(contract, root, builder)
                     )
             );

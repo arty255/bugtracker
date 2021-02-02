@@ -2,10 +2,10 @@ package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dao.HistoryEventDAO;
 import org.hetsold.bugtracker.dao.IssueDAO;
+import org.hetsold.bugtracker.dao.util.Contract;
+import org.hetsold.bugtracker.dto.*;
 import org.hetsold.bugtracker.facade.*;
 import org.hetsold.bugtracker.model.*;
-import org.hetsold.bugtracker.dto.*;
-import org.hetsold.bugtracker.dao.util.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;

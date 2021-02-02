@@ -7,7 +7,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import java.util.Date;
 
-@StaticMetamodel( Ticket.class )
+@StaticMetamodel(Ticket.class)
 public class Ticket_ {
     public static volatile SingularAttribute<Ticket, String> uuid;
     public static volatile SingularAttribute<Ticket, String> description;
@@ -18,4 +18,8 @@ public class Ticket_ {
     public static volatile SingularAttribute<Ticket, TicketVerificationState> verificationState;
     public static volatile SingularAttribute<Ticket, TicketResolveState> resolveState;
     public static volatile ListAttribute<Ticket, Message> messageList;
+
+    public static String UUID_NAME = "uuid";
+    public static String MESSAGE_LIST_NAME = "messageList";
+    public static String CREATED_BY_NAME = "createdBy";
 }

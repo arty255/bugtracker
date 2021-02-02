@@ -10,4 +10,7 @@ import java.util.Date;
 public class Message_ {
     public static volatile SingularAttribute<Message, String> uuid;
     public static volatile SingularAttribute<Message, Date> createDate;
+
+    public static String UUID_NAME = "uuid";
+    public static String CREATE_DATE_NAME = "createDate";
 }
