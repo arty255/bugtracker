@@ -1,11 +1,13 @@
 package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dao.MessageDAO;
-import org.hetsold.bugtracker.facade.MessageMapper;
-import org.hetsold.bugtracker.facade.UserMapper;
-import org.hetsold.bugtracker.model.*;
 import org.hetsold.bugtracker.dto.MessageDTO;
 import org.hetsold.bugtracker.dto.UserDTO;
+import org.hetsold.bugtracker.facade.MessageMapper;
+import org.hetsold.bugtracker.facade.UserMapper;
+import org.hetsold.bugtracker.model.Message;
+import org.hetsold.bugtracker.model.Ticket;
+import org.hetsold.bugtracker.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -113,7 +115,7 @@ public class DefaultMessageService implements MessageService {
 
     @Override
     public void delete(MessageDTO messageDTO) {
-        if(messageDTO == null){
+        if (messageDTO == null) {
             throw new IllegalArgumentException("invalid message: message or message content can not be empty");
         }
         delete(MessageMapper.getMessage(messageDTO));

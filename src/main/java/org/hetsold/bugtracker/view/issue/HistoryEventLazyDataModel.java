@@ -1,8 +1,8 @@
 package org.hetsold.bugtracker.view.issue;
 
-import org.hetsold.bugtracker.model.IssueDTO;
-import org.hetsold.bugtracker.model.IssueEventDTO;
-import org.hetsold.bugtracker.model.MessageDTO;
+import org.hetsold.bugtracker.dto.IssueDTO;
+import org.hetsold.bugtracker.dto.IssueEventDTO;
+import org.hetsold.bugtracker.dto.MessageDTO;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.MessageService;
 import org.primefaces.model.FilterMeta;

@@ -1,11 +1,11 @@
 package org.hetsold.bugtracker.view.filter;
 
+import org.hetsold.bugtracker.dao.util.Contract;
+import org.hetsold.bugtracker.dao.util.FieldFilter;
 import org.hetsold.bugtracker.model.IssueState;
 import org.hetsold.bugtracker.model.Severity;
 import org.hetsold.bugtracker.model.TicketResolveState;
 import org.hetsold.bugtracker.model.TicketVerificationState;
-import org.hetsold.bugtracker.model.filter.Contract;
-import org.hetsold.bugtracker.model.filter.FieldFilter;
 
 import java.util.List;
 import java.util.Map;
@@ -40,7 +40,7 @@ public class ContractBuilder {
         if (mappingFunctionMap.containsKey(item.getType())) {
             objectMappingFunction = mappingFunctionMap.get(item.getType());
             filter.setValue(objectMappingFunction.apply(filter.getValue()));
-        }else {
+        } else {
             throw new IllegalArgumentException("unsupported argument type");
         }
         return item.getFieldFilter();

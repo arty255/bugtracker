@@ -1,9 +1,9 @@
 package org.hetsold.bugtracker.view.ticket;
 
-import org.hetsold.bugtracker.model.TicketDTO;
+import org.hetsold.bugtracker.dto.TicketDTO;
+import org.hetsold.bugtracker.dto.UserDTO;
 import org.hetsold.bugtracker.model.TicketResolveState;
 import org.hetsold.bugtracker.model.TicketVerificationState;
-import org.hetsold.bugtracker.model.UserDTO;
 import org.hetsold.bugtracker.service.TicketService;
 import org.hetsold.bugtracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

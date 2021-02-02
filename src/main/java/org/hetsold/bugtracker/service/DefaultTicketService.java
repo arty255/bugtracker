@@ -1,16 +1,14 @@
 package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dao.TicketDAO;
-import org.hetsold.bugtracker.dto.IssueDTO;
-import org.hetsold.bugtracker.facade.IssueMapper;
+import org.hetsold.bugtracker.dao.util.Contract;
+import org.hetsold.bugtracker.dto.MessageDTO;
+import org.hetsold.bugtracker.dto.TicketDTO;
+import org.hetsold.bugtracker.dto.UserDTO;
 import org.hetsold.bugtracker.facade.MessageMapper;
 import org.hetsold.bugtracker.facade.TicketMapper;
 import org.hetsold.bugtracker.facade.UserMapper;
 import org.hetsold.bugtracker.model.*;
-import org.hetsold.bugtracker.dto.MessageDTO;
-import org.hetsold.bugtracker.dto.TicketDTO;
-import org.hetsold.bugtracker.dto.UserDTO;
-import org.hetsold.bugtracker.dao.util.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;

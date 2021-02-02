@@ -1,6 +1,6 @@
 package org.hetsold.bugtracker.view;
 
-import org.hetsold.bugtracker.model.UserDTO;
+import org.hetsold.bugtracker.dto.UserDTO;
 import org.hetsold.bugtracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.jsf.FacesContextUtils;

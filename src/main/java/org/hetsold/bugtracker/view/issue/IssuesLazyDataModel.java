@@ -1,8 +1,7 @@
 package org.hetsold.bugtracker.view.issue;
 
-import org.hetsold.bugtracker.model.IssueDTO;
-import org.hetsold.bugtracker.model.IssueShortDTO;
-import org.hetsold.bugtracker.model.filter.Contract;
+import org.hetsold.bugtracker.dao.util.Contract;
+import org.hetsold.bugtracker.dto.IssueShortDTO;
 import org.hetsold.bugtracker.service.IssueService;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;

@@ -23,7 +23,7 @@
         <h:outputStylesheet library="css" name="reusable.css"/>
     </ui:define>
     <ui:define name="content">
-        <h:form>
+        <h:form id="ticketForm">
             <p:panel header="Ticket: #{detailedTicketBean.ticket.uuid}" styleClass="ticket">
                 <p:panelGrid columns="2" style="width: 100%" columnClasses="minimalWidthColumn,autoWidthColumn">
                     <h:outputText value="Ticket resolve state:"/>
@@ -40,7 +40,7 @@
                                 </p:selectOneMenu>
                             </f:facet>
                         </p:inplace>
-                        <h:panelGroup layout="block" styleClass="ticketAssignControls">
+                        <h:panelGroup id="assingControls" layout="block" styleClass="ticketAssignControls">
                             <!--todo: change with spring security integration-->
                             <p:commandButton value="Create issue" icon="pi pi-tags"
                                              rendered="#{true and empty detailedTicketBean.ticket.issueID}"
@@ -50,6 +50,12 @@
                             <p:commandButton value="Link issue" icon="pi pi-list"
                                              onclick="PF('issuesDialog').show();"
                                              rendered="#{true and empty detailedTicketBean.ticket.issueID}"/>
+                            <!--todo: change with spring security integration-->
+                            <p:commandButton value="Unlink issue" icon="pi pi-times"
+                                             process="@this"
+                                             update="@form:assingControls"
+                                             action="#{detailedTicketBean.unlinkIssueAction}"
+                                             rendered="#{true and not empty detailedTicketBean.ticket.issueID}"/>
                         </h:panelGroup>
                     </h:panelGroup>
 

@@ -1,7 +1,7 @@
 package org.hetsold.bugtracker.facade;
 
-import org.hetsold.bugtracker.model.User;
 import org.hetsold.bugtracker.dto.UserDTO;
+import org.hetsold.bugtracker.model.User;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +33,7 @@ public class UserMapper {
         return new UserDTO(user);
     }
 
-    public static List<UserDTO> getUserDTOS(List<User> userList){
+    public static List<UserDTO> getUserDTOS(List<User> userList) {
         return userList.stream().map(UserMapper::getUserDTO).collect(Collectors.toList());
     }
 }

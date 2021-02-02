@@ -1,7 +1,12 @@
 package org.hetsold.bugtracker.view.issue;
 
 
-import org.hetsold.bugtracker.model.*;
+import org.hetsold.bugtracker.dto.IssueDTO;
+import org.hetsold.bugtracker.dto.IssueShortDTO;
+import org.hetsold.bugtracker.dto.MessageDTO;
+import org.hetsold.bugtracker.dto.UserDTO;
+import org.hetsold.bugtracker.model.Issue;
+import org.hetsold.bugtracker.model.IssueState;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.MessageService;
 import org.hetsold.bugtracker.service.UserService;

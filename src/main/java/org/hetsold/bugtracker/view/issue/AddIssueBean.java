@@ -1,8 +1,8 @@
 package org.hetsold.bugtracker.view.issue;
 
-import org.hetsold.bugtracker.model.IssueDTO;
+import org.hetsold.bugtracker.dto.IssueDTO;
+import org.hetsold.bugtracker.dto.UserDTO;
 import org.hetsold.bugtracker.model.IssueState;
-import org.hetsold.bugtracker.model.UserDTO;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

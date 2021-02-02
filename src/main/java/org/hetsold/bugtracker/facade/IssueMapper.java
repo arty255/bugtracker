@@ -1,8 +1,8 @@
 package org.hetsold.bugtracker.facade;
 
-import org.hetsold.bugtracker.model.Issue;
 import org.hetsold.bugtracker.dto.IssueDTO;
 import org.hetsold.bugtracker.dto.IssueShortDTO;
+import org.hetsold.bugtracker.model.Issue;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,6 +1,6 @@
 package org.hetsold.bugtracker.view.ticket;
 
-import org.hetsold.bugtracker.model.TicketDTO;
+import org.hetsold.bugtracker.dto.TicketDTO;
 import org.hetsold.bugtracker.service.TicketService;
 import org.hetsold.bugtracker.view.filter.ContractBuilder;
 import org.hetsold.bugtracker.view.filter.DisplayableFieldFilter;

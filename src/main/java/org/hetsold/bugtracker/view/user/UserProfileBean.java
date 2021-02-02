@@ -1,7 +1,7 @@
 package org.hetsold.bugtracker.view.user;
 
-import org.hetsold.bugtracker.model.TicketDTO;
-import org.hetsold.bugtracker.model.UserDTO;
+import org.hetsold.bugtracker.dto.TicketDTO;
+import org.hetsold.bugtracker.dto.UserDTO;
 import org.hetsold.bugtracker.service.TicketService;
 import org.hetsold.bugtracker.service.UserService;
 import org.hetsold.bugtracker.view.ticket.TicketLazyDataModel;

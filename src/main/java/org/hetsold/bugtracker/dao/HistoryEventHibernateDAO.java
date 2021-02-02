@@ -71,7 +71,7 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<Long> query = builder.createQuery(Long.class);
             Root<IssueEvent> root = query.from(IssueEvent.class);
-            query.where(builder.equal(root.get(IssueEvent_.issue), issue));
+            query.where(builder.equal(root.get(IssueEvent_.ISSUE_NAME), issue));
             query.select(builder.count(root));
             return session.createQuery(query).getSingleResult();
         });
@@ -110,12 +110,12 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<IssueEvent> query = criteriaBuilder.createQuery(IssueEvent.class);
             Root<IssueEvent> root = query.from(IssueEvent.class);
-            query.where(criteriaBuilder.equal(root.get(IssueEvent_.issue), issue));
+            query.where(criteriaBuilder.equal(root.get(IssueEvent_.ISSUE_NAME), issue));
             query.select(root);
             if (inverseDateOrder) {
-                query.orderBy(criteriaBuilder.asc(root.get(IssueEvent_.eventDate)));
+                query.orderBy(criteriaBuilder.asc(root.get(IssueEvent_.EVENT_DATE_NAME)));
             } else {
-                query.orderBy(criteriaBuilder.desc(root.get(IssueEvent_.eventDate)));
+                query.orderBy(criteriaBuilder.desc(root.get(IssueEvent_.EVENT_DATE_NAME)));
             }
             return session.createQuery(query).setFirstResult(firstResult).setMaxResults(limit).list();
         });

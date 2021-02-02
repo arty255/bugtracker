@@ -5,7 +5,6 @@ import org.hetsold.bugtracker.model.TicketResolveState;
 import org.hetsold.bugtracker.model.TicketVerificationState;
 
 import java.util.Date;
-import java.util.Objects;
 
 public class TicketDTO extends ArchivedIdentity {
     private String description;

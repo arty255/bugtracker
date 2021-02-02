@@ -4,7 +4,6 @@ import org.hetsold.bugtracker.model.Message;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
 
 public class MessageDTO extends IssueEventType implements Serializable {
     private String uuid;

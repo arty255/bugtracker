@@ -1,8 +1,12 @@
 package org.hetsold.bugtracker.view;
 
 
-import org.hetsold.bugtracker.model.*;
-import org.hetsold.bugtracker.model.filter.FilterOperation;
+import org.hetsold.bugtracker.dao.util.FilterOperation;
+import org.hetsold.bugtracker.dto.IssueEventDTO;
+import org.hetsold.bugtracker.model.IssueState;
+import org.hetsold.bugtracker.model.Severity;
+import org.hetsold.bugtracker.model.TicketResolveState;
+import org.hetsold.bugtracker.model.TicketVerificationState;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;

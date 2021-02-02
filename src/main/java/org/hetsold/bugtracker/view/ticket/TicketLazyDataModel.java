@@ -1,8 +1,8 @@
 package org.hetsold.bugtracker.view.ticket;
 
-import org.hetsold.bugtracker.model.TicketDTO;
-import org.hetsold.bugtracker.model.UserDTO;
-import org.hetsold.bugtracker.model.filter.Contract;
+import org.hetsold.bugtracker.dao.util.Contract;
+import org.hetsold.bugtracker.dto.TicketDTO;
+import org.hetsold.bugtracker.dto.UserDTO;
 import org.hetsold.bugtracker.service.TicketService;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;

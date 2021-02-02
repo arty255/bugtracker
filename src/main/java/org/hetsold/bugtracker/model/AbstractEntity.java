@@ -1,7 +1,5 @@
 package org.hetsold.bugtracker.model;
 
-import org.hetsold.bugtracker.dto.ArchivedIdentity;
-
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;

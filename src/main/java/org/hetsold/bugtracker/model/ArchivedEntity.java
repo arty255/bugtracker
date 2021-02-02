@@ -5,7 +5,7 @@ import javax.persistence.Convert;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class ArchivedEntity extends AbstractEntity{
+public class ArchivedEntity extends AbstractEntity {
     @Column(name = "archived")
     @Convert(converter = BooleanToStringConverter.class)
     private Boolean archived;
