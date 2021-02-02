@@ -37,7 +37,7 @@ public class IssueDTO extends ArchivedIdentity {
         this.fixVersion = issue.getFixVersion();
         this.currentIssueState = issue.getCurrentIssueState();
         this.setArchived(issue.getArchived());
-        if (issue.getAssignedTo() != null) {
+        if (issue.getReportedBy() != null) {
             this.reportedBy = new UserDTO(issue.getReportedBy());
         }
         if (issue.getAssignedTo() != null) {

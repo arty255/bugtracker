@@ -10,4 +10,5 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(IssueMessageEvent.class)
 public class IssueStateChangeEvent_ {
     public static volatile SingularAttribute<IssueStateChangeEvent, IssueState> issueState;
+    public static String ISSUE_STATE_NAME="issueState";
 }
