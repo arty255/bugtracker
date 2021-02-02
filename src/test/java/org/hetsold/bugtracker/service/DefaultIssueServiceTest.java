@@ -1,10 +1,10 @@
 package org.hetsold.bugtracker.service;
 
-import antlr.debug.MessageEvent;
 import org.hetsold.bugtracker.AppConfig;
 import org.hetsold.bugtracker.TestAppConfig;
 import org.hetsold.bugtracker.dao.HistoryEventDAO;
 import org.hetsold.bugtracker.dao.IssueDAO;
+import org.hetsold.bugtracker.dto.*;
 import org.hetsold.bugtracker.model.*;
 import org.hetsold.bugtracker.util.*;
 import org.junit.After;
@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.validateMockitoUsage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -263,5 +264,41 @@ public class DefaultIssueServiceTest {
         Mockito.verify(ticketService, Mockito.times(1)).applyForIssue(ticket);
     }
 
+    @Test
+    public void checkIfIssueCanBeLinkedToTicket() {
+        Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
+        Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
+        TicketDTO ticketDTO = new TicketDTO(ticket);
+        IssueShortDTO issueShortDTO = new IssueShortDTO(issue);
+        Mockito.when(issueDAO.getIssueById(issueShortDTO.getUuid())).thenReturn(issue);
+        Mockito.when(ticketService.getTicketById(ticketDTO.getUuid())).thenReturn(ticket);
+        issueService.assignIssueToTicket(issueShortDTO, ticketDTO);
+        assertEquals(issue.getTicket(), ticket);
+    }
 
+    @Test
+    public void checkIfNullIssueCanBeLinkedToTicket() {
+        Ticket ticket = ticketFactory.getTicket(TicketFactoryTicketType.CorrectTicket);
+        Issue linkedIssue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
+        ticket.setIssue(linkedIssue);
+        ticket.getIssue().setTicket(ticket);
+        TicketDTO ticketDTO = new TicketDTO(ticket);
+        Mockito.when(ticketService.getTicketById(ticketDTO.getUuid())).thenReturn(ticket);
+        issueService.assignIssueToTicket(null, ticketDTO);
+        assertNull(linkedIssue.getTicket());
+    }
+
+    @Test
+    public void checkIfNullTicketCanBeLinkedToIssue() {
+        Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
+        IssueShortDTO issueShortDTO = new IssueShortDTO(issue);
+        Mockito.when(issueDAO.getIssueById(issueShortDTO.getUuid())).thenReturn(issue);
+        issueService.assignIssueToTicket(issueShortDTO, null);
+        assertNull(issue.getTicket());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkIfNullIssueAndNullTicketThrowExceptionOnLinking() {
+        issueService.assignIssueToTicket(null, null);
+    }
 }

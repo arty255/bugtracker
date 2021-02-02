@@ -1,4 +1,4 @@
-package org.hetsold.bugtracker.model;
+package org.hetsold.bugtracker.dto;
 
 public abstract class IssueEventType {
 }

@@ -1,14 +1,14 @@
 package org.hetsold.bugtracker.facade;
 
 import org.hetsold.bugtracker.model.Ticket;
-import org.hetsold.bugtracker.model.TicketDTO;
+import org.hetsold.bugtracker.dto.TicketDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class TicketMapper {
     public static Ticket getTicket(TicketDTO ticketDTO) {
-        Ticket ticket = new Ticket();
+        Ticket ticket = null;
         if (ticketDTO != null) {
             ticket = new Ticket();
             ticket.setUuid(ticketDTO.getUuid());

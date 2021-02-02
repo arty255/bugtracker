@@ -1,9 +1,9 @@
 package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.model.Message;
-import org.hetsold.bugtracker.model.Message_;
+import org.hetsold.bugtracker.model.metadata.Message_;
 import org.hetsold.bugtracker.model.Ticket;
-import org.hetsold.bugtracker.model.Ticket_;
+import org.hetsold.bugtracker.model.metadata.Ticket_;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;

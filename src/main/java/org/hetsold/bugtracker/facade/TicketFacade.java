@@ -1,7 +1,7 @@
 package org.hetsold.bugtracker.facade;
 
-import org.hetsold.bugtracker.model.TicketDTO;
-import org.hetsold.bugtracker.model.UserDTO;
+import org.hetsold.bugtracker.dto.TicketDTO;
+import org.hetsold.bugtracker.dto.UserDTO;
 
 import java.util.List;
 

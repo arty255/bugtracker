@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "user")
-public class User extends AbstractIdentity {
+public class User extends AbstractEntity {
     private String firstName;
     private String lastName;
     @OneToMany(mappedBy = "reportedBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

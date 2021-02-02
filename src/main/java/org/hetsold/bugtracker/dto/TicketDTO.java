@@ -1,10 +1,13 @@
-package org.hetsold.bugtracker.model;
+package org.hetsold.bugtracker.dto;
+
+import org.hetsold.bugtracker.model.Ticket;
+import org.hetsold.bugtracker.model.TicketResolveState;
+import org.hetsold.bugtracker.model.TicketVerificationState;
 
 import java.util.Date;
 import java.util.Objects;
 
-public class TicketDTO {
-    private String uuid;
+public class TicketDTO extends ArchivedIdentity {
     private String description;
     private String reproduceSteps;
     private String productVersion;
@@ -15,7 +18,7 @@ public class TicketDTO {
     private String issueID;
 
     public TicketDTO(Ticket ticket) {
-        this.uuid = ticket.getUuid();
+        this.setUuid(ticket.getUuid());
         this.creationTime = ticket.getCreationTime();
         this.description = ticket.getDescription();
         this.reproduceSteps = ticket.getReproduceSteps();
@@ -31,15 +34,7 @@ public class TicketDTO {
     }
 
     public TicketDTO(String uuid) {
-        this.uuid = uuid;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+        this.setUuid(uuid);
     }
 
     public String getDescription() {
@@ -104,18 +99,5 @@ public class TicketDTO {
 
     public void setIssueID(String issueID) {
         this.issueID = issueID;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TicketDTO ticketDTO = (TicketDTO) o;
-        return Objects.equals(uuid, ticketDTO.uuid);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(uuid);
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "ticket")
-public class Ticket extends AbstractIdentity {
+public class Ticket extends AbstractEntity {
     private String description;
     private String reproduceSteps;
     private String productVersion;

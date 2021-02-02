@@ -1,4 +1,6 @@
-package org.hetsold.bugtracker.model;
+package org.hetsold.bugtracker.dto;
+
+import org.hetsold.bugtracker.model.User;
 
 import java.util.Objects;
 

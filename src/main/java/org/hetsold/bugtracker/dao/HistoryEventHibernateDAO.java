@@ -1,6 +1,9 @@
 package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.model.*;
+import org.hetsold.bugtracker.model.metadata.IssueEvent_;
+import org.hetsold.bugtracker.model.metadata.IssueMessageEvent_;
+import org.hetsold.bugtracker.model.metadata.IssueStateChangeEvent_;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;

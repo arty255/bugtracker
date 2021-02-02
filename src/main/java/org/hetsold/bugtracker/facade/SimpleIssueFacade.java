@@ -1,6 +1,10 @@
 package org.hetsold.bugtracker.facade;
 
 import org.hetsold.bugtracker.model.*;
+import org.hetsold.bugtracker.dto.IssueDTO;
+import org.hetsold.bugtracker.dto.IssueShortDTO;
+import org.hetsold.bugtracker.dto.TicketDTO;
+import org.hetsold.bugtracker.dto.UserDTO;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;

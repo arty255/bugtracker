@@ -10,7 +10,7 @@ import java.util.Date;
 @Entity
 @Table(name = "issueEvent")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class IssueEvent extends AbstractIdentity {
+public abstract class IssueEvent extends AbstractEntity {
     @ManyToOne()
     @JoinTable(name = "issue_issueEvent", joinColumns = @JoinColumn(name = "issueEventId"), inverseJoinColumns = @JoinColumn(name = "issueId"))
     private Issue issue;

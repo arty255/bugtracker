@@ -5,7 +5,7 @@ import org.hetsold.bugtracker.TestAppConfig;
 import org.hetsold.bugtracker.dao.UserDAO;
 import org.hetsold.bugtracker.facade.UserMapper;
 import org.hetsold.bugtracker.model.User;
-import org.hetsold.bugtracker.model.UserDTO;
+import org.hetsold.bugtracker.dto.UserDTO;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
