@@ -18,6 +18,7 @@ create table if not exists message
     createDate     datetime    not null,
     messageEditor  varchar(40) default null,
     editDate       datetime    default null,
+    archived       char(1)     default 'N',
     primary key (uuid),
     foreign key (messageCreator) references user (uuid) on delete cascade
 );
@@ -35,6 +36,7 @@ create table if not exists ticket
     voteCount         int,
     verificationState tinyint,
     resolveState      tinyint,
+    archived          char(1) default 'N',
     primary key (uuid),
     foreign key (createdBy) references user (uuid) on delete cascade
 );

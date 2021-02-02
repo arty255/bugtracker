@@ -4,6 +4,8 @@ import org.hetsold.bugtracker.dao.MessageDAO;
 import org.hetsold.bugtracker.facade.MessageMapper;
 import org.hetsold.bugtracker.facade.UserMapper;
 import org.hetsold.bugtracker.model.*;
+import org.hetsold.bugtracker.dto.MessageDTO;
+import org.hetsold.bugtracker.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;

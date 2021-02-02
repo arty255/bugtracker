@@ -1,4 +1,6 @@
-package org.hetsold.bugtracker.model;
+package org.hetsold.bugtracker.dto;
+
+import org.hetsold.bugtracker.model.Message;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -76,18 +78,5 @@ public class MessageDTO extends IssueEventType implements Serializable {
 
     public void setEditor(UserDTO editor) {
         this.editor = editor;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MessageDTO that = (MessageDTO) o;
-        return Objects.equals(uuid, that.uuid);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(uuid);
     }
 }

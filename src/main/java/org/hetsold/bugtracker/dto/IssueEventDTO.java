@@ -1,4 +1,8 @@
-package org.hetsold.bugtracker.model;
+package org.hetsold.bugtracker.dto;
+
+import org.hetsold.bugtracker.model.IssueEvent;
+import org.hetsold.bugtracker.model.IssueMessageEvent;
+import org.hetsold.bugtracker.model.IssueStateChangeEvent;
 
 public class IssueEventDTO {
     private EventType eventType;

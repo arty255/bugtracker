@@ -29,7 +29,7 @@ import java.util.List;
         },
         subclassSubgraphs = {
                 @NamedSubgraph(name = "historyEventSubGraph",
-                        type = org.hetsold.bugtracker.model.AbstractIdentity.class,
+                        type = AbstractEntity.class,
                         attributeNodes = {}
                 ),
                 @NamedSubgraph(name = "historyEventSubGraph",
@@ -66,7 +66,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "issue")
-public class Issue extends AbstractIdentity {
+public class Issue extends ArchivedEntity {
     private String issueNumber;
     private String description;
     private Date creationTime;
@@ -96,9 +96,6 @@ public class Issue extends AbstractIdentity {
             joinColumns = @JoinColumn(name = "issueId", referencedColumnName = "uuid"),
             inverseJoinColumns = @JoinColumn(name = "ticketId", referencedColumnName = "uuid"))
     private Ticket ticket;
-    @Column(name = "archived")
-    @Convert(converter = BooleanToStringConverter.class)
-    private Boolean archived;
 
     public Issue() {
         history = new ArrayList<>();
@@ -116,7 +113,7 @@ public class Issue extends AbstractIdentity {
         this.reproduceSteps = newIssue.getReproduceSteps();
         this.existedResult = newIssue.getExistedResult();
         this.expectedResult = newIssue.getExpectedResult();
-        this.archived = newIssue.getArchived();
+        this.setArchived(newIssue.getArchived());
     }
 
     public String getIssueNumber() {
@@ -229,14 +226,6 @@ public class Issue extends AbstractIdentity {
 
     public void setTicket(Ticket ticket) {
         this.ticket = ticket;
-    }
-
-    public Boolean getArchived() {
-        return archived;
-    }
-
-    public void setArchived(Boolean archived) {
-        this.archived = archived;
     }
 
     public static class Builder {

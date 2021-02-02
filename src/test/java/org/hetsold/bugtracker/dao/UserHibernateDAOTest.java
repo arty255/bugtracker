@@ -2,9 +2,9 @@ package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.TestAppConfig;
 import org.hetsold.bugtracker.model.User;
-import org.hetsold.bugtracker.model.filter.Contract;
-import org.hetsold.bugtracker.model.filter.FieldFilter;
-import org.hetsold.bugtracker.model.filter.FilterOperation;
+import org.hetsold.bugtracker.dao.util.Contract;
+import org.hetsold.bugtracker.dao.util.FieldFilter;
+import org.hetsold.bugtracker.dao.util.FilterOperation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

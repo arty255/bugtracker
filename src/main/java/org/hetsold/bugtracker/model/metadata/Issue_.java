@@ -1,4 +1,6 @@
-package org.hetsold.bugtracker.model;
+package org.hetsold.bugtracker.model.metadata;
+
+import org.hetsold.bugtracker.model.*;
 
 import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SingularAttribute;

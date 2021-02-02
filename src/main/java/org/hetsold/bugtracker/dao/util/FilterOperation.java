@@ -1,4 +1,4 @@
-package org.hetsold.bugtracker.model.filter;
+package org.hetsold.bugtracker.dao.util;
 
 public enum FilterOperation {
     EQUAL("equal"),

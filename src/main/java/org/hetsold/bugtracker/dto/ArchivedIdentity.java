@@ -1,6 +1,6 @@
-package org.hetsold.bugtracker.model;
+package org.hetsold.bugtracker.dto;
 
-public abstract class ArchivedIdentity {
+public abstract class ArchivedIdentity extends AbstractDTO {
     private Boolean archived;
 
     public Boolean getArchived() {

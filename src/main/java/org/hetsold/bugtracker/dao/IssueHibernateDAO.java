@@ -1,8 +1,7 @@
 package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.model.Issue;
-import org.hetsold.bugtracker.model.Issue_;
-import org.hetsold.bugtracker.model.filter.Contract;
+import org.hetsold.bugtracker.dao.util.Contract;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
@@ -14,7 +13,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository

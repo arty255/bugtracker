@@ -1,7 +1,7 @@
 package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.model.User;
-import org.hetsold.bugtracker.model.filter.Contract;
+import org.hetsold.bugtracker.dao.util.Contract;
 
 import java.util.List;
 

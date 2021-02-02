@@ -1,4 +1,7 @@
-package org.hetsold.bugtracker.model;
+package org.hetsold.bugtracker.dto;
+
+import org.hetsold.bugtracker.model.IssueState;
+import org.hetsold.bugtracker.model.IssueStateChangeEvent;
 
 import java.util.Date;
 

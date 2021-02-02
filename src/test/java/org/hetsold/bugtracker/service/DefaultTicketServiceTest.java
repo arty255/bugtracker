@@ -4,6 +4,8 @@ import org.hetsold.bugtracker.AppConfig;
 import org.hetsold.bugtracker.TestAppConfig;
 import org.hetsold.bugtracker.dao.TicketDAO;
 import org.hetsold.bugtracker.model.*;
+import org.hetsold.bugtracker.dto.TicketDTO;
+import org.hetsold.bugtracker.dto.UserDTO;
 import org.hetsold.bugtracker.util.MessageFactory;
 import org.hetsold.bugtracker.util.MessageFactoryCreatedMessageType;
 import org.hetsold.bugtracker.util.TicketFactory;

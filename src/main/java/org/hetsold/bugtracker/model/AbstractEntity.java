@@ -1,5 +1,7 @@
 package org.hetsold.bugtracker.model;
 
+import org.hetsold.bugtracker.dto.ArchivedIdentity;
+
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
@@ -10,7 +12,7 @@ import java.util.Objects;
  */
 
 @MappedSuperclass
-public class AbstractIdentity {
+public abstract class AbstractEntity {
     @Id
     private String uuid;
     @Version
@@ -21,7 +23,7 @@ public class AbstractIdentity {
         uuid = java.util.UUID.randomUUID().toString();
     }
 
-    public AbstractIdentity() {
+    public AbstractEntity() {
     }
 
     public String getUuid() {
@@ -44,7 +46,7 @@ public class AbstractIdentity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AbstractIdentity that = (AbstractIdentity) o;
+        AbstractEntity that = (AbstractEntity) o;
         return uuid.equals(that.uuid);
     }
 

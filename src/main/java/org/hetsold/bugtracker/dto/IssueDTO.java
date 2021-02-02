@@ -1,9 +1,12 @@
-package org.hetsold.bugtracker.model;
+package org.hetsold.bugtracker.dto;
+
+import org.hetsold.bugtracker.model.Issue;
+import org.hetsold.bugtracker.model.IssueState;
+import org.hetsold.bugtracker.model.Severity;
 
 import java.util.Date;
 
 public class IssueDTO extends ArchivedIdentity {
-    private String uuid;
     private String issueNumber;
     private String description;
     private Date creationTime;
@@ -22,7 +25,7 @@ public class IssueDTO extends ArchivedIdentity {
     }
 
     public IssueDTO(Issue issue) {
-        this.uuid = issue.getUuid();
+        this.setUuid(issue.getUuid());
         this.issueNumber = issue.getIssueNumber();
         this.description = issue.getDescription();
         this.creationTime = issue.getCreationTime();
@@ -43,14 +46,6 @@ public class IssueDTO extends ArchivedIdentity {
         if (issue.getTicket() != null) {
             this.ticket = new TicketDTO(issue.getTicket());
         }
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
     }
 
     public String getIssueNumber() {

@@ -4,7 +4,8 @@ import org.hetsold.bugtracker.dao.HistoryEventDAO;
 import org.hetsold.bugtracker.dao.IssueDAO;
 import org.hetsold.bugtracker.facade.*;
 import org.hetsold.bugtracker.model.*;
-import org.hetsold.bugtracker.model.filter.Contract;
+import org.hetsold.bugtracker.dto.*;
+import org.hetsold.bugtracker.dao.util.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -400,33 +401,53 @@ public class DefaultIssueService implements IssueService {
         return IssueMapper.getIssueShortDTO(issue);
     }
 
-    public void assignIssueToTicket(Issue issue, Ticket ticket) {
-        if (ticket == null || ticket.getUuid() == null || ticket.getUuid().isEmpty() || (ticket = ticketService.getTicketById(ticket.getUuid())) == null) {
-            throw new IllegalArgumentException("ticket argument can not be null");
+    private void assignIssueToTicket(Issue issue, Ticket ticket) {
+        if (isEligibleOperation(issue, ticket)) {
+            if (ticket != null && ticket.getUuid() != null && !ticket.getUuid().isEmpty()) {
+                ticket = ticketService.getTicketById(ticket.getUuid());
+            }
+            if (issue != null && issue.getUuid() != null && !issue.getUuid().isEmpty()) {
+                issue = getIssueById(issue.getUuid());
+            }
+            if (issue != null) {
+                if (isLinkOperationEligible(issue, ticket)) {
+                    issue.setTicket(ticket);
+                } else {
+                    throw new IllegalArgumentException("issue already assigned");
+                }
+            } else if (ticket != null) {
+                if (ticket.getIssue() != null) {
+                    ticket.getIssue().setTicket(null);
+                }
+            }
+        } else {
+            throw new IllegalArgumentException("wrong operation: ticket and issue can not be null");
         }
-        if (ticket.getIssue() != null) {
-            throw new IllegalArgumentException("ticket already assigned");
+    }
+
+    private boolean isEligibleOperation(Issue issue, Ticket ticket) {
+        return issue != null || ticket != null;
+    }
+
+    private boolean isLinkOperationEligible(Issue issue, Ticket ticket) {
+        boolean result = false;
+        if (issue != null && issue.getTicket() == null) {
+            if (ticket == null || ticket.getIssue() == null) {
+                result = true;
+            }
         }
-        if (issue == null || (issue = getIssueById(issue.getUuid())) == null) {
-            throw new IllegalArgumentException("issue argument can not be null or not persisted");
+        if (ticket != null && ticket.getIssue() == null) {
+            if (issue == null || issue.getTicket() == null) {
+                result = true;
+            }
         }
-        if (issue.getTicket() != null) {
-            throw new IllegalArgumentException("issue already assigned");
-        }
-        issue.setTicket(ticket);
+        return result;
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void assignIssueToTicket(IssueShortDTO issueShortDTO, TicketDTO ticketDTO) {
-        if (ticketDTO == null) {
-            throw new IllegalArgumentException("ticket argument can not be null");
-        }
-        Issue issue;
-        if (issueShortDTO == null || issueShortDTO.getUuid().isEmpty() || (issue = getIssueById(issueShortDTO.getUuid())) == null) {
-            throw new IllegalArgumentException("incorrect issue: issue can not be null or not persisted");
-        }
-        assignIssueToTicket(issue, TicketMapper.getTicket(ticketDTO));
+        assignIssueToTicket(IssueMapper.getIssue(issueShortDTO), TicketMapper.getTicket(ticketDTO));
     }
 
     private Issue buildIssueFromTicket(Ticket ticket) {
