@@ -1,9 +1,9 @@
 package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.model.Message;
+import org.hetsold.bugtracker.model.Message_;
 import org.hetsold.bugtracker.model.Ticket;
-import org.hetsold.bugtracker.model.metadata.Message_;
-import org.hetsold.bugtracker.model.metadata.Ticket_;
+import org.hetsold.bugtracker.model.Ticket_;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
@@ -67,9 +67,9 @@ public class MessageHibernateDAO implements MessageDAO {
             Join<Ticket, Message> messageJoin = getTicketMessageJoinByUUID(builder, ticket, messageQuery);
             messageQuery.select(messageJoin);
             if (inverseDateOrder) {
-                messageQuery.orderBy(builder.desc(messageJoin.get(Message_.CREATE_DATE_NAME)));
+                messageQuery.orderBy(builder.desc(messageJoin.get(Message_.createDate)));
             } else {
-                messageQuery.orderBy(builder.asc(messageJoin.get(Message_.CREATE_DATE_NAME)));
+                messageQuery.orderBy(builder.asc(messageJoin.get(Message_.createDate)));
             }
             return session.createQuery(messageQuery).setFirstResult(0).setMaxResults(limit).list();
         });
@@ -78,7 +78,7 @@ public class MessageHibernateDAO implements MessageDAO {
     private Join<Ticket, Message> getTicketMessageJoinByUUID(CriteriaBuilder builder, Ticket ticket, CriteriaQuery<?> query) {
         CriteriaQuery<Ticket> ticketQuery = builder.createQuery(Ticket.class);
         Root<Ticket> ticketRoot = query.from(Ticket.class);
-        ticketQuery.where(builder.equal(ticketRoot.get(Ticket_.UUID_NAME), ticket.getUuid()));
-        return ticketRoot.join(Ticket_.MESSAGE_LIST_NAME);
+        ticketQuery.where(builder.equal(ticketRoot.get(Ticket_.uuid), ticket.getUuid()));
+        return ticketRoot.join(Ticket_.messageList);
     }
 }

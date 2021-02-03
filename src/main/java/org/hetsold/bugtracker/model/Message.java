@@ -5,7 +5,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "message")
-public class Message extends AbstractEntity {
+public class Message extends ArchivedEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "messageCreator")
     private User messageCreator;

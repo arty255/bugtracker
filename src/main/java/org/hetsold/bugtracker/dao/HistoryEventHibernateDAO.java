@@ -1,9 +1,6 @@
 package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.model.*;
-import org.hetsold.bugtracker.model.metadata.IssueEvent_;
-import org.hetsold.bugtracker.model.metadata.IssueMessageEvent_;
-import org.hetsold.bugtracker.model.metadata.IssueStateChangeEvent_;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
@@ -71,7 +68,7 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<Long> query = builder.createQuery(Long.class);
             Root<IssueEvent> root = query.from(IssueEvent.class);
-            query.where(builder.equal(root.get(IssueEvent_.ISSUE_NAME), issue));
+            query.where(builder.equal(root.get(IssueEvent_.issue), issue));
             query.select(builder.count(root));
             return session.createQuery(query).getSingleResult();
         });
@@ -88,11 +85,11 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
             CriteriaQuery<IssueState> query = builder.createQuery(IssueState.class);
             Root<IssueStateChangeEvent> root = query.from(IssueStateChangeEvent.class);
             query.where(builder.or(
-                    builder.equal(root.get(IssueStateChangeEvent_.ISSUE_STATE_NAME), IssueState.OPEN),
-                    builder.equal(root.get(IssueStateChangeEvent_.ISSUE_STATE_NAME), IssueState.REOPEN)
+                    builder.equal(root.get(IssueStateChangeEvent_.issueState), IssueState.OPEN),
+                    builder.equal(root.get(IssueStateChangeEvent_.issueState), IssueState.REOPEN)
             ));
-            query.select(root.get(IssueStateChangeEvent_.ISSUE_STATE_NAME));
-            query.orderBy(builder.desc(root.get(IssueEvent_.EVENT_DATE_NAME)));
+            query.select(root.get(IssueStateChangeEvent_.issueState));
+            query.orderBy(builder.desc(root.get(IssueEvent_.eventDate)));
             return session.createQuery(query).setMaxResults(1).list().stream().findFirst().orElse(IssueState.OPEN);
         });
     }
@@ -106,12 +103,12 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<IssueEvent> query = criteriaBuilder.createQuery(IssueEvent.class);
             Root<IssueEvent> root = query.from(IssueEvent.class);
-            query.where(criteriaBuilder.equal(root.get(IssueEvent_.ISSUE_NAME), issue));
+            query.where(criteriaBuilder.equal(root.get(IssueEvent_.issue), issue));
             query.select(root);
             if (inverseDateOrder) {
-                query.orderBy(criteriaBuilder.asc(root.get(IssueEvent_.EVENT_DATE_NAME)));
+                query.orderBy(criteriaBuilder.asc(root.get(IssueEvent_.eventDate)));
             } else {
-                query.orderBy(criteriaBuilder.desc(root.get(IssueEvent_.EVENT_DATE_NAME)));
+                query.orderBy(criteriaBuilder.desc(root.get(IssueEvent_.eventDate)));
             }
             return session.createQuery(query).setFirstResult(firstResult).setMaxResults(limit).list();
         });
