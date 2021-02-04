@@ -1,14 +1,35 @@
-drop table if exists user;
 create table if not exists user
 (
     uuid      varchar(40) not null,
-    version   tinyint,
+    version   int,
     firstName varchar(50),
     lastName  varchar(50),
     primary key (uuid)
 );
 
-drop table if exists message;
+create table if not exists securityUser
+(
+    uuid                  varchar(40) not null,
+    version               int,
+    username              varchar(40) unique,
+    password              varchar(250),
+    enabled               char(1) default 'Y',
+    accountNonExpired     char(1) default 'Y',
+    accountNonLocked      char(1) default 'Y',
+    credentialsNonExpired char(1) default 'Y',
+    userId                varchar(40) not null,
+    primary key (uuid),
+    foreign key (userId) references user (uuid) on delete cascade
+);
+
+create table if not exists securityUser_authority
+(
+    secUserId    varchar(40) not null,
+    authority varchar(40),
+    primary key (secUserId, authority),
+    foreign key (secUserId) references securityUser (uuid) on delete cascade
+);
+
 create table if not exists message
 (
     uuid           varchar(40) not null,
@@ -23,7 +44,6 @@ create table if not exists message
     foreign key (messageCreator) references user (uuid) on delete cascade
 );
 
-drop table if exists ticket;
 create table if not exists ticket
 (
     uuid              varchar(40) not null check (uuid <> ''),
@@ -41,7 +61,6 @@ create table if not exists ticket
     foreign key (createdBy) references user (uuid) on delete cascade
 );
 
-drop table if exists ticket_message;
 create table if not exists ticket_message
 (
     ticketId  varchar(40) not null,
@@ -51,7 +70,6 @@ create table if not exists ticket_message
     foreign key (messageId) references message (uuid) on delete cascade
 );
 
-drop table if exists issue;
 create table if not exists issue
 (
     uuid              varchar(40)   not null,
@@ -70,7 +88,6 @@ create table if not exists issue
     primary key (uuid)
 );
 
-drop table if exists issue_assigned;
 create table if not exists issue_assigned
 (
     issueId varchar(40) not null,
@@ -80,7 +97,6 @@ create table if not exists issue_assigned
     foreign key (userId) references user (uuid) on delete cascade
 );
 
-drop table if exists issue_reportedBy;
 create table if not exists issue_reportedBy
 (
     issueId varchar(40) not null,
@@ -90,7 +106,6 @@ create table if not exists issue_reportedBy
     foreign key (userId) references user (uuid) on delete cascade
 );
 
-drop table if exists issue_ticket;
 create table if not exists issue_ticket
 (
     issueId  varchar(40) not null,
@@ -100,7 +115,6 @@ create table if not exists issue_ticket
     foreign key (ticketId) references ticket (uuid) on delete cascade
 );
 
-drop table if exists issueEvent;
 create table if not exists issueEvent
 (
     uuid      varchar(40) not null,
@@ -110,7 +124,6 @@ create table if not exists issueEvent
     primary key (uuid)
 );
 
-drop table if exists issueMessageEvent;
 create table if not exists issueMessageEvent
 (
     uuid      varchar(40) not null,
@@ -119,7 +132,6 @@ create table if not exists issueMessageEvent
     foreign key (messageId) references message (uuid) on delete cascade
 );
 
-drop table if exists issueStateChangeEvent;
 create table if not exists issueStateChangeEvent
 (
     uuid       varchar(40) not null,
@@ -129,7 +141,6 @@ create table if not exists issueStateChangeEvent
     foreign key (redactorId) references user (uuid) on delete cascade
 );
 
-drop table if exists issue_issueEvent;
 create table if not exists issue_issueEvent
 (
     issueId      varchar(40) not null,

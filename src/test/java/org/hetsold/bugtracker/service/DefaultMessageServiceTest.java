@@ -43,7 +43,7 @@ public class DefaultMessageServiceTest {
     @Before
     public void beforeTest() {
         MockitoAnnotations.openMocks(this);
-        userService.registerUser(new UserDTO(user));
+        userService.registerUser(new UserDTO(user), null);
     }
 
     @After

@@ -2,13 +2,15 @@ package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dao.util.Contract;
 import org.hetsold.bugtracker.dto.UserDTO;
+import org.hetsold.bugtracker.model.SecurityUser;
 import org.hetsold.bugtracker.model.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
-    UserDTO registerUser(UserDTO userDTO);
+    UserDTO registerUser(UserDTO userDTO, SecurityUser securityUser);
 
     UserDTO updateUser(UserDTO userDTO);
 
@@ -23,4 +25,6 @@ public interface UserService {
     List<UserDTO> getUsers(Contract contract, int first, int count);
 
     long getUsersCount(Contract contract);
+
+    boolean isLoginTaken(String login);
 }

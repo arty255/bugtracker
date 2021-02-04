@@ -1,7 +1,9 @@
 package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.dao.util.Contract;
+import org.hetsold.bugtracker.model.SecurityUser;
 import org.hetsold.bugtracker.model.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
@@ -15,4 +17,10 @@ public interface UserDAO {
     long getUsersCount(Contract contract);
 
     List<User> getUsers(Contract contract, int first, int limit);
+
+    UserDetails getSecUserByUsername(String username);
+
+    void save(SecurityUser securityUser);
+
+    boolean isLoginTaken(String login);
 }
