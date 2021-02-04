@@ -45,7 +45,7 @@ public class DefaultUserServiceTest {
     @Test
     public void checkIfUserCanBeRegisteredAndReceiveCorrectDTO() {
         ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
-        UserDTO savedUser = userService.registerUser(userDTO);
+        UserDTO savedUser = userService.registerUser(userDTO, null);
         Mockito.verify(userDAO, Mockito.times(1)).save(userArgumentCaptor.capture());
         assertEquals(savedUser.getFirstName(), userEntity.getFirstName());
         assertEquals(savedUser.getLastName(), userEntity.getLastName());
@@ -55,7 +55,7 @@ public class DefaultUserServiceTest {
     public void checkIfUserWithBlankFirstAndLastNamesThrowException() {
         userDTO.setFirstName("");
         userDTO.setLastName("");
-        userService.registerUser(userDTO);
+        userService.registerUser(userDTO, null);
     }
 
     @Test

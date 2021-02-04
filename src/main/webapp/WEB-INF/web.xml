@@ -13,7 +13,7 @@
     </context-param>
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>org.hetsold.bugtracker.AppConfig</param-value>
+        <param-value>org.hetsold.bugtracker.AppConfig,org.hetsold.bugtracker.SecurityAppConfig</param-value>
     </context-param>
     <context-param>
         <param-name>spring.profiles.active</param-name>
@@ -57,4 +57,13 @@
         <url-pattern>*.jsf</url-pattern>
     </servlet-mapping>
 
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/</url-pattern>
+    </filter-mapping>
 </web-app>

@@ -66,46 +66,117 @@
         </h:form>
 
         <h:form id="dialogForm">
-            <p:dialog widgetVar="addUserDialog" header="user data">
-                <p:ajax event="close" update="@this" process="@this"
-                        listener="#{addUserBean.initNewUser}"/>
-                <h:panelGroup id="userPanel" layout="block">
-                    <p:messages showDetail="true" closable="false" severity="error"/>
-                    <h:panelGrid columns="1" style="width: 100%">
-                        <p:outputLabel value="User first name:"/>
-                        <p:inputText value="#{addUserBean.user.firstName}" style="width: 100%"/>
+            <p:dialog widgetVar="addUserDialog" header="user data" dynamic="true" appendTo="@(body)"
+                      width="500">
+                <h:form>
+                    <p:messages showDetail="true" closable="false" severity="error">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:tabView>
+                        <p:tab title="Profile data">
+                            <h:panelGroup id="userPanel" layout="block">
+                                <h:panelGrid columns="1" styleClass="userPanelGrid">
+                                    <p:outputLabel value="User first name:"/>
+                                    <p:inputText value="#{addUserBean.user.firstName}" style="width: 100%"/>
+                                    <p:outputLabel value="User last name:"/>
+                                    <p:inputText value="#{addUserBean.user.lastName}" style="width: 100%"/>
+                                </h:panelGrid>
+                                <div>
 
-                        <p:outputLabel value="User last name:"/>
-                        <p:inputText value="#{addUserBean.user.lastName}" style="width: 100%"/>
-
-                        <!--todo: user privilegies-->
-                        <p:outputLabel value="Privileges"/>
-                        <p:selectOneMenu style="width: 100%">
-                            <f:selectItem itemLabel="Simply"/>
-                            <f:selectItem itemLabel="Redactor"/>
-                            <f:selectItem itemLabel="Admin"/>
-                        </p:selectOneMenu>
-
-                        <h:panelGroup layout="block">
-                            <div style="overflow: auto; width: 100%; margin-top: 1em">
-                                <p:commandButton value="Save" actionListener="#{addUserBean.registerUser}"
-                                                 style="float: right;"
-                                                 update=":usersForm:userDataTable dialogForm"
-                                                 process="@form"
-                                                 onsuccess="PF('addUserDialog').hide()"/>
-                                <p:commandButton value="Cancel" actionListener="#{addUserBean.initNewUser}"
-                                                 style="float: right; margin-right: 0.5em"
-                                                 update="userPanel" onclick="PF('addUserDialog').hide()"/>
-                                <p:commandButton value="Clear" style="float: left; margin-right: 1em;"
-                                                 actionListener="#{addUserBean.initNewUser}"
-                                                 update="userPanel"/>
-                            </div>
-                        </h:panelGroup>
-                    </h:panelGrid>
-                </h:panelGroup>
+                                </div>
+                            </h:panelGroup>
+                        </p:tab>
+                        <p:tab title="Credentials and premission">
+                            <h:panelGroup layout="block" styleClass="userCredentialsWrapper">
+                                <div class="ui-g">
+                                    <div class="ui-g-12 ui-g-nopad centred-row">
+                                        <div class="ui-g-6 ui-g spaced-row">
+                                            <p:outputLabel value="Enabled:"/>
+                                            <p:selectBooleanCheckbox value="#{addUserBean.securityUser.enabled}"/>
+                                        </div>
+                                        <div class="ui-g-6 ui-g spaced-row">
+                                            <p:outputLabel value="Preset:"/>
+                                            <p:selectOneMenu id="presetMenu"
+                                                             value="#{addUserBean.selectedUserPreset}"
+                                                             style="min-width: 60%">
+                                                <p:ajax event="valueChange"
+                                                        listener="#{addUserBean.onPresetChangeListener}"
+                                                        process="@this"
+                                                        update="userAuthorityManyMenu"/>
+                                                <f:selectItem itemValue="#{null}" itemLabel="custom"/>
+                                                <f:selectItems var="preset" value="#{appUtilBean.userPresets}"
+                                                               itemLabel="#{preset.label}" itemValue="#{preset}"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+                                    <div class="ui-g-12 ui-g-nopad">
+                                        <div class="ui-g-6 ui-g-nopad ui-g">
+                                            <!--todo: subkect to change with email integration-->
+                                            <div class="ui-g-12  columned">
+                                                <p:outputLabel value="Login:"/>
+                                                <p:inputText id="loginInput"
+                                                             value="#{addUserBean.securityUser.username}">
+                                                    <p:ajax delay="500"
+                                                            process="@this"
+                                                            listener="#{addUserBean.onLoginChangeListener}"/>
+                                                </p:inputText>
+                                            </div>
+                                            <div class="ui-g-12 columned">
+                                                <p:outputLabel value="Password:"/>
+                                                <p:password value="#{addUserBean.securityUser.password}"
+                                                            match="passwd2">
+                                                    <f:validateLength minimum="6"/>
+                                                </p:password>
+                                            </div>
+                                            <div class="ui-g-12 columned">
+                                                <p:outputLabel value="Confirm password:"/>
+                                                <p:password id="passwd2" value="#{addUserBean.securityUser.password}">
+                                                    <f:validateLength minimum="6"/>
+                                                </p:password>
+                                            </div>
+                                        </div>
+                                        <div class="ui-g-6 ui-g-nopad ui-g">
+                                            <div class="ui-g-12">
+                                                <p:outputLabel value="Privileges:"/>
+                                                <p:selectManyMenu id="userAuthorityManyMenu" style="width: 100%"
+                                                                  showCheckbox="true" filter="true"
+                                                                  filterMatchMode="contains"
+                                                                  scrollHeight="120"
+                                                                  converter="org.hetsold.bugtracker.SecurityUserAuthorityConvertor"
+                                                                  value="#{addUserBean.securityUser.authorities}">
+                                                    <p:ajax event="valueChange"
+                                                            listener="#{addUserBean.onAuthorityChangeListener}"
+                                                            process="@this"
+                                                            update="presetMenu"/>
+                                                    <f:selectItems var="item"
+                                                                   value="#{appUtilBean.securityUserAuthorities}"
+                                                                   itemLabel="#{item.label}" itemValue="#{item}"/>
+                                                </p:selectManyMenu>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+                        </p:tab>
+                    </p:tabView>
+                    <h:panelGroup layout="block">
+                        <div style="overflow: auto; width: 100%; margin-top: 1em">
+                            <p:commandButton value="Save" actionListener="#{addUserBean.registerUser}"
+                                             style="float: right;"
+                                             update=":usersForm:userDataTable dialogForm"
+                                             process="@form"
+                                             onsuccess="PF('addUserDialog').hide()"/>
+                            <p:commandButton value="Cancel" actionListener="#{addUserBean.initNewUser}"
+                                             style="float: right; margin-right: 0.5em"
+                                             update="@form" onclick="PF('addUserDialog').hide()"/>
+                            <p:commandButton value="Clear" style="float: left; margin-right: 1em;"
+                                             actionListener="#{addUserBean.initNewUser}"
+                                             update="@form"/>
+                        </div>
+                    </h:panelGroup>
+                </h:form>
             </p:dialog>
         </h:form>
-
     </ui:define>
 </ui:composition>
 </html>

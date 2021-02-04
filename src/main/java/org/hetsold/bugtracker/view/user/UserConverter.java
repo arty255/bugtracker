@@ -1,4 +1,4 @@
-package org.hetsold.bugtracker.view;
+package org.hetsold.bugtracker.view.user;
 
 import org.hetsold.bugtracker.dto.UserDTO;
 import org.hetsold.bugtracker.service.UserService;
