@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
-public interface UserService extends UserDetailsService {
+public interface UserService {
 
     UserDTO registerUser(UserDTO userDTO, SecurityUser securityUser);
 
@@ -25,6 +25,4 @@ public interface UserService extends UserDetailsService {
     List<UserDTO> getUsers(Contract contract, int first, int count);
 
     long getUsersCount(Contract contract);
-
-    boolean isLoginTaken(String login);
 }

@@ -17,10 +17,4 @@ public interface UserDAO {
     long getUsersCount(Contract contract);
 
     List<User> getUsers(Contract contract, int first, int limit);
-
-    UserDetails getSecUserByUsername(String username);
-
-    void save(SecurityUser securityUser);
-
-    boolean isLoginTaken(String login);
 }

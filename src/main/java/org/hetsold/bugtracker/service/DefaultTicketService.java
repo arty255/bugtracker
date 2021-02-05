@@ -10,6 +10,7 @@ import org.hetsold.bugtracker.facade.TicketMapper;
 import org.hetsold.bugtracker.facade.UserMapper;
 import org.hetsold.bugtracker.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -122,6 +123,7 @@ public class DefaultTicketService implements TicketService {
     }
 
     @Override
+    @Secured("ROLE_DELETE_TICKET")
     public void delete(TicketDTO ticketDTO) {
         if (ticketDTO == null || ticketDTO.getUuid() == null || ticketDTO.getUuid().isEmpty()) {
             throw new IllegalArgumentException("incorrect ticket: ticket can not be null or not persisted");
@@ -130,6 +132,7 @@ public class DefaultTicketService implements TicketService {
     }
 
     @Override
+    @Secured("ROLE_DELETE_TICKET")
     public void delete(String uuid) {
         if (uuid == null || uuid.isEmpty()) {
             throw new IllegalArgumentException("incorrect ticket uuid: ticket uuid can not be null or empty");
