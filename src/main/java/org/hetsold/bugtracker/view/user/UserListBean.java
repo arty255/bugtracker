@@ -7,6 +7,7 @@ import org.hetsold.bugtracker.view.filter.DisplayableFieldFilter;
 import org.hetsold.bugtracker.view.filter.FilterComponentBuilder;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.jsf.FacesContextUtils;
 
 import javax.annotation.PostConstruct;
@@ -34,7 +35,7 @@ public class UserListBean implements Serializable {
         FacesContextUtils.getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
         createIssueFilterWrappersAction();
-        updateDataModel();
+        usersLazyDataModel = new UserDTOLazyDataModel(userService);
     }
 
     public void createIssueFilterWrappersAction() {
@@ -46,10 +47,7 @@ public class UserListBean implements Serializable {
         ((UserDTOLazyDataModel) usersLazyDataModel).setContract(ContractBuilder.buildContact(displayableFieldFilters));
     }
 
-    public void updateDataModel() {
-        usersLazyDataModel = new UserDTOLazyDataModel(userService);
-    }
-
+    @Secured("ROLE_DELETE_USER")
     public void deleteUser() {
         userService.delete(selectedUserDTO);
     }

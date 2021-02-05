@@ -3,6 +3,7 @@ package org.hetsold.bugtracker.view.user;
 import org.hetsold.bugtracker.dto.UserDTO;
 import org.hetsold.bugtracker.model.SecurityUser;
 import org.hetsold.bugtracker.model.SecurityUserAuthority;
+import org.hetsold.bugtracker.service.SecurityService;
 import org.hetsold.bugtracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.jsf.FacesContextUtils;
@@ -10,7 +11,6 @@ import org.springframework.web.jsf.FacesContextUtils;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
@@ -29,10 +29,11 @@ public class AddUserBean implements Serializable {
 
 
     private boolean isNewUserAction;
-    @ManagedProperty("#{userListBean}")
-    private UserListBean userListBean;
     @Autowired
     private UserService userService;
+    @Autowired
+    private SecurityService securityService;
+
 
     @PostConstruct
     public void init() {
@@ -50,7 +51,6 @@ public class AddUserBean implements Serializable {
             } else {
                 userService.updateUser(user);
             }
-            userListBean.updateDataModel();
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "new user " + actionResultUser.getUuid() + " added",
                             "new user " + actionResultUser.getUuid() + " added"));
@@ -79,14 +79,10 @@ public class AddUserBean implements Serializable {
     }
 
     public void onLoginChangeListener() {
-        if (userService.isLoginTaken(securityUser.getUsername())) {
+        if (securityService.isLoginTaken(securityUser.getUsername())) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "login is taken", "login is taken"));
         }
-    }
-
-    public void setUserListBean(UserListBean userListBean) {
-        this.userListBean = userListBean;
     }
 
     public UserDTO getUser() {

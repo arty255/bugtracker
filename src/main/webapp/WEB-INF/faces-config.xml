@@ -18,6 +18,16 @@
     </navigation-rule>
 
     <navigation-rule>
+        <display-name>tickets view</display-name>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>tickets</from-outcome>
+            <to-view-id>/facelets/pages/tickets.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
         <display-name>detailed issue view</display-name>
         <from-view-id>*</from-view-id>
         <navigation-case>
@@ -33,6 +43,16 @@
         <navigation-case>
             <from-outcome>userProfile</from-outcome>
             <to-view-id>/facelets/pages/userProfile.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <display-name>logout</display-name>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>logout</from-outcome>
+            <to-view-id>/facelets/pages/login.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>

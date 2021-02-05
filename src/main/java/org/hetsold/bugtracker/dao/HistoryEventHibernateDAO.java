@@ -72,10 +72,7 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
             query.select(builder.count(root));
             return session.createQuery(query).getSingleResult();
         });
-        if (count != null) {
-            return count;
-        }
-        return 0;
+        return count != null ? count : 0;
     }
 
     @Override

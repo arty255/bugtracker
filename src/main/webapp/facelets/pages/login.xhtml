@@ -8,19 +8,55 @@
       xmlns:p="http://primefaces.org/ui"
       xml:lang="en" lang="en">
 <f:view>
+    <h:head>
+        <title>
+            <h:outputText value="Login"/>
+        </title>
+        <h:outputStylesheet library="css" name="login.css"/>
+    </h:head>
     <h:form>
-        <div style="width: 500px; margin: 0 auto;">
-            <h:panelGrid columns="2">
-                <p:outputLabel value="Login"/>
-                <p:inputText value="#{loginBean.login}"/>
-
-                <p:outputLabel value="Password"/>
-                <p:inputText value="#{loginBean.pass}"/>
-            </h:panelGrid>
-            <p:commandButton value="Login"
-                             process="@form"
-                             update="@form"
-                             action="#{loginBean.loginAction}"/>
+        <div class="loginPanelWrapper">
+            <h:panelGroup styleClass="loginPanel">
+                <div class="ui-g ui-g-nopad">
+                    <div class="ui-g-12">
+                        <p:messages showDetail="false" showSummary="true" closable="false"
+                                    style="margin-top: 0; margin-bottom: 0">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                    <div class="ui-g-12 centered-row ui-g-nopad">
+                        <div class="ui-g-4">
+                            <p:outputLabel value="Login" style="font-weight: bolder"/>
+                        </div>
+                        <div class="ui-g-8">
+                            <p:inputText value="#{loginBean.login}" style="width: 100%"
+                                         required="true"
+                                         validatorMessage="Minimal length for login is 3">
+                                <f:validateLength minimum="3"/>
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 centered-row ui-g-nopad">
+                        <div class="ui-g-4">
+                            <p:outputLabel value="Password" style="font-weight: bolder"/>
+                        </div>
+                        <div class="ui-g-8">
+                            <p:password value="#{loginBean.pass}" style="width: 100%"
+                                        required="true"
+                                        validatorMessage="Minimal length for password is 6">
+                                <f:validateLength minimum="6"/>
+                            </p:password>
+                        </div>
+                    </div>
+                    <div class="ui-g-12">
+                        <p:commandButton value="Login"
+                                         process="@form"
+                                         update="@form"
+                                         styleClass="loginButton"
+                                         action="#{loginBean.loginAction}"/>
+                    </div>
+                </div>
+            </h:panelGroup>
         </div>
     </h:form>
 </f:view>

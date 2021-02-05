@@ -1,11 +1,13 @@
 package org.hetsold.bugtracker.view.issue;
 
 import org.hetsold.bugtracker.dto.IssueDTO;
+import org.hetsold.bugtracker.dto.SecurityUserDTO;
 import org.hetsold.bugtracker.dto.UserDTO;
 import org.hetsold.bugtracker.model.IssueState;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.jsf.FacesContextUtils;
 
 import javax.annotation.PostConstruct;
@@ -33,8 +35,7 @@ public class AddIssueBean implements Serializable {
     public void preInit() {
         FacesContextUtils.getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
-        /*todo: change with spring security integration*/
-        activeUser = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
+        activeUser = ((SecurityUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
         userList = new ArrayList<>();
         initIssueListener();
     }

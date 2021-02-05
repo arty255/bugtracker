@@ -1,5 +1,6 @@
 package org.hetsold.bugtracker.view.user;
 
+import org.hetsold.bugtracker.dto.SecurityUserDTO;
 import org.hetsold.bugtracker.dto.TicketDTO;
 import org.hetsold.bugtracker.dto.UserDTO;
 import org.hetsold.bugtracker.service.TicketService;
@@ -7,6 +8,7 @@ import org.hetsold.bugtracker.service.UserService;
 import org.hetsold.bugtracker.view.ticket.TicketLazyDataModel;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.jsf.FacesContextUtils;
 
 import javax.annotation.PostConstruct;
@@ -34,8 +36,7 @@ public class UserProfileBean implements Serializable {
     public void init() {
         FacesContextUtils.getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
-        /*todo: change with spring security integration*/
-        activeUser = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
+        activeUser = ((SecurityUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
     }
 
     public void initUserData() {

@@ -16,8 +16,11 @@
             <p:menuitem value="Users" outcome="users" icon="pi pi-users"/>
             <p:menuitem value="Options" url="#" icon="pi pi-cog"/>
             <f:facet name="options">
-                <h:outputText value="Hi. user"/>
-                <p:commandButton type="button" value="Logout" icon="pi pi-sign-out" style="margin-left: 1em"/>
+                <h:outputText value="Hi. #{activeUserBean.activeUser.firstName} #{activeUserBean.activeUser.lastName}"
+                              rendered="#{not empty activeUserBean.activeUser}"/>
+                <h:outputText value="ERROR" rendered="#{empty activeUserBean.activeUser}"/>
+                <p:button type="button" value="Logout" icon="pi pi-sign-out"
+                          outcome="logout" style="margin-left: 1em"/>
             </f:facet>
         </p:menubar>
     </h:form>

@@ -1,10 +1,7 @@
 package org.hetsold.bugtracker.view.issue;
 
 
-import org.hetsold.bugtracker.dto.IssueDTO;
-import org.hetsold.bugtracker.dto.IssueShortDTO;
-import org.hetsold.bugtracker.dto.MessageDTO;
-import org.hetsold.bugtracker.dto.UserDTO;
+import org.hetsold.bugtracker.dto.*;
 import org.hetsold.bugtracker.model.Issue;
 import org.hetsold.bugtracker.model.IssueState;
 import org.hetsold.bugtracker.service.IssueService;
@@ -14,6 +11,7 @@ import org.hetsold.bugtracker.view.ListableMessageBean;
 import org.hetsold.bugtracker.view.user.UserDTOLazyDataModel;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.jsf.FacesContextUtils;
 
 import javax.annotation.PostConstruct;
@@ -50,8 +48,7 @@ public class DetailedIssueBean extends ListableMessageBean implements Serializab
         isOriginalStateChanged = false;
         selectedToAssignUser = null;
         userDTODataModel = new UserDTOLazyDataModel(userService);
-        /*todo: change with spring security integration*/
-        this.activeUser = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
+        activeUser = ((SecurityUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
         initMessageListener();
     }
 

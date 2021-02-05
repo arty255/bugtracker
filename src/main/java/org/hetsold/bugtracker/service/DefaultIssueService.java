@@ -7,6 +7,7 @@ import org.hetsold.bugtracker.dto.*;
 import org.hetsold.bugtracker.facade.*;
 import org.hetsold.bugtracker.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -190,6 +191,7 @@ public class DefaultIssueService implements IssueService {
     }
 
     @Override
+    @Secured("ROLE_LIST_ISSUES")
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<IssueShortDTO> getIssueList(Contract contract, int startPosition, int limit) {
         return IssueMapper.getShortDTOList(issueDAO.getIssueList(contract, startPosition, limit));

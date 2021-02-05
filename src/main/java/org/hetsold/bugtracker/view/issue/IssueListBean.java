@@ -1,15 +1,16 @@
 package org.hetsold.bugtracker.view.issue;
 
 import org.hetsold.bugtracker.dto.IssueShortDTO;
+import org.hetsold.bugtracker.dto.SecurityUserDTO;
 import org.hetsold.bugtracker.dto.UserDTO;
 import org.hetsold.bugtracker.model.Issue;
 import org.hetsold.bugtracker.service.IssueService;
-import org.hetsold.bugtracker.service.UserService;
 import org.hetsold.bugtracker.view.filter.ContractBuilder;
 import org.hetsold.bugtracker.view.filter.DisplayableFieldFilter;
 import org.hetsold.bugtracker.view.filter.FilterComponentBuilder;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.jsf.FacesContextUtils;
 
 import javax.annotation.PostConstruct;
@@ -26,8 +27,6 @@ public class IssueListBean implements Serializable {
     private IssueShortDTO issue;
     @Autowired
     private IssueService issueService;
-    @Autowired
-    private UserService userService;
     private UserDTO activeUser;
 
     private List<DisplayableFieldFilter> displayableFieldFilters;
@@ -38,7 +37,7 @@ public class IssueListBean implements Serializable {
                 .getAutowireCapableBeanFactory().autowireBean(this);
         initIssueList();
         createIssueFilterWrappersAction();
-        activeUser = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
+        activeUser = ((SecurityUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
     }
 
     public void initIssueList() {

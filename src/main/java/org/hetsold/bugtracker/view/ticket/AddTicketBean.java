@@ -1,12 +1,13 @@
 package org.hetsold.bugtracker.view.ticket;
 
+import org.hetsold.bugtracker.dto.SecurityUserDTO;
 import org.hetsold.bugtracker.dto.TicketDTO;
 import org.hetsold.bugtracker.dto.UserDTO;
 import org.hetsold.bugtracker.model.TicketResolveState;
 import org.hetsold.bugtracker.model.TicketVerificationState;
 import org.hetsold.bugtracker.service.TicketService;
-import org.hetsold.bugtracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.jsf.FacesContextUtils;
 
 import javax.annotation.PostConstruct;
@@ -19,11 +20,10 @@ import java.util.Date;
 @ManagedBean
 @ViewScoped
 public class AddTicketBean implements Serializable {
+    private UserDTO activeUser;
     private TicketDTO ticket;
     @Autowired
     private TicketService ticketService;
-    @Autowired
-    private UserService userService;
 
 
     @PostConstruct
@@ -31,6 +31,7 @@ public class AddTicketBean implements Serializable {
         FacesContextUtils
                 .getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
+        activeUser = ((SecurityUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
         initTicket();
     }
 
@@ -52,10 +53,8 @@ public class AddTicketBean implements Serializable {
     }
 
     public void addTicket() {
-        //for now get hardcoded user from db, registered user will be obtained after spring security integration
-        UserDTO user = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
         ticket.setCreationTime(new Date());
-        ticketService.addTicket(ticket, user);
+        ticketService.addTicket(ticket, activeUser);
         clearTicket();
     }
 

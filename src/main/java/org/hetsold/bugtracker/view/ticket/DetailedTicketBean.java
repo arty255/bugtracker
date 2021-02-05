@@ -2,14 +2,15 @@ package org.hetsold.bugtracker.view.ticket;
 
 import org.hetsold.bugtracker.dto.IssueShortDTO;
 import org.hetsold.bugtracker.dto.MessageDTO;
+import org.hetsold.bugtracker.dto.SecurityUserDTO;
 import org.hetsold.bugtracker.dto.TicketDTO;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.MessageService;
 import org.hetsold.bugtracker.service.TicketService;
-import org.hetsold.bugtracker.service.UserService;
 import org.hetsold.bugtracker.view.ListableMessageBean;
 import org.hetsold.bugtracker.view.issue.IssuesLazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.jsf.FacesContextUtils;
 
 import javax.annotation.PostConstruct;
@@ -33,8 +34,6 @@ public class DetailedTicketBean extends ListableMessageBean implements Serializa
     @Autowired
     private TicketService ticketService;
     @Autowired
-    private UserService userService;
-    @Autowired
     private MessageService messageService;
     @Autowired
     private IssueService issueService;
@@ -46,7 +45,7 @@ public class DetailedTicketBean extends ListableMessageBean implements Serializa
                 .getAutowireCapableBeanFactory().autowireBean(this);
         initMessageListener();
         /*todo: getUser FromSecurityContext*/
-        activeUser = userService.getUserDTOById("1b1ef410-2ad2-4ac2-ab16-9707bd026e06");
+        activeUser = ((SecurityUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
     }
 
     public void initData() {

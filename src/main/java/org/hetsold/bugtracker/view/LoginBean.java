@@ -1,13 +1,15 @@
 package org.hetsold.bugtracker.view;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.jsf.FacesContextUtils;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
@@ -20,29 +22,27 @@ public class LoginBean {
     @Autowired
     private AuthenticationManager manager;
 
-    public LoginBean() {
-    }
-
-//    @Autowired
-    /*
-    public LoginBean(AuthenticationManager manager) {
-        this.manager = manager;
-    }*/
-
-
     @PostConstruct
     public void init() {
         FacesContextUtils.getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
     }
 
-    public void loginAction() {
-        Authentication authenticationResult;
+    public String loginAction() {
         Authentication authenticationRequest = new UsernamePasswordAuthenticationToken(login, pass);
-        authenticationResult = manager.authenticate(authenticationRequest);
-        if (authenticationResult.isAuthenticated()) {
-            int i = 0;
+        try {
+            Authentication authenticationResult = manager.authenticate(authenticationRequest);
+            if (authenticationResult.isAuthenticated()) {
+                SecurityContextHolder.getContext().setAuthentication(authenticationResult);
+                return "tickets";
+            }
+        } catch (BadCredentialsException e) {
+            FacesContext.getCurrentInstance()
+                    .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "No User with that login or password",
+                            "No User with that login or password"));
         }
+        return "";
     }
 
     public String getLogin() {
