@@ -2,29 +2,22 @@ package org.hetsold.bugtracker.dto;
 
 import org.hetsold.bugtracker.model.User;
 
-import java.util.Objects;
+import java.util.Date;
 
-public class UserDTO {
-    private String uuid;
+public class UserDTO extends AbstractDTO {
     private String firstName;
     private String lastName;
+    private Date registrationDate;
 
     public UserDTO(String uuid) {
-        this.uuid = uuid;
+        this.setUuid(uuid);
     }
 
     public UserDTO(User user) {
-        this.uuid = user.getUuid();
+        this.setUuid(user.getUuid().toString());
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+        this.registrationDate = user.getRegistrationDate();
     }
 
     public String getFirstName() {
@@ -43,16 +36,11 @@ public class UserDTO {
         this.lastName = lastName;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserDTO userDTO = (UserDTO) o;
-        return Objects.equals(uuid, userDTO.uuid);
+    public Date getRegistrationDate() {
+        return registrationDate;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(uuid);
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
     }
 }

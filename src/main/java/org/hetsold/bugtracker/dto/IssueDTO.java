@@ -6,7 +6,7 @@ import org.hetsold.bugtracker.model.Severity;
 
 import java.util.Date;
 
-public class IssueDTO extends ArchivedIdentity {
+public class IssueDTO extends ArchivedIdentityDTO {
     private String issueNumber;
     private String description;
     private Date creationTime;
@@ -24,8 +24,12 @@ public class IssueDTO extends ArchivedIdentity {
     public IssueDTO() {
     }
 
+    public IssueDTO(String uuid) {
+        this.setUuid(uuid);
+    }
+
     public IssueDTO(Issue issue) {
-        this.setUuid(issue.getUuid());
+        this.setUuid(issue.getUuid().toString());
         this.issueNumber = issue.getIssueNumber();
         this.description = issue.getDescription();
         this.creationTime = issue.getCreationTime();

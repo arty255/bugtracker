@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class MessageDTO extends IssueEventType implements Serializable {
-    private String uuid;
     private String content;
     private Date createDate;
     private Date editDate;
@@ -16,12 +15,16 @@ public class MessageDTO extends IssueEventType implements Serializable {
     public MessageDTO() {
     }
 
-    public MessageDTO(String content) {
+    public MessageDTO(String uuid) {
+        this.setUuid(uuid);
+    }
+
+    public MessageDTO(String content, Date createDate) {
         this.content = content;
     }
 
     public MessageDTO(Message message) {
-        this.uuid = message.getUuid();
+        this.setUuid(message.getUuid().toString());
         this.content = message.getContent();
         this.createDate = message.getCreateDate();
         this.editDate = message.getEditDate();
@@ -29,14 +32,6 @@ public class MessageDTO extends IssueEventType implements Serializable {
         if (message.getMessageEditor() != null) {
             this.editor = new UserDTO(message.getMessageEditor());
         }
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
     }
 
     public String getContent() {
