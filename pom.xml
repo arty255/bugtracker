@@ -149,6 +149,12 @@
             <version>5.3.6.RELEASE</version>
         </dependency>
 
+        <!--password generation utils-->
+        <dependency>
+            <groupId>org.passay</groupId>
+            <artifactId>passay</artifactId>
+            <version>1.6.0</version>
+        </dependency>
     </dependencies>
 
     <build>
