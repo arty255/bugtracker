@@ -1,35 +1,34 @@
 package org.hetsold.bugtracker.model;
 
+import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 import java.util.Objects;
-
-/*
- * This util class describe typical JPA entity fields.
- */
+import java.util.UUID;
 
 @MappedSuperclass
 public abstract class AbstractEntity {
     @Id
-    private String uuid;
+    @Column(columnDefinition = "BINARY(16)", nullable = false, unique = true)
+    private UUID uuid;
     @Version
     private Integer version;
 
     {
         version = 0;
-        uuid = java.util.UUID.randomUUID().toString();
+        uuid = java.util.UUID.randomUUID();
     }
 
     public AbstractEntity() {
     }
 
-    public String getUuid() {
+    public UUID getUuid() {
         return uuid;
     }
 
-    public void setUuid(String UUID) {
-        this.uuid = UUID;
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public Integer getVersion() {

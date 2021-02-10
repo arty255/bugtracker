@@ -2,6 +2,7 @@ package org.hetsold.bugtracker.model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Table(name = "message")
@@ -24,6 +25,16 @@ public class Message extends ArchivedEntity {
         this.content = messageContent;
     }
 
+    public Message(UUID uuid, String content) {
+        this.setUuid(uuid);
+        this.content = content;
+    }
+
+    public Message(UUID uuid, User messageCreator, String messageContent) {
+        this(messageCreator, messageContent);
+        this.setUuid(uuid);
+    }
+
     @PrePersist
     public void prePersist() {
         this.createDate = new Date();
@@ -34,7 +45,7 @@ public class Message extends ArchivedEntity {
         this.editDate = new Date();
     }
 
-    public void update(Message message, User messageEditor) {
+    public void updateContentAndEditor(Message message, User messageEditor) {
         this.content = message.getContent();
         this.messageEditor = messageEditor;
     }

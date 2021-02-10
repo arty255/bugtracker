@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @NamedEntityGraph(
         name = "IssueEntityGraphToDetailedView",
@@ -99,6 +100,22 @@ public class Issue extends ArchivedEntity {
 
     public Issue() {
         history = new ArrayList<>();
+    }
+
+    public Issue(String description, String reproduceSteps) {
+        this.description = description;
+        this.reproduceSteps = reproduceSteps;
+    }
+
+    public Issue(String description, String reproduceSteps, User reportedBy) {
+        this.description = description;
+        this.reproduceSteps = reproduceSteps;
+        this.reportedBy = reportedBy;
+    }
+
+    public Issue(UUID uuid, String description, String reproduceSteps, User reportedBy) {
+        this(description, reproduceSteps, reportedBy);
+        this.setUuid(uuid);
     }
 
     @PrePersist
@@ -236,11 +253,11 @@ public class Issue extends ArchivedEntity {
         }
 
         public Builder withIssueEmpty() {
-            newIssue.setUuid("");
+            newIssue.setUuid(null);
             return this;
         }
 
-        public Builder withIssueUuid(String issueUuid) {
+        public Builder withIssueUuid(UUID issueUuid) {
             newIssue.setUuid(issueUuid);
             return this;
         }
