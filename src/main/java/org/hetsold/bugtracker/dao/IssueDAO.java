@@ -4,6 +4,7 @@ import org.hetsold.bugtracker.dao.util.Contract;
 import org.hetsold.bugtracker.model.Issue;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface IssueDAO {
     void save(Issue issue);
@@ -14,7 +15,7 @@ public interface IssueDAO {
 
     void delete(Issue issue);
 
-    Issue getIssueById(String uuid);
+    Issue getIssueByUUID(UUID uuid);
 
-    Issue getIssueToDetailedViewById(String uuid);
+    Issue getIssueToDetailedViewById(UUID uuid);
 }

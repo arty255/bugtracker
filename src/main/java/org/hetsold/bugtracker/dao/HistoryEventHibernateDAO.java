@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class HistoryEventHibernateDAO implements HistoryEventDAO {
@@ -31,7 +32,7 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
     }
 
     @Override
-    public IssueMessageEvent getMessageEventById(String uuid) {
+    public IssueMessageEvent getMessageEventById(UUID uuid) {
         return hibernateTemplate.get(IssueMessageEvent.class, uuid);
     }
 
@@ -53,7 +54,7 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
     }
 
     @Override
-    public IssueStateChangeEvent getStateChangeEventById(String uuid) {
+    public IssueStateChangeEvent getStateChangeEventById(UUID uuid) {
         return hibernateTemplate.load(IssueStateChangeEvent.class, uuid);
     }
 

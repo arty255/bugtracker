@@ -2,6 +2,7 @@ package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.dao.util.Contract;
 import org.hetsold.bugtracker.model.User;
+import org.hetsold.bugtracker.model.User_;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
@@ -11,6 +12,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class UserHibernateDAO implements UserDAO {
@@ -32,7 +34,7 @@ public class UserHibernateDAO implements UserDAO {
     }
 
     @Override
-    public User getUserById(String uuid) {
+    public User getUserByUUID(UUID uuid) {
         return hibernateTemplate.get(User.class, uuid);
     }
 
@@ -50,13 +52,18 @@ public class UserHibernateDAO implements UserDAO {
     }
 
     @Override
-    public List<User> getUsers(Contract contract, int first, int limit) {
+    public List<User> getUsers(Contract contract, int first, int limit, boolean dateAsc) {
         return hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<User> query = builder.createQuery(User.class);
             Root<User> root = query.from(User.class);
             query.where(ContractReader.readContract(contract, root, builder));
             query.select(root);
+            if (dateAsc) {
+                query.orderBy(builder.asc(root.get(User_.registrationDate)));
+            } else {
+                query.orderBy(builder.desc(root.get(User_.registrationDate)));
+            }
             return session.createQuery(query).setFirstResult(first).setMaxResults(limit).getResultList();
         });
     }

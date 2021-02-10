@@ -4,11 +4,12 @@ import org.hetsold.bugtracker.model.Message;
 import org.hetsold.bugtracker.model.Ticket;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface MessageDAO {
     void save(Message message);
 
-    Message getMessageById(String uuid);
+    Message getMessageById(UUID uuid);
 
     void delete(Message message);
 
