@@ -28,7 +28,7 @@ public class UserHibernateDAOTest {
     public void checkIfUserCanBeFoundById() {
         User sourceUser = new User("Alex", "Test");
         userDao.save(sourceUser);
-        User resultUser = userDao.getUserById(sourceUser.getUuid());
+        User resultUser = userDao.getUserByUUID(sourceUser.getUuid());
         assertEquals(sourceUser.getUuid(), resultUser.getUuid());
     }
 
@@ -47,6 +47,6 @@ public class UserHibernateDAOTest {
         userDao.save(new User("Tom", "Test"));
         userDao.save(new User("Rob", "Test"));
         userDao.save(new User("Bob", "Test"));
-        assertEquals(2, userDao.getUsers(contract, 0, 100).size());
+        assertEquals(2, userDao.getUsers(contract, 0, 100, false).size());
     }
 }

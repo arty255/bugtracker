@@ -4,8 +4,8 @@ import org.hetsold.bugtracker.AppConfig;
 import org.hetsold.bugtracker.TestAppConfig;
 import org.hetsold.bugtracker.model.Issue;
 import org.hetsold.bugtracker.model.User;
+import org.hetsold.bugtracker.util.FactoryIssueType;
 import org.hetsold.bugtracker.util.IssueFactory;
-import org.hetsold.bugtracker.util.IssueFactoryCreatedIssueType;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,12 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -36,62 +31,40 @@ public class IssueHibernateDAOTest {
     @Autowired
     private UserDAO userDAO;
 
-    private static List<Issue> issueList = new ArrayList<>();
-    private static User user = new User("user1", "user1");
-    private static IssueFactory issueFactory = new IssueFactory(user);
+    private static final User savedUser = new User("user1", "user1");
+    private static final Issue savedIssue = new Issue("description", "steps", savedUser);
+    private IssueFactory issueFactory;
 
     @BeforeClass
     public static void prepareData() {
-        for (int i = 0; i < 3; i++) {
-            issueList.add(issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectDayAgoIssue));
-            issueList.add(issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectWeekAgoIssue));
-            issueList.add(issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectTwoWeekAgoIssue));
-        }
-        for (int i = 0; i < 3; i++) {
-            issueList.add(issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectMountAgoIssue));
-        }
+
     }
 
     @Before
     public void prepareUserData() {
-        userDAO.save(user);
+        userDAO.save(savedUser);
+        issueDAO.save(savedIssue);
+        issueFactory = new IssueFactory(savedIssue, savedUser);
     }
 
     @Test
     public void checkIfIssueCanBeSaved() {
-        Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
+        Issue issue = issueFactory.getIssue(FactoryIssueType.ISSUE_WITH_PERSISTED_USER);
         issueDAO.save(issue);
         List<Issue> issues = issueDAO.getIssueList(null, 0, 100);
-        assertEquals(issues.size(), 1);
+        assertEquals(issues.size(), 2);
     }
 
     @Test
     public void checkIfIssueCanBeDeleted() {
-        Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
-        issueDAO.save(issue);
-        issueDAO.delete(issue);
+        issueDAO.delete(savedIssue);
         List<Issue> issues = issueDAO.getIssueList(null, 0, 100);
         assertEquals(issues.size(), 0);
     }
 
     @Test
     public void checkIfIssueCanBeFoundById() {
-        Issue issue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
-        issueDAO.save(issue);
-        Issue resultIssue = issueDAO.getIssueById(issue.getUuid());
+        Issue resultIssue = issueDAO.getIssueByUUID(savedIssue.getUuid());
         assertNotNull(resultIssue);
-        assertEquals(resultIssue.getUuid(), issue.getUuid());
-        assertEquals(resultIssue.getIssueNumber(), issue.getIssueNumber());
-        assertEquals(resultIssue.getDescription(), issue.getDescription());
-    }
-
-    @Test
-    public void checkIfLoadedIssueHasCorrectScope() {
-        Issue testIssue = issueFactory.getIssue(IssueFactoryCreatedIssueType.CorrectIssue);
-        issueDAO.save(testIssue);
-        Issue resultIssue = issueDAO.getIssueToDetailedViewById(testIssue.getUuid());
-        assertEquals(resultIssue.getReportedBy(), testIssue.getReportedBy());
-        assertEquals(resultIssue.getReportedBy().getMessageList().size(), 0);
-        assertEquals(resultIssue.getReportedBy().getReportedIssues().size(), 0);
     }
 }
