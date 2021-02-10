@@ -14,6 +14,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class MessageHibernateDAO implements MessageDAO {
@@ -30,7 +31,7 @@ public class MessageHibernateDAO implements MessageDAO {
     }
 
     @Override
-    public Message getMessageById(String uuid) {
+    public Message getMessageById(UUID uuid) {
         return hibernateTemplate.get(Message.class, uuid);
     }
 

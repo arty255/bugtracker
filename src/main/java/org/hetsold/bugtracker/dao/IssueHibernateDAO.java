@@ -15,6 +15,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class IssueHibernateDAO implements IssueDAO {
@@ -69,12 +70,12 @@ public class IssueHibernateDAO implements IssueDAO {
     }
 
     @Override
-    public Issue getIssueById(String uuid) {
+    public Issue getIssueByUUID(UUID uuid) {
         return hibernateTemplate.get(Issue.class, uuid);
     }
 
     @Override
-    public Issue getIssueToDetailedViewById(String uuid) {
+    public Issue getIssueToDetailedViewById(UUID uuid) {
         return hibernateTemplate.execute(session -> {
             EntityGraph issueEntityGraph = session.getEntityGraph("IssueEntityGraphToDetailedView");
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();

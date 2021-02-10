@@ -13,6 +13,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class TicketHibernateDAO implements TicketDAO {
@@ -29,7 +30,7 @@ public class TicketHibernateDAO implements TicketDAO {
     }
 
     @Override
-    public Ticket getTicketById(String uuid) {
+    public Ticket getTicketById(UUID uuid) {
         return hibernateTemplate.get(Ticket.class, uuid);
     }
 
@@ -56,7 +57,7 @@ public class TicketHibernateDAO implements TicketDAO {
     }
 
     @Override
-    public long getTicketCountReportedByUser(User user, Contract contract) {
+    public long getTicketsCountReportedByUser(User user, Contract contract) {
         Long count = hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<Long> query = builder.createQuery(Long.class);
