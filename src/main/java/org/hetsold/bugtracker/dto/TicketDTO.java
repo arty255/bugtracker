@@ -6,7 +6,7 @@ import org.hetsold.bugtracker.model.TicketVerificationState;
 
 import java.util.Date;
 
-public class TicketDTO extends ArchivedIdentity {
+public class TicketDTO extends ArchivedIdentityDTO {
     private String description;
     private String reproduceSteps;
     private String productVersion;
@@ -17,7 +17,7 @@ public class TicketDTO extends ArchivedIdentity {
     private String issueID;
 
     public TicketDTO(Ticket ticket) {
-        this.setUuid(ticket.getUuid());
+        this.setUuid(ticket.getUuid().toString());
         this.creationTime = ticket.getCreationTime();
         this.description = ticket.getDescription();
         this.reproduceSteps = ticket.getReproduceSteps();
@@ -28,7 +28,7 @@ public class TicketDTO extends ArchivedIdentity {
             this.user = new UserDTO(ticket.getCreatedBy());
         }
         if (ticket.getIssue() != null) {
-            this.issueID = ticket.getIssue().getUuid();
+            this.issueID = ticket.getIssue().getUuid().toString();
         }
     }
 

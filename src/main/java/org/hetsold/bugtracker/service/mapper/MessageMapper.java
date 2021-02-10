@@ -1,4 +1,4 @@
-package org.hetsold.bugtracker.facade;
+package org.hetsold.bugtracker.service.mapper;
 
 import org.hetsold.bugtracker.dto.MessageDTO;
 import org.hetsold.bugtracker.model.Message;
@@ -13,17 +13,20 @@ public class MessageMapper {
     }
 
     public static Message getMessage(MessageDTO messageDTO) {
-        Message message = null;
         if (messageDTO != null) {
-            message = new Message();
-            message.setUuid(messageDTO.getUuid());
+            Message message = new Message();
+            message.setUuid(UUIDMapper.getUUID(messageDTO));
             message.setContent(messageDTO.getContent());
             message.setMessageEditor(UserMapper.getUser(messageDTO.getEditor()));
             message.setMessageCreator(UserMapper.getUser(messageDTO.getCreator()));
             message.setCreateDate(messageDTO.getCreateDate());
             message.setEditDate(messageDTO.getEditDate());
+            if (messageDTO.getCreator() != null) {
+                message.setMessageCreator(UserMapper.getUser(messageDTO.getCreator()));
+            }
+            return message;
         }
-        return message;
+        return null;
     }
 
     public static List<MessageDTO> getMessageDTOList(List<Message> messages) {

@@ -1,4 +1,4 @@
 package org.hetsold.bugtracker.dto;
 
-public abstract class IssueEventType {
+public abstract class IssueEventType extends AbstractDTO {
 }

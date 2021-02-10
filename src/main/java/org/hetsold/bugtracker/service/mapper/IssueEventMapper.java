@@ -1,4 +1,4 @@
-package org.hetsold.bugtracker.facade;
+package org.hetsold.bugtracker.service.mapper;
 
 import org.hetsold.bugtracker.dto.IssueEventDTO;
 import org.hetsold.bugtracker.model.IssueEvent;
