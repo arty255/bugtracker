@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "ticket")
@@ -34,6 +35,21 @@ public class Ticket extends ArchivedEntity {
     }
 
     public Ticket() {
+    }
+
+    public Ticket(UUID uuid) {
+        this.setUuid(uuid);
+    }
+
+    public Ticket(String description, String reproduceSteps, User createdBy) {
+        this.description = description;
+        this.reproduceSteps = reproduceSteps;
+        this.createdBy = createdBy;
+    }
+
+    public Ticket(UUID uuid, String description, String reproduceSteps, User createdBy) {
+        this(description, reproduceSteps, createdBy);
+        this.setUuid(uuid);
     }
 
     @PrePersist

@@ -1,10 +1,11 @@
 package org.hetsold.bugtracker.model;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.UUID;
 
 @Entity
 @Table(name = "securityUser")
@@ -29,16 +30,36 @@ public class SecurityUser extends AbstractEntity implements UserDetails {
     @CollectionTable(name = "securityUser_authority", joinColumns = @JoinColumn(name = "secUserId", referencedColumnName = "uuid"))
     @Column(name = "authority", nullable = false)
     @Enumerated(EnumType.STRING)
-    private List<SecurityUserAuthority> authorities;
+    private Collection<SecurityUserAuthority> authorities;
     @OneToOne()
     @JoinColumn(name = "userId")
     private User user;
+    private String email;
 
     {
-        authorities = new ArrayList<>();
+        authorities = new HashSet<>();
     }
 
     public SecurityUser() {
+    }
+
+    public SecurityUser(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+
+    public SecurityUser(UUID uuid, String username, String password) {
+        this(username, password);
+        this.setUuid(uuid);
+    }
+
+    public void update(SecurityUser newSecurityUser) {
+        this.setEnabled(newSecurityUser.isEnabled());
+        this.setAccountNonExpired(newSecurityUser.isAccountNonExpired());
+        this.setAccountNonLocked(newSecurityUser.isAccountNonLocked());
+        this.setCredentialsNonExpired(newSecurityUser.isCredentialsNonExpired());
+        this.setAuthorities(newSecurityUser.getAuthorities());
     }
 
     @Override
@@ -46,7 +67,7 @@ public class SecurityUser extends AbstractEntity implements UserDetails {
         return authorities;
     }
 
-    public void setAuthorities(List<SecurityUserAuthority> authorities) {
+    public void setAuthorities(Collection<SecurityUserAuthority> authorities) {
         this.authorities = authorities;
     }
 
@@ -110,5 +131,13 @@ public class SecurityUser extends AbstractEntity implements UserDetails {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

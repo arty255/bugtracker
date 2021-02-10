@@ -2,13 +2,16 @@ package org.hetsold.bugtracker.model;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "user")
 public class User extends AbstractEntity {
     private String firstName;
     private String lastName;
+    private Date registrationDate;
     @OneToMany(mappedBy = "reportedBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Issue> reportedIssues;
     @OneToMany(mappedBy = "assignedTo", fetch = FetchType.LAZY)
@@ -30,8 +33,14 @@ public class User extends AbstractEntity {
         this.lastName = lastName;
     }
 
-    public User(String uuid) {
+    public User(UUID uuid, String firstName, String lastName) {
+        this(firstName, lastName);
         this.setUuid(uuid);
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.registrationDate = new Date();
     }
 
     public void update(User updatedUser) {
@@ -53,6 +62,14 @@ public class User extends AbstractEntity {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public Date getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
     }
 
     public List<Issue> getReportedIssues() {
