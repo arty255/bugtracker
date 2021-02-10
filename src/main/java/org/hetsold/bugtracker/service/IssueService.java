@@ -2,62 +2,42 @@ package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dao.util.Contract;
 import org.hetsold.bugtracker.dto.*;
-import org.hetsold.bugtracker.model.*;
+import org.hetsold.bugtracker.model.IssueState;
 
 import java.util.List;
 
 public interface IssueService {
+    IssueDTO createNewIssue(IssueDTO issueDTO);
 
-    void setStateValidationStrategy(IssueStateValidationStrategy stateValidationStrategy);
-
-    Issue saveOrUpdateIssue(Issue issue, User user);
-
-    IssueDTO saveOrUpdateIssue(IssueDTO issueDTO, UserDTO userDTO);
-
-    void changeIssueArchiveState(Issue issue, User user, boolean newState);
-
-    void makeIssueArchived(IssueShortDTO issueShortDTO, UserDTO userDTO);
-
-    void makeIssueUnArchived(IssueShortDTO issueShortDTO, UserDTO userDTO);
-
-    Issue getIssueById(String uuid);
-
-    IssueDTO getIssueDTOById(String uuid);
-
-    void deleteIssue(Issue issue);
-
-    List<IssueShortDTO> getIssueList(Contract contract, int startPosition, int limit);
-
-    long getIssuesCount(Contract contract);
-
-    void changeIssueState(Issue issue, IssueState newIssueState, User user);
-
-    void changeIssueState(IssueDTO issueDTO, IssueState newIssueState, UserDTO userDTO);
-
-    void changeIssueAssignedUser(Issue issue, User assignedTo, User user);
-
-    void changeIssueAssignedUser(IssueDTO issueDTO, UserDTO assignedTo, UserDTO userDTO);
-
-    void addIssueMessage(IssueDTO issueDTO, MessageDTO messageDTO, UserDTO userDTO);
-
-    void addIssueMessage(Issue issue, Message message, User user);
-
-    void createNewIssue(Issue issue, User user);
-
-    Issue createIssueFromTicket(Ticket ticket, User user);
+    IssueDTO updateIssue(IssueDTO issueDTO, UserDTO userDTO);
 
     IssueShortDTO createIssueFromTicket(TicketDTO selectedTicketDTO, UserDTO user);
 
     void assignIssueToTicket(IssueShortDTO issueShortDTO, TicketDTO ticketDTO);
 
-    List<IssueEvent> getIssueEvents(Issue issue, int startPosition, int limit, boolean inverseDateOrder);
+    void changeIssueState(IssueDTO issueDTO, IssueState newIssueState, UserDTO userDTO);
 
-    List<IssueEventDTO> getIssueHistoryEventsDTO(IssueDTO issueDTO, int startPosition, int limit, boolean inverseDateOrder);
+    void changeIssueAssignedUser(IssueDTO issueDTO, UserDTO assignedTo, UserDTO userDTO);
 
-    long getIssueHistoryEventsCount(Issue issue);
+    void makeIssueArchived(IssueShortDTO issueShortDTO);
 
-    long getIssueHistoryEventsCount(IssueDTO issueDTO);
+    void makeIssueUnarchived(IssueShortDTO issueShortDTO);
 
-    void deleteIssueMessage(MessageDTO selectedToDeleteMessage);
+    IssueDTO getIssueDTO(IssueDTO issueDTO);
 
+    IssueShortDTO getIssueShortDTO(IssueShortDTO issueShortDTO);
+
+    void deleteIssue(IssueDTO issueDTO);
+
+    List<IssueShortDTO> getIssueList(Contract contract, int startPosition, int limit);
+
+    long getIssuesCount(Contract contract);
+
+    List<IssueEventDTO> getIssueEventsDTO(IssueDTO issueDTO, int startPosition, int limit, boolean inverseDateOrder);
+
+    long getIssueEventsCount(IssueDTO issueDTO);
+
+    void addIssueMessage(IssueDTO issueDTO, MessageDTO messageDTO);
+
+    void deleteIssueMessage(MessageDTO messageDTO);
 }
