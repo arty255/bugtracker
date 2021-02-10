@@ -28,7 +28,11 @@
                 <p:panelGrid columns="2" style="width: 100%" columnClasses="minimalWidthColumn,autoWidthColumn">
                     <h:outputText value="Ticket resolve state:"/>
                     <h:panelGroup layout="block" styleClass="resolveStateContent">
-                        <p:inplace styleClass="noPaddingInplace" editor="true" effectSpeed="fast">
+                        <ticket:stateLabel issueState="#{detailedTicketBean.ticket.resolveState}"
+                                           rendered="#{p:ifNoneGranted('ROLE_EDIT_TICKET_STATE')}"/>
+                        <p:inplace styleClass="noPaddingInplace" editor="true"
+                                   rendered="#{p:ifGranted('ROLE_EDIT_TICKET_STATE')}"
+                                   effectSpeed="fast">
                             <f:facet name="output">
                                 <ticket:stateLabel issueState="#{detailedTicketBean.ticket.resolveState}"/>
                             </f:facet>
@@ -41,41 +45,45 @@
                             </f:facet>
                         </p:inplace>
                         <h:panelGroup id="assingControls" layout="block" styleClass="ticketAssignControls">
-                            <!--todo: change with spring security integration-->
                             <p:commandButton value="Create issue" icon="pi pi-tags"
-                                             rendered="#{true and empty detailedTicketBean.ticket.issueID}"
+                                             rendered="#{p:ifGranted('ROLE_EDIT_TICKET_STATE') and empty detailedTicketBean.ticket.issueID}"
                                              actionListener="#{detailedTicketBean.createIssueFromTicket}"
                                              onsuccess="PF('issueCreatedDialog').show();"/>
-                            <!--todo: change with spring security integration-->
                             <p:commandButton value="Link issue" icon="pi pi-list"
                                              onclick="PF('issuesDialog').show();"
-                                             rendered="#{true and empty detailedTicketBean.ticket.issueID}"/>
-                            <!--todo: change with spring security integration-->
+                                             rendered="#{p:ifGranted('ROLE_EDIT_TICKET_STATE') and empty detailedTicketBean.ticket.issueID}"/>
                             <p:commandButton value="Unlink issue" icon="pi pi-times"
                                              process="@this"
                                              update="@form:assingControls"
                                              action="#{detailedTicketBean.unlinkIssueAction}"
-                                             rendered="#{true and not empty detailedTicketBean.ticket.issueID}"/>
+                                             rendered="#{p:ifGranted('ROLE_EDIT_TICKET_STATE') and not empty detailedTicketBean.ticket.issueID}"/>
                         </h:panelGroup>
                     </h:panelGroup>
 
                     <h:outputText value="Description:"/>
-                    <p:inplace id="deInplace" styleClass="ticketDescriptionInplace noPaddingInplace"
-                               effectSpeed="fast" editor="true">
-                        <f:facet name="output">
-                            <h:outputText id="description" value="#{detailedTicketBean.ticket.description}"/>
-                        </f:facet>
-                        <f:facet name="input">
-                            <p:inputTextarea value="#{detailedTicketBean.ticket.description}"
-                                             valueChangeListener="#{detailedTicketBean.tickedChangedListener}"/>
-                        </f:facet>
-                    </p:inplace>
+                    <h:panelGroup layout="block">
+                        <p:inplace id="deInplace" styleClass="ticketDescriptionInplace noPaddingInplace"
+                                   effectSpeed="fast"
+                                   rendered="#{p:ifGranted('ROLE_EDIT_TICKET_STATE') or
+                                   appUtilBean.isLoggedInUserAreTicketCreator(detailedTicketBean.ticket)}">
+                            <f:facet name="output">
+                                <h:outputText id="description" value="#{detailedTicketBean.ticket.description}"
+                                              escape="false"
+                                              style="white-space: pre;"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputTextarea value="#{detailedTicketBean.ticket.description}"
+                                                 valueChangeListener="#{detailedTicketBean.tickedChangedListener}"/>
+                            </f:facet>
+                        </p:inplace>
+                    </h:panelGroup>
 
                     <h:outputText value="Reproduce steps:"/>
                     <p:inplace styleClass="ticketDescriptionInplace noPaddingInplace"
-                               editor="true">
+                               editor="#{appUtilBean.isLoggedInUserAreTicketCreator(detailedTicketBean.ticket)}">
                         <f:facet name="output">
-                            <h:outputText value="#{detailedTicketBean.ticket.reproduceSteps}"/>
+                            <h:outputText value="#{detailedTicketBean.ticket.reproduceSteps}" escape="false"
+                                          style="white-space: pre;"/>
                         </f:facet>
                         <f:facet name="input">
                             <p:inputTextarea value="#{detailedTicketBean.ticket.reproduceSteps}"
@@ -85,19 +93,26 @@
                     </p:inplace>
 
                     <h:outputText value="Verification:"/>
-                    <p:inplace editor="true" styleClass="noPaddingInplace" effectSpeed="fast">
-                        <f:facet name="output">
-                            <ticket:vrificationLabel
-                                    verificationState="#{detailedTicketBean.ticket.verificationState}"/>
-                        </f:facet>
-                        <f:facet name="input">
-                            <p:selectOneMenu value="#{detailedTicketBean.ticket.verificationState}"
-                                             valueChangeListener="#{detailedTicketBean.tickedChangedListener}">
-                                <f:selectItems var="item" value="#{appUtilBean.ticketVerificationStates}"
-                                               itemLabel="#{item.label}" itemValue="#{item}"/>
-                            </p:selectOneMenu>
-                        </f:facet>
-                    </p:inplace>
+                    <h:panelGroup layout="block">
+                        <ticket:vrificationLabel
+                                verificationState="#{detailedTicketBean.ticket.verificationState}"
+                                rendered="#{p:ifNoneGranted('ROLE_EDIT_TICKET_STATE')}"/>
+                        <p:inplace editor="true"
+                                   styleClass="noPaddingInplace" effectSpeed="fast"
+                                   rendered="#{p:ifGranted('ROLE_EDIT_TICKET_STATE')}">
+                            <f:facet name="output">
+                                <ticket:vrificationLabel
+                                        verificationState="#{detailedTicketBean.ticket.verificationState}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:selectOneMenu value="#{detailedTicketBean.ticket.verificationState}"
+                                                 valueChangeListener="#{detailedTicketBean.tickedChangedListener}">
+                                    <f:selectItems var="item" value="#{appUtilBean.ticketVerificationStates}"
+                                                   itemLabel="#{item.label}" itemValue="#{item}"/>
+                                </p:selectOneMenu>
+                            </f:facet>
+                        </p:inplace>
+                    </h:panelGroup>
 
                     <h:outputText value="Creation date:"/>
                     <h:outputText value="#{detailedTicketBean.ticket.creationTime}">
@@ -113,7 +128,8 @@
                             <p:autoUpdate/>
                         </p:messages>
                     </div>
-                    <p:commandButton value="Save" actionListener="#{detailedTicketBean.updateTicket}"/>
+                    <p:commandButton value="Save" actionListener="#{detailedTicketBean.updateTicket}"
+                                     rendered="#{appUtilBean.isLoggedInUserAreTicketCreator(detailedTicketBean.ticket)}"/>
                 </div>
                 <div>
                     <message:messageEditor message="#{detailedTicketBean.selectedToEditMessage}"

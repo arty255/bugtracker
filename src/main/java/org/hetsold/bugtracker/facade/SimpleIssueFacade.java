@@ -4,7 +4,6 @@ import org.hetsold.bugtracker.dto.IssueDTO;
 import org.hetsold.bugtracker.dto.IssueShortDTO;
 import org.hetsold.bugtracker.dto.TicketDTO;
 import org.hetsold.bugtracker.dto.UserDTO;
-import org.hetsold.bugtracker.model.Issue;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,18 +32,17 @@ public class SimpleIssueFacade implements IssueFacade {
 
     @Override
     public IssueShortDTO getIssue(String issueUUID) {
-        return IssueMapper.getIssueShortDTO(issueService.getIssueById(issueUUID));
+        return issueService.getIssueShortDTO(new IssueShortDTO(issueUUID));
     }
 
     @Override
-    public void createIssue(IssueDTO issueDTO, UserDTO userDTO) {
-        Issue issue = IssueMapper.getIssue(issueDTO);
-        issueService.createNewIssue(issue, UserMapper.getUser(userDTO));
+    public void createIssue(IssueDTO issueDTO) {
+        issueService.createNewIssue(issueDTO);
     }
 
     @Override
     public void createIssueFromTicket(TicketDTO ticketDTO, UserDTO userDTO) {
-        issueService.createIssueFromTicket(TicketMapper.getTicket(ticketDTO), UserMapper.getUser(userDTO));
+        issueService.createIssueFromTicket(ticketDTO, userDTO);
     }
 
     @Override
@@ -58,10 +56,6 @@ public class SimpleIssueFacade implements IssueFacade {
 
     @Override
     public void deleteIssue(String issueUUID, boolean includeTicket) {
-        Issue issue = IssueMapper.getIssue(new IssueShortDTO(issueUUID));
-        issueService.deleteIssue(issue);
-        if (includeTicket) {
-            ticketService.delete(issue.getTicket().getUuid());
-        }
+        issueService.deleteIssue(new IssueDTO(issueUUID));
     }
 }

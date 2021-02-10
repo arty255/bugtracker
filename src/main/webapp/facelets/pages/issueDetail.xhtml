@@ -35,18 +35,18 @@
                                      update="archiveControlsContainer"
                                      action="#{detailedIssueBean.archiveIssueAction}"
                                      styleClass="yellowHoverButton"
-                                     rendered="#{not detailedIssueBean.issue.archived}"/>
+                                     rendered="#{p:ifGranted('ROLE_DELETE_ISSUE') and not detailedIssueBean.issue.archived}"/>
                     <p:commandButton value="Delete"
                                      process="@this"
                                      action="#{detailedIssueBean.deleteIssueAction}"
                                      styleClass="redHoverButton"
-                                     rendered="#{detailedIssueBean.issue.archived}"/>
+                                     rendered="#{p:ifGranted('ROLE_DELETE_ISSUE') and detailedIssueBean.issue.archived}"/>
                     <p:commandButton value="Unarchivate"
                                      process="@this"
                                      update="archiveControlsContainer"
                                      action="#{detailedIssueBean.unarchiveAction}"
                                      styleClass="yellowHoverButton"
-                                     rendered="#{detailedIssueBean.issue.archived}"/>
+                                     rendered="#{p:ifGranted('ROLE_DELETE_ISSUE') and detailedIssueBean.issue.archived}"/>
                 </h:panelGroup>
                 <p:panelGrid columns="2" style="width: 100%" columnClasses="minimalWidthColumn,autoWidthColumn">
                     <h:outputText value="Current issue state:"/>

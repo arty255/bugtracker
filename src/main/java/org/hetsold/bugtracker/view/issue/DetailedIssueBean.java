@@ -2,7 +2,6 @@ package org.hetsold.bugtracker.view.issue;
 
 
 import org.hetsold.bugtracker.dto.*;
-import org.hetsold.bugtracker.model.Issue;
 import org.hetsold.bugtracker.model.IssueState;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.MessageService;
@@ -48,7 +47,7 @@ public class DetailedIssueBean extends ListableMessageBean implements Serializab
         isOriginalStateChanged = false;
         selectedToAssignUser = null;
         userDTODataModel = new UserDTOLazyDataModel(userService);
-        activeUser = ((SecurityUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
+        activeUser = ((FullUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
         initMessageListener();
     }
 
@@ -62,7 +61,7 @@ public class DetailedIssueBean extends ListableMessageBean implements Serializab
     }
 
     private void reloadIssue() {
-        issue = issueService.getIssueDTOById(uuid);
+        issue = issueService.getIssueDTO(new IssueDTO(uuid));
     }
 
     public void initHistory() {
@@ -95,12 +94,13 @@ public class DetailedIssueBean extends ListableMessageBean implements Serializab
 
     @Override
     public void preformUpdateOperation(MessageDTO messageDTO) {
-        messageService.saveOrUpdateMessage(messageDTO, activeUser);
+        messageService.updateMessage(messageDTO, activeUser);
     }
 
     @Override
     public void preformSaveOperation(MessageDTO messageDTO) {
-        issueService.addIssueMessage(issue, messageDTO, activeUser);
+        messageDTO.setCreator(activeUser);
+        issueService.addIssueMessage(issue, messageDTO);
     }
 
     @Override
@@ -109,22 +109,22 @@ public class DetailedIssueBean extends ListableMessageBean implements Serializab
     }
 
     public void archiveIssueAction() {
-        issueService.makeIssueArchived(new IssueShortDTO(issue.getUuid()), activeUser);
+        issueService.makeIssueArchived(new IssueShortDTO(issue.getUuid()));
         reloadIssue();
     }
 
     public void unarchiveAction() {
-        issueService.makeIssueUnArchived(new IssueShortDTO(issue.getUuid()), activeUser);
+        issueService.makeIssueUnarchived(new IssueShortDTO(issue.getUuid()));
         reloadIssue();
     }
 
     public String deleteIssueAction() {
-        issueService.deleteIssue(new Issue.Builder().withIssueUuid(issue.getUuid()).build());
+        issueService.deleteIssue(new IssueDTO(issue.getUuid()));
         return "issues";
     }
 
     public void save() {
-        issue = issueService.saveOrUpdateIssue(issue, activeUser);
+        issue = issueService.updateIssue(issue, activeUser);
     }
 
     public void messageDateAscendingInListListener() {

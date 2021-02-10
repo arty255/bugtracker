@@ -1,6 +1,6 @@
 package org.hetsold.bugtracker.view.user;
 
-import org.hetsold.bugtracker.dto.SecurityUserDTO;
+import org.hetsold.bugtracker.dto.FullUserDetails;
 import org.hetsold.bugtracker.dto.TicketDTO;
 import org.hetsold.bugtracker.dto.UserDTO;
 import org.hetsold.bugtracker.service.TicketService;
@@ -36,7 +36,7 @@ public class UserProfileBean implements Serializable {
     public void init() {
         FacesContextUtils.getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
-        activeUser = ((SecurityUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
+        activeUser = ((FullUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
     }
 
     public void initUserData() {
@@ -46,13 +46,14 @@ public class UserProfileBean implements Serializable {
     }
 
     public void initUserProfileData() {
-        user = userService.getUserDTOById(uuid);
+        user = userService.getUser(new UserDTO(uuid));
         this.totalReportedTickets = (int) ticketService.getTicketCountReportedByUser(user, null);
         reportedTickets = new TicketLazyDataModel(ticketService, user);
     }
 
     public void save() {
-        userService.updateUser(user);
+        /*todo:*/
+        userService.updateUserProfileData(user);
     }
 
     public void setUuid(String uuid) {

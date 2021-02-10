@@ -36,7 +36,7 @@ public class TicketLazyDataModel extends LazyDataModel<TicketDTO> {
             return ticketService.getTicketDTOListReportedByUser(selectedUser, contract, first, pageSize);
         } else {
             this.setRowCount((int) ticketService.getTicketsCount(contract));
-            return ticketService.getTicketDTOList(contract, first, pageSize);
+            return ticketService.getTicketList(contract, first, pageSize);
         }
     }
 

@@ -39,7 +39,7 @@ public class TicketMessageLazyDataModel extends LazyDataModel<MessageDTO> {
 
     @Override
     public MessageDTO getRowData(String rowKey) {
-        return messageService.getMessageDTOById(rowKey);
+        return messageService.getMessage(new MessageDTO(rowKey));
     }
 
     @Override

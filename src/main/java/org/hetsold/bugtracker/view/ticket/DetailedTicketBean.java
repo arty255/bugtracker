@@ -1,8 +1,8 @@
 package org.hetsold.bugtracker.view.ticket;
 
+import org.hetsold.bugtracker.dto.FullUserDetails;
 import org.hetsold.bugtracker.dto.IssueShortDTO;
 import org.hetsold.bugtracker.dto.MessageDTO;
-import org.hetsold.bugtracker.dto.SecurityUserDTO;
 import org.hetsold.bugtracker.dto.TicketDTO;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.MessageService;
@@ -44,8 +44,7 @@ public class DetailedTicketBean extends ListableMessageBean implements Serializa
                 .getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
         initMessageListener();
-        /*todo: getUser FromSecurityContext*/
-        activeUser = ((SecurityUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
+        activeUser = ((FullUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
     }
 
     public void initData() {
@@ -57,7 +56,7 @@ public class DetailedTicketBean extends ListableMessageBean implements Serializa
     }
 
     private void initTicket() {
-        ticket = ticketService.getTicketDTOById(uuid);
+        ticket = ticketService.getTicketDTO(new TicketDTO(uuid));
     }
 
     public void initMessages() {
@@ -84,7 +83,7 @@ public class DetailedTicketBean extends ListableMessageBean implements Serializa
     }
 
     public void updateTicket() {
-        ticketService.updateTicket(ticket);
+        ticketService.updateTicket(ticket, activeUser);
     }
 
     public void tickedChangedListener(ValueChangeEvent event) {
@@ -93,12 +92,13 @@ public class DetailedTicketBean extends ListableMessageBean implements Serializa
 
     @Override
     public void preformUpdateOperation(MessageDTO messageDTO) {
-        messageService.saveOrUpdateMessage(messageDTO, activeUser);
+        messageService.updateMessage(messageDTO, activeUser);
     }
 
     @Override
     public void preformSaveOperation(MessageDTO messageDTO) {
-        ticketService.addTicketMessage(ticket, messageDTO, activeUser);
+        messageDTO.setCreator(activeUser);
+        ticketService.addTicketMessage(ticket, messageDTO);
     }
 
     @Override

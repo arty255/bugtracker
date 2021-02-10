@@ -30,6 +30,7 @@
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                          rowStyleClass="#{issue.archived eq true ? 'archivedTableRow' : ''}"
+                         emptyMessage="No Issues found"
                          styleClass="issuesTable">
                 <f:facet name="header">
                     <div style="width: 100%; display: flex; flex-direction: row;justify-content: space-between;">
@@ -53,7 +54,8 @@
                 <p:column headerText="Description">
                     <div class="descriptionSection">
                         <div class="descriptionContent">
-                            <h:outputText value="#{issue.description}"/>
+                            <h:outputText value="#{issue.description}" escape="false"
+                                          style="white-space: pre;"/>
                         </div>
                         <h:panelGroup class="ticketBaseWrapper" rendered="#{not empty issue.ticketId}">
                             <h:outputText value="Base on ticket:"/>
@@ -66,7 +68,9 @@
                 </p:column>
                 <p:column headerText="Reported By" styleClass="minimalWidthColumn centeredColumn">
                     <!--todo: show user group: forum, tester or other -based on department-->
-                    <user:linkedUser user="#{issue.reportedBy}"/>
+                    <div>
+                        <user:linkedUser user="#{issue.reportedBy}"/>
+                    </div>
                 </p:column>
                 <p:column headerText="Assigned to" styleClass="minimalWidthColumn centeredColumn">
                     <user:linkedUser user="#{issue.assignedTo}" rendered="#{not empty issue.assignedTo}"/>
@@ -77,10 +81,9 @@
                         <f:convertDateTime pattern="#{appUtilBean.dateFormat}"/>
                     </h:outputText>
                 </p:column>
-                <!--todo: change with spring security integration-->
                 <p:column styleClass="minimalWidthColumn centeredColumn controlsColumn"
                           headerText="Controls"
-                          rendered="#{true}">
+                          rendered="#{p:ifAnyGranted('ROLE_DELETE_ISSUE')}">
                     <controls:archiveButtonsComponent itemSource="#{issue}"
                                                       selectedItem="#{issueListBean.issue}"
                                                       removeAction="#{issueListBean.preformDeleteAction()}"
@@ -88,7 +91,8 @@
                                                       unArchiveAction="#{issueListBean.preformUnarchiveAction}"
                                                       selectorsToUpdateOnArchiveAction="@(.issuesTable)"
                                                       selectorsToUpdateOnUnarchiveAction="@(.issuesTable)"
-                                                      selectorsToUpdateOnRemoveAction="@(.issuesTable)"/>
+                                                      selectorsToUpdateOnRemoveAction="@(.issuesTable)"
+                                                      renderArchiveButton="#{p:ifGranted('ROLE_DELETE_ISSUE')}"/>
                 </p:column>
             </p:dataTable>
         </h:form>

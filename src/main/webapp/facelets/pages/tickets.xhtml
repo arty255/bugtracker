@@ -22,6 +22,7 @@
             <p:dataTable id="ticketsDataView" var="ticket" value="#{ticketListBean.ticketLazyDataModel}"
                          lazy="true" rows="10" paginator="#{ticketListBean.ticketLazyDataModel.rowCount > 10}"
                          gridIcon="pi pi-th-large" listIcon="pi pi-bars" styleClass="ticketDataView"
+                         emptyMessage="No tickets found"
                          tableStyle="table-layout: auto">
                 <f:facet name="header">
                     <div style="width:100%; display: flex; flex-direction: row; justify-content: space-between;">
@@ -33,7 +34,7 @@
                                                         afterApplyActionUpdateSelectors="@(.ticketDataView)"/>
                     </div>
                 </f:facet>
-                <p:column styleClass="minimalTicketWidthColumn" style="width: 15%!important;">
+                <p:column headerText="Ticket data:" styleClass="minimalTicketWidthColumn" style="width: 15%!important;">
                     <div>
                         <p:outputLabel value="Ticket:"/>
                     </div>
@@ -45,32 +46,29 @@
                         <ticket:stateLabel issueState="#{ticket.resolveState}"/>
                     </div>
                 </p:column>
-                <p:column>
+                <p:column headerText="Ticket description and reproduce steps:">
                     <div class="descriptionWrapper">
                         <p:outputLabel value="Description:" style="font-weight: bold"/>
                         <br/>
-                        <h:outputText value="#{ticket.description}"/>
+                        <h:outputText value="#{ticket.description}" escape="false"
+                                      style="white-space: pre;"/>
                     </div>
                     <div class="reproduceStepsWrapper">
                         <p:outputLabel value="Reproduce steps:" style="font-weight: bold"/>
                         <br/>
-                        <h:outputText value="#{ticket.reproduceSteps}"/>
+                        <h:outputText value="#{ticket.reproduceSteps}" escape="false"
+                                      style="white-space: pre;"/>
                     </div>
                 </p:column>
-                <p:column styleClass="timeColumn">
-                    <div>
-                        <p:outputLabel value="Reported by:"/>
-                        <user:miniUser user="#{ticket.user}"/>
-                    </div>
-                    <div>
-                        <p:outputLabel value="Creation date:"/>
-                        <br/>
-                        <h:outputText value="#{ticket.creationTime}" style="white-space: nowrap">
-                            <f:convertDateTime type="both" pattern="#{appUtilBean.dateFormat}"/>
-                        </h:outputText>
-                    </div>
+                <p:column headerText="Reported by:" styleClass="timeColumn">
+                    <user:linkedUser user="#{ticket.user}"/>
                 </p:column>
-                <p:column styleClass="controlsColumn">
+                <p:column headerText="Report date:" styleClass="timeColumn">
+                    <h:outputText value="#{ticket.creationTime}" style="white-space: nowrap">
+                        <f:convertDateTime type="both" pattern="#{appUtilBean.dateFormat}"/>
+                    </h:outputText>
+                </p:column>
+                <p:column styleClass="controlsColumn" rendered="#{p:ifGranted('ROLE_DELETE_TICKET')}">
                     <div>
                         <p:commandButton icon="pi pi-trash"
                                          actionListener="#{ticketListBean.deleteTicket(ticket.uuid)}"

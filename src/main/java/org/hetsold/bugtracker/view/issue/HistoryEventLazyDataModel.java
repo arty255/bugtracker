@@ -34,15 +34,15 @@ public class HistoryEventLazyDataModel extends LazyDataModel<IssueEventDTO> {
 
     @Override
     public List<IssueEventDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-        this.setRowCount((int) issueService.getIssueHistoryEventsCount(issueDTO));
-        return issueService.getIssueHistoryEventsDTO(issueDTO, first, pageSize, inverseDateOrder);
+        this.setRowCount((int) issueService.getIssueEventsCount(issueDTO));
+        return issueService.getIssueEventsDTO(issueDTO, first, pageSize, inverseDateOrder);
     }
 
     @Override
     public IssueEventDTO getRowData(String rowKey) {
         if (!rowKey.isEmpty()) {
             return new IssueEventDTO(IssueEventDTO.EventType.MessageEvent
-                    , new MessageDTO(messageService.getMessageById(rowKey)));
+                    , messageService.getMessage(new MessageDTO(rowKey)));
         } else {
             return null;
         }

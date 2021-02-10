@@ -1,10 +1,12 @@
 package org.hetsold.bugtracker.view.user;
 
+import org.hetsold.bugtracker.dto.SecurityUserDTO;
 import org.hetsold.bugtracker.dto.UserDTO;
 import org.hetsold.bugtracker.model.SecurityUser;
 import org.hetsold.bugtracker.model.SecurityUserAuthority;
-import org.hetsold.bugtracker.service.SecurityService;
 import org.hetsold.bugtracker.service.UserService;
+import org.primefaces.component.tabview.TabView;
+import org.primefaces.event.TabChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.jsf.FacesContextUtils;
 
@@ -22,17 +24,13 @@ import java.util.List;
 @ViewScoped
 public class AddUserBean implements Serializable {
     private UserDTO user;
-    private SecurityUser securityUser;
+    private SecurityUserDTO securityUser;
     private List<SecurityUserAuthority> selectedSecurityUserAuthorities;
-
     private UserPreset selectedUserPreset;
-
 
     private boolean isNewUserAction;
     @Autowired
     private UserService userService;
-    @Autowired
-    private SecurityService securityService;
 
 
     @PostConstruct
@@ -47,9 +45,10 @@ public class AddUserBean implements Serializable {
         try {
             UserDTO actionResultUser = user;
             if (isNewUserAction) {
-                actionResultUser = userService.registerUser(user, securityUser);
+                actionResultUser = userService.register(user, securityUser);
             } else {
-                userService.updateUser(user);
+                //todo: change edit process
+                //userService.update(user, securityUser);
             }
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "new user " + actionResultUser.getUuid() + " added",
@@ -58,11 +57,12 @@ public class AddUserBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "no user added", "no user added"));
         }
+        initNewUser();
     }
 
     public void initNewUser() {
         user = new UserDTO("");
-        securityUser = new SecurityUser();
+        securityUser = new SecurityUserDTO();
         isNewUserAction = true;
     }
 
@@ -79,10 +79,21 @@ public class AddUserBean implements Serializable {
     }
 
     public void onLoginChangeListener() {
-        if (securityService.isLoginTaken(securityUser.getUsername())) {
+        if (userService.isLoginTaken(securityUser.getUsername())) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "login is taken", "login is taken"));
         }
+    }
+
+    public void onTabChangeListener(TabChangeEvent event) {
+        if (!isNewUserAction && isActiveTabCredentialsTab(event)) {
+//            securityUser = securityService.getSecurityUserByUserUuid(user.getUuid());
+        }
+    }
+
+    private boolean isActiveTabCredentialsTab(TabChangeEvent event) {
+        TabView tabView = (TabView) event.getComponent();
+        return tabView.getChildren().indexOf(event.getTab()) == 1;
     }
 
     public UserDTO getUser() {
@@ -101,11 +112,11 @@ public class AddUserBean implements Serializable {
         isNewUserAction = newUserAction;
     }
 
-    public SecurityUser getSecurityUser() {
+    public SecurityUserDTO getSecurityUser() {
         return securityUser;
     }
 
-    public void setSecurityUser(SecurityUser securityUser) {
+    public void setSecurityUser(SecurityUserDTO securityUser) {
         this.securityUser = securityUser;
     }
 

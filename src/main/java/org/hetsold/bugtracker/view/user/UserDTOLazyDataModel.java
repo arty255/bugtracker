@@ -13,6 +13,7 @@ import java.util.Map;
 public class UserDTOLazyDataModel extends LazyDataModel<UserDTO> {
     private UserService userService;
     private Contract contract;
+    private boolean dateAsc = false;
 
     public UserDTOLazyDataModel(UserService userService) {
         this.userService = userService;
@@ -22,15 +23,19 @@ public class UserDTOLazyDataModel extends LazyDataModel<UserDTO> {
         this.contract = contract;
     }
 
+    public void setDateAsc(boolean dateAsc) {
+        this.dateAsc = dateAsc;
+    }
+
     @Override
     public List<UserDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
         this.setRowCount((int) userService.getUsersCount(contract));
-        return userService.getUsers(contract, first, pageSize);
+        return userService.getUsers(contract, first, pageSize, dateAsc);
     }
 
     @Override
     public UserDTO getRowData(String rowKey) {
-        return userService.getUserDTOById(rowKey);
+        return userService.getUser(new UserDTO(rowKey));
     }
 
     @Override

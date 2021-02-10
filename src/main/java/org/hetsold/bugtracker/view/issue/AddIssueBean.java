@@ -1,7 +1,7 @@
 package org.hetsold.bugtracker.view.issue;
 
+import org.hetsold.bugtracker.dto.FullUserDetails;
 import org.hetsold.bugtracker.dto.IssueDTO;
-import org.hetsold.bugtracker.dto.SecurityUserDTO;
 import org.hetsold.bugtracker.dto.UserDTO;
 import org.hetsold.bugtracker.model.IssueState;
 import org.hetsold.bugtracker.service.IssueService;
@@ -35,18 +35,19 @@ public class AddIssueBean implements Serializable {
     public void preInit() {
         FacesContextUtils.getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
-        activeUser = ((SecurityUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
+        activeUser = ((FullUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
         userList = new ArrayList<>();
         initIssueListener();
     }
 
     public void initIssueListener() {
         issue = new IssueDTO();
-        userList = userService.getUsers(null, 0, Integer.MAX_VALUE);
+        userList = userService.getUsers(null, 0, Integer.MAX_VALUE, false);
     }
 
     public void addIssueAction() {
-        issueService.saveOrUpdateIssue(issue, activeUser);
+        issue.setReportedBy(activeUser);
+        issueService.createNewIssue(issue);
     }
 
     public void issueStateChangeListener() {

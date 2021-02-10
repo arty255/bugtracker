@@ -1,19 +1,23 @@
-.linkWrapper{
-    padding: 0 0.5em;
-    /*text-align: center;*/
-}
-
-.linkWrapper > link{
-    text-decoration: none;
+.linkWrapper a {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
-.firstName{
-    margin-right: 0.5em;
+.linkWrapper {
+    padding: 0 0.5em;
 }
 
-.lastName{
+.linkWrapper > a > span {
+    padding: 0 0.5em;
+}
+
+.firstName {
+
+}
+
+.lastName {
 
 }
 

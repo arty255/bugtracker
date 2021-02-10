@@ -46,11 +46,17 @@
                 <p:column headerText="Last name">
                     <h:outputText value="#{user.lastName}"/>
                 </p:column>
-                <!--todo: change with spring security integration-->
-                <p:column rendered="#{true}" styleClass="minimalWidthColumn">
+                <p:column headerText="Registration date">
+                    <h:outputText value="#{user.registrationDate}">
+                        <f:convertDateTime pattern="#{appUtilBean.dateFormat}"/>
+                    </h:outputText>
+                </p:column>
+                <p:column rendered="#{p:ifAnyGranted('ROLE_EDIT_USER, ROLE_DELETE_USER')}"
+                          styleClass="minimalWidthColumn">
                     <p:commandButton icon="pi pi-pencil" style="margin-right: 0.8em;"
                                      process="@this"
                                      update=":dialogForm"
+                                     rendered="#{p:ifGranted('ROLE_EDIT_USER')}"
                                      oncomplete="PF('addUserDialog').show();">
                         <f:setPropertyActionListener value="#{user}" target="#{addUserBean.user}"/>
                         <f:setPropertyActionListener value="#{false}" target="#{addUserBean.newUserAction}"/>
@@ -58,6 +64,7 @@
                     <p:commandButton icon="pi pi-trash"
                                      process="@this"
                                      update=":usersForm:userDataTable"
+                                     rendered="#{p:ifGranted('ROLE_DELETE_USER')}"
                                      action="#{userListBean.deleteUser}">
                         <f:setPropertyActionListener value="#{user}" target="#{userListBean.selectedUserDTO}"/>
                     </p:commandButton>
@@ -67,12 +74,16 @@
 
         <h:form id="dialogForm">
             <p:dialog widgetVar="addUserDialog" header="user data" dynamic="true" appendTo="@(body)"
-                      width="500">
+                      width="500" resizable="false">
                 <h:form>
                     <p:messages showDetail="true" closable="false" severity="error">
                         <p:autoUpdate/>
                     </p:messages>
                     <p:tabView>
+                        <p:ajax event="tabChange"
+                                process="@this"
+                                update="@(.userCredentialsWrapper)"
+                                listener="#{addUserBean.onTabChangeListener}"/>
                         <p:tab title="Profile data">
                             <h:panelGroup id="userPanel" layout="block">
                                 <h:panelGrid columns="1" styleClass="userPanelGrid">
@@ -111,12 +122,12 @@
                                     </div>
                                     <div class="ui-g-12 ui-g-nopad">
                                         <div class="ui-g-6 ui-g-nopad ui-g">
-                                            <!--todo: subkect to change with email integration-->
+                                            <!--todo: subject to change with email integration-->
                                             <div class="ui-g-12  columned">
                                                 <p:outputLabel value="Login:"/>
                                                 <p:inputText id="loginInput"
                                                              value="#{addUserBean.securityUser.username}">
-                                                    <p:ajax delay="500"
+                                                    <p:ajax delay="50"
                                                             process="@this"
                                                             listener="#{addUserBean.onLoginChangeListener}"/>
                                                 </p:inputText>

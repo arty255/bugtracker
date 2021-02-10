@@ -11,6 +11,12 @@
     vertical-align: top !important;
 }
 
+.issuesTable .ui-datatable-empty-message {
+    text-align: center;
+    font-weight: bolder;
+    font-size: 3em;
+}
+
 .issueUUIDColumn {
     width: 15%;
 }

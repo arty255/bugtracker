@@ -1,6 +1,6 @@
 package org.hetsold.bugtracker.view;
 
-import org.hetsold.bugtracker.dto.SecurityUserDTO;
+import org.hetsold.bugtracker.dto.FullUserDetails;
 import org.hetsold.bugtracker.dto.UserDTO;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -11,8 +11,8 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class ActiveUserBean {
     public UserDTO getActiveUser() {
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            return ((SecurityUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
+            return ((FullUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
         }
         return null;
     }

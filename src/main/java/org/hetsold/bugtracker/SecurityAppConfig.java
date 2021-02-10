@@ -1,6 +1,6 @@
 package org.hetsold.bugtracker;
 
-import org.hetsold.bugtracker.service.SecurityService;
+import org.hetsold.bugtracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -26,11 +27,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
         securedEnabled = true)
 public class SecurityAppConfig extends WebSecurityConfigurerAdapter {
 
-    private SecurityService securityService;
+    private UserService userService;
 
     @Autowired
-    public SecurityAppConfig(SecurityService securityService) {
-        this.securityService = securityService;
+    public SecurityAppConfig(UserService userService) {
+        this.userService = userService;
     }
 
     protected void configure(HttpSecurity http) throws Exception {
@@ -48,7 +49,7 @@ public class SecurityAppConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/facelets/pages/issueDetail.jsf").hasAnyRole("LIST_ISSUES", "DELETE_ISSUE", "EDIT_ISSUE")
                 .antMatchers("/facelets/pages/tickets.jsf").hasAnyRole("LIST_TICKETS", "DELETE_TICKET", "EDIT_TICKET")
                 .antMatchers("/facelets/pages/ticketDetail.jsf").hasAnyRole("LIST_TICKETS", "DELETE_TICKET", "EDIT_TICKET")
-                .antMatchers("/facelets/pages/users.jsf").hasAnyRole("LIST_USERS", "DELETE_USER", "EDIT_USER")
+                .antMatchers("/facelets/pages/users.jsf").permitAll()//hasAnyRole("LIST_USERS", "DELETE_USER", "EDIT_USER")
                 .anyRequest()
                 .authenticated();
         http
@@ -78,7 +79,7 @@ public class SecurityAppConfig extends WebSecurityConfigurerAdapter {
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(getPasswordEncoder());
-        provider.setUserDetailsService(securityService);
+        provider.setUserDetailsService((UserDetailsService) userService);
         return provider;
     }
 }

@@ -42,7 +42,7 @@ public class TicketListBean implements Serializable {
     }
 
     public void deleteTicket(String uuid) {
-        ticketService.delete(uuid);
+        ticketService.delete(new TicketDTO(uuid));
     }
 
     public void updateTicketDataModel() {

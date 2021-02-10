@@ -5,6 +5,7 @@ import org.hetsold.bugtracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.jsf.FacesContextUtils;
 
+import javax.annotation.PostConstruct;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -17,9 +18,11 @@ public class UserConverter implements Converter {
 
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String s) {
-        FacesContextUtils.getRequiredWebApplicationContext(facesContext).getAutowireCapableBeanFactory().autowireBean(this);
+        FacesContextUtils
+                .getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
+                .getAutowireCapableBeanFactory().autowireBean(this);
         if (!s.isEmpty()) {
-            return userService.getUserDTOById(s);
+            return userService.getUser(new UserDTO(s));
         }
         return null;
     }

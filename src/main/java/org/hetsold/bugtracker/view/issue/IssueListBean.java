@@ -1,9 +1,9 @@
 package org.hetsold.bugtracker.view.issue;
 
+import org.hetsold.bugtracker.dto.FullUserDetails;
+import org.hetsold.bugtracker.dto.IssueDTO;
 import org.hetsold.bugtracker.dto.IssueShortDTO;
-import org.hetsold.bugtracker.dto.SecurityUserDTO;
 import org.hetsold.bugtracker.dto.UserDTO;
-import org.hetsold.bugtracker.model.Issue;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.view.filter.ContractBuilder;
 import org.hetsold.bugtracker.view.filter.DisplayableFieldFilter;
@@ -37,7 +37,7 @@ public class IssueListBean implements Serializable {
                 .getAutowireCapableBeanFactory().autowireBean(this);
         initIssueList();
         createIssueFilterWrappersAction();
-        activeUser = ((SecurityUserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
+        activeUser = ((FullUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
     }
 
     public void initIssueList() {
@@ -58,15 +58,15 @@ public class IssueListBean implements Serializable {
     }
 
     public void preformArchiveAction() {
-        issueService.makeIssueArchived(issue, activeUser);
+        issueService.makeIssueArchived(issue);
     }
 
     public void preformDeleteAction() {
-        issueService.deleteIssue(new Issue.Builder().withIssueUuid(issue.getUuid()).build());
+        issueService.deleteIssue(new IssueDTO(issue.getUuid()));
     }
 
     public void preformUnarchiveAction() {
-        issueService.makeIssueUnArchived(issue, activeUser);
+        issueService.makeIssueUnarchived(issue);
     }
 
     public IssueShortDTO getIssue() {

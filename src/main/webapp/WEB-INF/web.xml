@@ -36,6 +36,10 @@
         <param-value>Development</param-value>
     </context-param>
 
+    <context-param>
+        <param-name>javax.faces.</param-name>
+        <param-value></param-value>
+    </context-param>
 
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>

@@ -8,11 +8,12 @@
       xmlns:composite="http://java.sun.com/jsf/composite" xmlns:f="http://java.sun.com/jsf/core"
       xml:lang="en" lang="en">
 <composite:interface>
-    <composite:attribute name="itemSource" type="org.hetsold.bugtracker.dto.ArchivedIdentity" required="true"/>
+    <composite:attribute name="itemSource" type="org.hetsold.bugtracker.dto.ArchivedIdentityDTO" required="true"/>
     <composite:attribute name="archiveAction" method-signature="void action()" required="true"/>
     <composite:attribute name="unArchiveAction" method-signature="void action()" required="true"/>
     <composite:attribute name="removeAction" method-signature="void action()" required="true"/>
     <composite:attribute name="selectedItem" required="true"/>
+    <composite:attribute name="renderArchiveButton" default="true"/>
     <composite:attribute name="selectorsToUpdateOnArchiveAction"/>
     <composite:attribute name="selectorsToUpdateOnRemoveAction"/>
     <composite:attribute name="selectorsToUpdateOnUnarchiveAction"/>
