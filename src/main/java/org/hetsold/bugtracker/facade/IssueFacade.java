@@ -10,7 +10,7 @@ import java.util.List;
 public interface IssueFacade {
     void generateRandomIssue();
 
-    void createIssue(IssueDTO issueDTO, UserDTO userDTO);
+    void createIssue(IssueDTO issueDTO);
 
     void createIssueFromTicket(TicketDTO ticketDTO, UserDTO userDTO);
 
