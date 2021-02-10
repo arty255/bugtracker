@@ -1,31 +1,22 @@
 package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dto.MessageDTO;
+import org.hetsold.bugtracker.dto.TicketDTO;
 import org.hetsold.bugtracker.dto.UserDTO;
-import org.hetsold.bugtracker.model.Message;
-import org.hetsold.bugtracker.model.Ticket;
-import org.hetsold.bugtracker.model.User;
 
 import java.util.List;
 
 public interface MessageService {
-    Message saveNewMessage(Message message, User user);
 
-    Message updateMessage(Message message, User user);
+    void saveNewMessage(MessageDTO messageDTO);
 
-    MessageDTO saveOrUpdateMessage(MessageDTO messageDTO, UserDTO userDTO);
-
-    Message saveOrUpdateMessage(Message message, User user);
+    void updateMessage(MessageDTO messageDTO, UserDTO messageEditorDto);
 
     void delete(MessageDTO messageDTO);
 
-    void delete(Message message);
+    MessageDTO getMessage(MessageDTO messageDTO);
 
-    Message getMessageById(String uuid);
+    List<MessageDTO> getMessagesForTicket(TicketDTO ticketDTO, int startPosition, int limit, boolean inverseDateOrder);
 
-    MessageDTO getMessageDTOById(String uuid);
-
-    long getMessageCountByTicket(Ticket ticket);
-
-    List<Message> getMessageListByTicket(Ticket ticket, int fromIndex, int limit, boolean inverseDateOrder);
+    long getMessagesCountForTicket(TicketDTO ticketDTO);
 }
