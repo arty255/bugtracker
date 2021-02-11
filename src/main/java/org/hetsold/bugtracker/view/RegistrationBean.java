@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.jsf.FacesContextUtils;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -29,7 +30,22 @@ public class RegistrationBean {
         registrationData = new RegistrationDataDTO();
     }
 
-    public void registerAction() {
+    public void onLoginChangeListener(){
+        if (userService.isLoginTaken(registrationData.getLogin())) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "login is taken", "login is taken"));
+        }
+    }
+
+    public void registrationAction() {
         userService.register(registrationData);
+    }
+
+    public RegistrationDataDTO getRegistrationData() {
+        return registrationData;
+    }
+
+    public void setRegistrationData(RegistrationDataDTO registrationData) {
+        this.registrationData = registrationData;
     }
 }

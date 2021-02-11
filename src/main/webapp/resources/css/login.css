@@ -1,4 +1,4 @@
-.loginPanelWrapper {
+.panelWrapper {
     width: 100%;
     height: 100%;
     display: flex;
@@ -10,6 +10,11 @@
 .loginPanel {
     min-width: 350px;
     max-width: 400px;
+}
+
+.registrationPanel{
+    min-width: 400px;
+    max-width: 500px;
 }
 
 .loginPanel > * {

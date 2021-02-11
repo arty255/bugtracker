@@ -15,7 +15,7 @@
         <h:outputStylesheet library="css" name="login.css"/>
     </h:head>
     <h:form>
-        <div class="loginPanelWrapper">
+        <div class="panelWrapper">
             <h:panelGroup styleClass="loginPanel">
                 <div class="ui-g ui-g-nopad">
                     <div class="ui-g-12">
@@ -54,6 +54,9 @@
                                          update="@form"
                                          styleClass="loginButton"
                                          action="#{loginBean.loginAction}"/>
+                    </div>
+                    <div class="ui-g-12">
+                        <p:link outcome="registration" value="Register"/>
                     </div>
                 </div>
             </h:panelGroup>

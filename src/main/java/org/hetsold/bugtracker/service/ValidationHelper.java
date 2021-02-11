@@ -40,7 +40,7 @@ public class ValidationHelper {
 
     public static void validateUserBeforeSave(User user) {
         validateNotNull(user, "user can not be null");
-        validateNull(user.getUuid(), "user idd need to be null");
+        validateNull(user.getUuid(), "user id need to be null");
         validateUserFirstName(user);
         validateUserLastName(user);
     }
