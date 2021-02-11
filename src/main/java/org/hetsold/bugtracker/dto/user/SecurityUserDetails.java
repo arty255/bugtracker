@@ -1,5 +1,6 @@
-package org.hetsold.bugtracker.dto;
+package org.hetsold.bugtracker.dto.user;
 
+import org.hetsold.bugtracker.dto.AbstractDTO;
 import org.hetsold.bugtracker.model.SecurityUser;
 import org.hetsold.bugtracker.model.SecurityUserAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class FullUserDetails extends AbstractDTO implements UserDetails {
+public class SecurityUserDetails extends AbstractDTO implements UserDetails {
     private final String username;
     private final String password;
     private final boolean enabled;
@@ -17,7 +18,7 @@ public class FullUserDetails extends AbstractDTO implements UserDetails {
     private Collection<SecurityUserAuthority> authorities = new ArrayList<>();
     private UserDTO userDTO;
 
-    public FullUserDetails(SecurityUser securityUser) {
+    public SecurityUserDetails(SecurityUser securityUser) {
         this.setUuid(securityUser.getUuid().toString());
         this.username = securityUser.getUsername();
         this.password = securityUser.getPassword();

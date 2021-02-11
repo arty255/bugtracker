@@ -4,7 +4,7 @@ import org.hetsold.bugtracker.dao.TicketDAO;
 import org.hetsold.bugtracker.dao.util.Contract;
 import org.hetsold.bugtracker.dto.MessageDTO;
 import org.hetsold.bugtracker.dto.TicketDTO;
-import org.hetsold.bugtracker.dto.UserDTO;
+import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.model.*;
 import org.hetsold.bugtracker.service.mapper.MessageMapper;
 import org.hetsold.bugtracker.service.mapper.TicketMapper;

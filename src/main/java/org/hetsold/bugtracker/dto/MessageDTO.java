@@ -1,5 +1,6 @@
 package org.hetsold.bugtracker.dto;
 
+import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.model.Message;
 
 import java.io.Serializable;

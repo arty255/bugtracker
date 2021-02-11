@@ -4,6 +4,7 @@ import org.hetsold.bugtracker.dao.HistoryEventDAO;
 import org.hetsold.bugtracker.dao.IssueDAO;
 import org.hetsold.bugtracker.dao.util.Contract;
 import org.hetsold.bugtracker.dto.*;
+import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.model.*;
 import org.hetsold.bugtracker.service.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -60,6 +60,12 @@ public class SecurityUser extends AbstractEntity implements UserDetails {
         this.setAccountNonLocked(newSecurityUser.isAccountNonLocked());
         this.setCredentialsNonExpired(newSecurityUser.isCredentialsNonExpired());
         this.setAuthorities(newSecurityUser.getAuthorities());
+        this.setEmail(newSecurityUser.getEmail());
+    }
+
+    public void fullUpdate(SecurityUser securityUser) {
+        update(securityUser);
+        this.setUsername(securityUser.getUsername());
     }
 
     @Override

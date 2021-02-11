@@ -1,5 +1,6 @@
 package org.hetsold.bugtracker.dto;
 
+import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.model.Ticket;
 import org.hetsold.bugtracker.model.TicketResolveState;
 import org.hetsold.bugtracker.model.TicketVerificationState;

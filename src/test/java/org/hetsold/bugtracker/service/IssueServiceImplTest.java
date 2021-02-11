@@ -6,7 +6,7 @@ import org.hetsold.bugtracker.dao.HistoryEventDAO;
 import org.hetsold.bugtracker.dao.IssueDAO;
 import org.hetsold.bugtracker.dto.IssueDTO;
 import org.hetsold.bugtracker.dto.MessageDTO;
-import org.hetsold.bugtracker.dto.UserDTO;
+import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.model.*;
 import org.hetsold.bugtracker.service.exception.EmptyIssueDescriptionException;
 import org.hetsold.bugtracker.service.exception.EmptyUUIDKeyException;
