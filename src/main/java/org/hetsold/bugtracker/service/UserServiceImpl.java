@@ -59,6 +59,7 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public UserDTO register(RegistrationDataDTO registrationDataDTO) {
         SecurityUser securityUser = UserMapper.getSecurityUser(registrationDataDTO);
         User user = UserMapper.getUser(registrationDataDTO);

@@ -42,7 +42,7 @@ public class SecurityAppConfig extends WebSecurityConfigurerAdapter {
                 .sessionAuthenticationErrorUrl("/facelets/pages/login.jsf");
         http
                 .authorizeRequests()
-                .antMatchers("/facelets/pages/login.jsf").permitAll()
+                .antMatchers("/facelets/pages/login.jsf","/facelets/pages/registration.jsf").permitAll()
                 .antMatchers("/javax.faces.resource/**").permitAll()
                 .antMatchers("/facelets/pages/userProfile.jsf").authenticated()
                 .antMatchers("/facelets/pages/issues.jsf").hasAnyRole("LIST_ISSUES", "DELETE_ISSUE", "EDIT_ISSUE")

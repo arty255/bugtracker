@@ -1,7 +1,7 @@
 package org.hetsold.bugtracker.service.mapper;
 
-import org.hetsold.bugtracker.dto.user.RegistrationDataDTO;
 import org.hetsold.bugtracker.dto.user.FullUserDTO;
+import org.hetsold.bugtracker.dto.user.RegistrationDataDTO;
 import org.hetsold.bugtracker.dto.user.SecurityUserDetails;
 import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.model.SecurityUser;
@@ -64,13 +64,21 @@ public class UserMapper {
     }
 
     public static User getUser(RegistrationDataDTO registrationDataDTO) {
-        if (registrationDataDTO != null) {
+        if (notNullFields(registrationDataDTO)) {
             User user = new User();
+            user.setUuid(null);
             user.setFirstName(registrationDataDTO.getFirstName());
             user.setLastName(registrationDataDTO.getLastName());
             return user;
         }
         return null;
+    }
+
+    private static boolean notNullFields(RegistrationDataDTO registrationDataDTO) {
+        return (registrationDataDTO != null &&
+                (registrationDataDTO.getLastName() != null && !registrationDataDTO.getLastName().isEmpty() ||
+                        registrationDataDTO.getFirstName() != null && !registrationDataDTO.getFirstName().isEmpty())
+        );
     }
 
     public static SecurityUserDetails getSecurityUserDetails(SecurityUser securityUser) {
