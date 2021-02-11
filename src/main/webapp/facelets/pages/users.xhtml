@@ -56,10 +56,11 @@
                     <p:commandButton icon="pi pi-pencil" style="margin-right: 0.8em;"
                                      process="@this"
                                      update=":dialogForm"
+                                     action="#{addUserBean.initRegistrationData}"
                                      rendered="#{p:ifGranted('ROLE_EDIT_USER')}"
                                      oncomplete="PF('addUserDialog').show();">
                         <f:setPropertyActionListener value="#{user}" target="#{addUserBean.user}"/>
-                        <f:setPropertyActionListener value="#{false}" target="#{addUserBean.newUserAction}"/>
+                        <f:setPropertyActionListener value="#{false}" target="#{addUserBean.registrationAction}"/>
                     </p:commandButton>
                     <p:commandButton icon="pi pi-trash"
                                      process="@this"
@@ -88,13 +89,12 @@
                             <h:panelGroup id="userPanel" layout="block">
                                 <h:panelGrid columns="1" styleClass="userPanelGrid">
                                     <p:outputLabel value="User first name:"/>
-                                    <p:inputText value="#{addUserBean.user.firstName}" style="width: 100%"/>
+                                    <p:inputText value="#{addUserBean.securityUser.userDTO.firstName}"
+                                                 style="width: 100%"/>
                                     <p:outputLabel value="User last name:"/>
-                                    <p:inputText value="#{addUserBean.user.lastName}" style="width: 100%"/>
+                                    <p:inputText value="#{addUserBean.securityUser.userDTO.lastName}"
+                                                 style="width: 100%"/>
                                 </h:panelGrid>
-                                <div>
-
-                                </div>
                             </h:panelGroup>
                         </p:tab>
                         <p:tab title="Credentials and premission">
@@ -132,19 +132,36 @@
                                                             listener="#{addUserBean.onLoginChangeListener}"/>
                                                 </p:inputText>
                                             </div>
-                                            <div class="ui-g-12 columned">
+                                            <h:panelGroup layout="block" rendered="#{addUserBean.registrationAction}"
+                                                          styleClass="ui-g-12 columned">
                                                 <p:outputLabel value="Password:"/>
                                                 <p:password value="#{addUserBean.securityUser.password}"
                                                             match="passwd2">
                                                     <f:validateLength minimum="6"/>
                                                 </p:password>
-                                            </div>
-                                            <div class="ui-g-12 columned">
+                                            </h:panelGroup>
+                                            <h:panelGroup layout="block" rendered="#{addUserBean.registrationAction}"
+                                                          class="ui-g-12 columned">
                                                 <p:outputLabel value="Confirm password:"/>
                                                 <p:password id="passwd2" value="#{addUserBean.securityUser.password}">
                                                     <f:validateLength minimum="6"/>
                                                 </p:password>
-                                            </div>
+                                            </h:panelGroup>
+                                            <h:panelGroup layout="block" id="resetContainer"
+                                                          rendered="#{not addUserBean.registrationAction}"
+                                                          styleClass="ui-g-12 columned">
+                                                <p:outputLabel value="Password:"/>
+                                                <p:commandButton value="RESET"
+                                                                 process="@this"
+                                                                 update="resetContainer"
+                                                                 action="#{addUserBean.startResetMode}"
+                                                                 rendered="#{not addUserBean.inResetMode}"
+                                                                 style="width: 100%"/>
+                                                <p:inputText id="passwordReset"
+                                                             value="#{addUserBean.securityUser.password}"
+                                                             rendered="#{addUserBean.inResetMode}"
+                                                             style="width: 100%;"/>
+                                            </h:panelGroup>
                                         </div>
                                         <div class="ui-g-6 ui-g-nopad ui-g">
                                             <div class="ui-g-12">

@@ -1,6 +1,6 @@
 package org.hetsold.bugtracker.view.user;
 
-import org.hetsold.bugtracker.dto.UserDTO;
+import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.service.UserService;
 import org.hetsold.bugtracker.view.filter.ContractBuilder;
 import org.hetsold.bugtracker.view.filter.DisplayableFieldFilter;

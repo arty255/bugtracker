@@ -2,7 +2,7 @@ package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dto.MessageDTO;
 import org.hetsold.bugtracker.dto.TicketDTO;
-import org.hetsold.bugtracker.dto.UserDTO;
+import org.hetsold.bugtracker.dto.user.UserDTO;
 
 import java.util.List;
 

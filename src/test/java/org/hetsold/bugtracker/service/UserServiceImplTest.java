@@ -4,8 +4,8 @@ import org.hetsold.bugtracker.AppConfig;
 import org.hetsold.bugtracker.TestAppConfig;
 import org.hetsold.bugtracker.dao.SecurityUserDAO;
 import org.hetsold.bugtracker.dao.UserDAO;
-import org.hetsold.bugtracker.dto.SecurityUserDTO;
-import org.hetsold.bugtracker.dto.UserDTO;
+import org.hetsold.bugtracker.dto.user.FullUserDTO;
+import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.model.SecurityUser;
 import org.hetsold.bugtracker.model.SecurityUserAuthority;
 import org.hetsold.bugtracker.model.User;
@@ -145,10 +145,10 @@ public class UserServiceImplTest {
 
     @Test()
     public void updateSecurityData_correctUpdate() {
-        SecurityUserDTO securityUserDTO = new SecurityUserDTO(savedSecurityUser);
-        securityUserDTO.setEnabled(true);
-        securityUserDTO.setAuthorities(Set.of(SecurityUserAuthority.ROLE_EDIT_USER));
-        userService.updateSecurityData(securityUserDTO);
+        FullUserDTO fullUserDTO = new FullUserDTO(savedSecurityUser);
+        fullUserDTO.setEnabled(true);
+        fullUserDTO.setAuthorities(Set.of(SecurityUserAuthority.ROLE_EDIT_USER));
+        userService.updateSecurityData(fullUserDTO);
         assertTrue(savedSecurityUser.isEnabled());
         assertEquals(1, savedSecurityUser.getAuthorities().size());
         assertTrue(savedSecurityUser.getAuthorities().contains(SecurityUserAuthority.ROLE_EDIT_USER));
@@ -156,9 +156,9 @@ public class UserServiceImplTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void updateSecurityData_changedUserLoginThrowException() {
-        SecurityUserDTO securityUserDTO = new SecurityUserDTO(savedSecurityUser);
-        securityUserDTO.setUsername("new_username");
-        userService.updateSecurityData(securityUserDTO);
+        FullUserDTO fullUserDTO = new FullUserDTO(savedSecurityUser);
+        fullUserDTO.setUsername("new_username");
+        userService.updateSecurityData(fullUserDTO);
     }
 
     @Test

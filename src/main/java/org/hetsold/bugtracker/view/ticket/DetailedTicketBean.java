@@ -1,6 +1,6 @@
 package org.hetsold.bugtracker.view.ticket;
 
-import org.hetsold.bugtracker.dto.FullUserDetails;
+import org.hetsold.bugtracker.dto.user.SecurityUserDetails;
 import org.hetsold.bugtracker.dto.IssueShortDTO;
 import org.hetsold.bugtracker.dto.MessageDTO;
 import org.hetsold.bugtracker.dto.TicketDTO;
@@ -44,7 +44,7 @@ public class DetailedTicketBean extends ListableMessageBean implements Serializa
                 .getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
         initMessageListener();
-        activeUser = ((FullUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
+        activeUser = ((SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
     }
 
     public void initData() {

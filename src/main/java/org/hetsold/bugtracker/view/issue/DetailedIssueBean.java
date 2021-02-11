@@ -2,6 +2,8 @@ package org.hetsold.bugtracker.view.issue;
 
 
 import org.hetsold.bugtracker.dto.*;
+import org.hetsold.bugtracker.dto.user.SecurityUserDetails;
+import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.model.IssueState;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.MessageService;
@@ -47,7 +49,7 @@ public class DetailedIssueBean extends ListableMessageBean implements Serializab
         isOriginalStateChanged = false;
         selectedToAssignUser = null;
         userDTODataModel = new UserDTOLazyDataModel(userService);
-        activeUser = ((FullUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
+        activeUser = ((SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
         initMessageListener();
     }
 

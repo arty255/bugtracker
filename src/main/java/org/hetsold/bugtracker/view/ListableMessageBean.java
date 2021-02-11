@@ -2,7 +2,7 @@ package org.hetsold.bugtracker.view;
 
 
 import org.hetsold.bugtracker.dto.MessageDTO;
-import org.hetsold.bugtracker.dto.UserDTO;
+import org.hetsold.bugtracker.dto.user.UserDTO;
 
 import java.io.Serializable;
 import java.util.Date;

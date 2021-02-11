@@ -3,6 +3,8 @@ package org.hetsold.bugtracker.view;
 
 import org.hetsold.bugtracker.dao.util.FilterOperation;
 import org.hetsold.bugtracker.dto.*;
+import org.hetsold.bugtracker.dto.user.SecurityUserDetails;
+import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.model.*;
 import org.hetsold.bugtracker.view.user.UserPreset;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -53,7 +55,7 @@ public class AppUtilBean implements Serializable {
     public boolean isLoggedInUserAreTicketCreator(TicketDTO ticketDTO) {
         UserDTO user;
         if (SecurityContextHolder.getContext().getAuthentication() != null
-                && (user = ((FullUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO()) != null
+                && (user = ((SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO()) != null
                 && ticketDTO != null && ticketDTO.getUser() != null) {
             return ticketDTO.getUser().equals(user);
         }

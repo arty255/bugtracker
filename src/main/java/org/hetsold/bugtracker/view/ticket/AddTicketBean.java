@@ -1,8 +1,8 @@
 package org.hetsold.bugtracker.view.ticket;
 
-import org.hetsold.bugtracker.dto.FullUserDetails;
+import org.hetsold.bugtracker.dto.user.SecurityUserDetails;
 import org.hetsold.bugtracker.dto.TicketDTO;
-import org.hetsold.bugtracker.dto.UserDTO;
+import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.model.TicketResolveState;
 import org.hetsold.bugtracker.model.TicketVerificationState;
 import org.hetsold.bugtracker.service.TicketService;
@@ -31,7 +31,7 @@ public class AddTicketBean implements Serializable {
         FacesContextUtils
                 .getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
-        activeUser = ((FullUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
+        activeUser = ((SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
         initTicket();
     }
 

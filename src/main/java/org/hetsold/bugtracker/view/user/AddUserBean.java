@@ -1,8 +1,7 @@
 package org.hetsold.bugtracker.view.user;
 
-import org.hetsold.bugtracker.dto.SecurityUserDTO;
-import org.hetsold.bugtracker.dto.UserDTO;
-import org.hetsold.bugtracker.model.SecurityUser;
+import org.hetsold.bugtracker.dto.user.FullUserDTO;
+import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.model.SecurityUserAuthority;
 import org.hetsold.bugtracker.service.UserService;
 import org.primefaces.component.tabview.TabView;
@@ -23,12 +22,13 @@ import java.util.List;
 @ManagedBean
 @ViewScoped
 public class AddUserBean implements Serializable {
-    private UserDTO user;
-    private SecurityUserDTO securityUser;
+    private FullUserDTO securityUser;
     private List<SecurityUserAuthority> selectedSecurityUserAuthorities;
     private UserPreset selectedUserPreset;
+    private UserDTO user;
 
-    private boolean isNewUserAction;
+    private boolean registrationAction;
+    private boolean inResetMode;
     @Autowired
     private UserService userService;
 
@@ -43,27 +43,36 @@ public class AddUserBean implements Serializable {
 
     public void registerUser() {
         try {
-            UserDTO actionResultUser = user;
-            if (isNewUserAction) {
-                actionResultUser = userService.register(user, securityUser);
-            } else {
-                //todo: change edit process
-                //userService.update(user, securityUser);
+            UserDTO actionResultUser;
+            if (registrationAction) {
+                actionResultUser = userService.register(securityUser);
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "new user " + actionResultUser.getUuid() + " added",
+                                "new user " + actionResultUser.getUuid() + " added"));
+            }else {
+                userService.updateUser(securityUser);
             }
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "new user " + actionResultUser.getUuid() + " added",
-                            "new user " + actionResultUser.getUuid() + " added"));
         } catch (IllegalArgumentException e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "no user added", "no user added"));
         }
         initNewUser();
+
+        inResetMode = false;
     }
 
     public void initNewUser() {
-        user = new UserDTO("");
-        securityUser = new SecurityUserDTO();
-        isNewUserAction = true;
+        securityUser = new FullUserDTO();
+        securityUser.setUserDTO(new UserDTO(""));
+        registrationAction = true;
+    }
+
+    public void initRegistrationData() {
+        securityUser = userService.getFullUserByUser(user);
+    }
+
+    public void startResetMode() {
+        inResetMode = true;
     }
 
     public void onPresetChangeListener() {
@@ -86,7 +95,7 @@ public class AddUserBean implements Serializable {
     }
 
     public void onTabChangeListener(TabChangeEvent event) {
-        if (!isNewUserAction && isActiveTabCredentialsTab(event)) {
+        if (!registrationAction && isActiveTabCredentialsTab(event)) {
 //            securityUser = securityService.getSecurityUserByUserUuid(user.getUuid());
         }
     }
@@ -96,27 +105,19 @@ public class AddUserBean implements Serializable {
         return tabView.getChildren().indexOf(event.getTab()) == 1;
     }
 
-    public UserDTO getUser() {
-        return user;
+    public boolean isRegistrationAction() {
+        return registrationAction;
     }
 
-    public void setUser(UserDTO user) {
-        this.user = user;
+    public void setRegistrationAction(boolean registrationAction) {
+        this.registrationAction = registrationAction;
     }
 
-    public boolean isNewUserAction() {
-        return isNewUserAction;
-    }
-
-    public void setNewUserAction(boolean newUserAction) {
-        isNewUserAction = newUserAction;
-    }
-
-    public SecurityUserDTO getSecurityUser() {
+    public FullUserDTO getSecurityUser() {
         return securityUser;
     }
 
-    public void setSecurityUser(SecurityUserDTO securityUser) {
+    public void setSecurityUser(FullUserDTO securityUser) {
         this.securityUser = securityUser;
     }
 
@@ -134,5 +135,17 @@ public class AddUserBean implements Serializable {
 
     public void setSelectedUserPreset(UserPreset selectedUserPreset) {
         this.selectedUserPreset = selectedUserPreset;
+    }
+
+    public boolean isInResetMode() {
+        return inResetMode;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 }

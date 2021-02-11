@@ -1,5 +1,6 @@
-package org.hetsold.bugtracker.dto;
+package org.hetsold.bugtracker.dto.user;
 
+import org.hetsold.bugtracker.dto.AbstractDTO;
 import org.hetsold.bugtracker.model.User;
 
 import java.util.Date;
