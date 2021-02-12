@@ -41,6 +41,7 @@ public class UserMapper {
             securityUser.setUuid(UUIDMapper.getUUID(fullUserDTO));
             securityUser.setUsername(fullUserDTO.getUsername());
             securityUser.setPassword(fullUserDTO.getPassword());
+            securityUser.setEmail(fullUserDTO.getEmail());
             securityUser.setEnabled(fullUserDTO.isEnabled());
             securityUser.setCredentialsNonExpired(fullUserDTO.isCredentialsNonExpired());
             securityUser.setAccountNonLocked(fullUserDTO.isAccountNonLocked());

@@ -10,7 +10,7 @@ import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.model.SecurityUser;
 import org.hetsold.bugtracker.model.SecurityUserAuthority;
 import org.hetsold.bugtracker.model.User;
-import org.hetsold.bugtracker.service.exception.LoginRegisteredException;
+import org.hetsold.bugtracker.service.exception.TakenLoginException;
 import org.hetsold.bugtracker.service.mapper.UserMapper;
 import org.passay.CharacterData;
 import org.passay.CharacterRule;
@@ -60,34 +60,7 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public UserDTO register(RegistrationDataDTO registrationDataDTO) {
-        SecurityUser securityUser = UserMapper.getSecurityUser(registrationDataDTO);
-        User user = UserMapper.getUser(registrationDataDTO);
-        shortRegistrationPreparation(securityUser, user);
-        return null;
-    }
-
-    private void shortRegistrationPreparation(SecurityUser securityUser, User user) {
-        validateNotNull(securityUser, "securityUser can not be null");
-        /*todo: implement strategy*/
-        securityUser.setEnabled(true);
-        if (isRegisteredUserNullOrDataNotFiled(user)) {
-            user = new User(null, "user " + UUID.randomUUID().toString(), "");
-        }
-        registerUser(user, securityUser);
-    }
-
-    private boolean isRegisteredUserNullOrDataNotFiled(User user) {
-        if (user == null || (user.getFirstName().isEmpty() && user.getLastName().isEmpty())) {
-            return true;
-        }
-        return false;
-    }
-
-
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public UserDTO register(FullUserDTO fullUserDTO) {
+    public UserDTO registerUser(FullUserDTO fullUserDTO) {
         User user = UserMapper.getUser(fullUserDTO.getUserDTO());
         SecurityUser securityUser = UserMapper.getSecurityUser(fullUserDTO);
         registerUser(user, securityUser);
@@ -96,12 +69,40 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
+    public UserDTO registerByData(RegistrationDataDTO registrationDataDTO) {
+        SecurityUser securityUser = UserMapper.getSecurityUser(registrationDataDTO);
+        User user = UserMapper.getUser(registrationDataDTO);
+        shortRegistrationPreparation(securityUser, user);
+        return null;
+    }
+
+    private void shortRegistrationPreparation(SecurityUser securityUser, User user) {
+        validateNotNull(securityUser, "securityUser can not be null");
+        /*todo: implement strategy for default user enabling*/
+        securityUser.setEnabled(true);
+        user = evaluateUser(user);
+        registerUser(user, securityUser);
+    }
+
+    private User evaluateUser(User user) {
+        if (isUserDataEmpty(user)) {
+            user = new User(null, "user " + UUID.randomUUID().toString(), "");
+        }
+        return user;
+    }
+
+    private boolean isUserDataEmpty(User user) {
+        return user == null || (user.getFirstName().isEmpty() && user.getLastName().isEmpty());
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void registerUser(User user, SecurityUser securityUser) {
-        validateUserBeforeSave(user);
         validateSecurityUserBeforeSave(securityUser);
         if (isLoginTaken(securityUser.getUsername())) {
-            throw new LoginRegisteredException(securityUser.getUsername());
+            throw new TakenLoginException(securityUser.getUsername());
         }
+        validateUserBeforeSave(user);
         user.setUuid(UUID.randomUUID());
         userDAO.save(user);
         prepareSecurityUser(securityUser, user);
@@ -111,14 +112,15 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
 
     private void prepareSecurityUser(SecurityUser securityUser, User user) {
         securityUser.setUser(user);
-        encodePassword(securityUser);
+        securityUser.setPassword(encodePassword(securityUser.getPassword()));
         simplifySecurityUserLockData(securityUser);
     }
 
-    private void encodePassword(SecurityUser securityUser) {
+    private String encodePassword(String password) {
         if (encoder != null) {
-            securityUser.setPassword(encoder.encode(securityUser.getPassword()));
+            return encoder.encode(password);
         }
+        return password;
     }
 
     private void simplifySecurityUserLockData(SecurityUser securityUser) {
@@ -129,8 +131,14 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
+    public void updateUser(UserDTO userDTO) {
+        updateUser(UserMapper.getUser(userDTO));
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public User updateUser(User updatedUser) {
-        validateUserAndUUID(updatedUser);
+        validateNotNullEntityAndUUID(updatedUser);
         validateUserLastName(updatedUser);
         User oldUser = getUser(updatedUser);
         validateNotNull(oldUser, "user is not persisted");
@@ -141,14 +149,14 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public User getUser(User user) {
-        validateUserAndUUID(user);
+        validateNotNullEntityAndUUID(user);
         return userDAO.getUserByUUID(user.getUuid());
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void deleteUser(User user) {
-        validateUserAndUUID(user);
+        validateNotNullEntityAndUUID(user);
         user = getUser(user);
         userDAO.delete(user);
     }
@@ -156,7 +164,7 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public SecurityUser getSecurityUser(SecurityUser securityUser) {
-        validateSecurityUserAndUUID(securityUser);
+        validateNotNullEntityAndUUID(securityUser);
         return securityUserDAO.getSecurityUserByUuid(securityUser.getUuid());
     }
 
@@ -176,8 +184,34 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void updateUserProfileData(UserDTO userDTO) {
-        updateUser(UserMapper.getUser(userDTO));
+    public void fullUserUpdate(FullUserDTO fullUserDTO) {
+        User user = UserMapper.getUser(fullUserDTO.getUserDTO());
+        SecurityUser securityUser = UserMapper.getSecurityUser(fullUserDTO);
+        fullUserUpdate(user, securityUser);
+    }
+
+    private void fullUserUpdate(User user, SecurityUser securityUser) {
+        updateUser(user);
+        updateSecurityUser(securityUser);
+    }
+
+    private void updateSecurityUser(SecurityUser securityUser) {
+        validateNotNullEntityAndUUID(securityUser);
+        validateEmail(securityUser.getEmail());
+        SecurityUser oldSecurityUser = getSecurityUser(securityUser);
+        if (isLoginChangedOnTaken(securityUser, oldSecurityUser)) {
+            throw new TakenLoginException(securityUser.getUsername());
+        }
+        if (securityUser.getPassword() != null && !securityUser.getPassword().isEmpty()) {
+            updateAndEncodeSecurityUserPassword(securityUser, securityUser.getPassword());
+            oldSecurityUser.fullUpdate(securityUser);
+        } else {
+            oldSecurityUser.updateNotSensitiveData(securityUser);
+        }
+    }
+
+    private boolean isLoginChangedOnTaken(SecurityUser securityUser, SecurityUser oldState) {
+        return !oldState.getUsername().equals(securityUser.getUsername()) && isLoginTaken(securityUser.getUsername());
     }
 
     @Override
@@ -186,23 +220,12 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
         updateEmail(UserMapper.getUser(userDTO), email);
     }
 
-    public void updateEmail(User user, String email) {
-        validateUserAndUUID(user);
+    private void updateEmail(User user, String email) {
+        validateNotNullEntityAndUUID(user);
         validateEmail(email);
         SecurityUser securityUser = getSecurityUserByUser(user);
         validateNotNull(user, "user is not persisted");
         securityUser.setEmail(email);
-    }
-
-    public void updatePassword(User user, String newPassword) {
-        validateUserAndUUID(user);
-        updatePassword(getSecurityUserByUser(user), newPassword);
-    }
-
-    private void updatePassword(SecurityUser securityUser, String newPassword) {
-        validatePassword(newPassword);
-        securityUser.setPassword(newPassword);
-        encodePassword(securityUser);
     }
 
     @Override
@@ -211,22 +234,50 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
         updatePassword(UserMapper.getUser(userDTO), newPassword);
     }
 
-    private void updateUser(User user, SecurityUser securityUser) {
-        updateUser(user);
-        updateSecurityData(securityUser);
-        if (securityUser.getPassword() != null && !securityUser.getPassword().isEmpty()) {
-            String password = securityUser.getPassword();
-            securityUser = getSecurityUser(securityUser);
-            updatePassword(securityUser, password);
-        }
+    private void updatePassword(User user, String newPassword) {
+        validateNotNullEntityAndUUID(user);
+        SecurityUser securityUser = getSecurityUserByUser(user);
+        validateNotNull(securityUser, "securityUser not linked for this user");
+        updateAndEncodeSecurityUserPassword(securityUser, newPassword);
+    }
+
+    private void updateAndEncodeSecurityUserPassword(SecurityUser securityUser, String newPassword) {
+        validatePassword(newPassword);
+        securityUser.setUsername(encodePassword(newPassword));
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void updateUser(FullUserDTO fullUserDTO) {
-        User user = UserMapper.getUser(fullUserDTO.getUserDTO());
-        SecurityUser securityUser = UserMapper.getSecurityUser(fullUserDTO);
-        updateUser(user, securityUser);
+    public void updateSecurityData(FullUserDTO fullUserDTO) {
+        updateSecurityData(UserMapper.getSecurityUser(fullUserDTO));
+    }
+
+    private void updateSecurityData(SecurityUser securityUser) {
+        validateNotNullEntityAndUUID(securityUser);
+        SecurityUser oldSecurityUser = getSecurityUser(securityUser);
+        if (!oldSecurityUser.getUsername().equals(securityUser.getUsername())) {
+            throw new IllegalArgumentException("user login can not be changed");
+        }
+        validateNotNull(oldSecurityUser, "securityUser is not persisted");
+        oldSecurityUser.updateNotSensitiveData(securityUser);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void changeUserRoles(UserDTO userDTO, Set<SecurityUserAuthority> securityUserAuthorities) {
+        changeUserRoles(UserMapper.getUser(userDTO), securityUserAuthorities);
+    }
+
+    private void changeUserRoles(User user, Set<SecurityUserAuthority> securityUserAuthorities) {
+        validateNotNullEntityAndUUID(user);
+        SecurityUser securityUser = securityUserDAO.getSecurityUserByUserUuid(user.getUuid());
+        securityUser.setAuthorities(securityUserAuthorities);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public boolean isLoginTaken(String login) {
+        return securityUserDAO.isLoginTaken(login);
     }
 
     @Override
@@ -255,41 +306,6 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
         CharacterRule splCharRule = new CharacterRule(specialChars, 2);
         return gen.generatePassword(6, splCharRule, lowerCaseRule,
                 upperCaseRule, digitRule);
-    }
-
-    /*todo: change*/
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void updateSecurityData(FullUserDTO fullUserDTO) {
-        updateSecurityData(UserMapper.getSecurityUser(fullUserDTO));
-    }
-
-    private void updateSecurityData(SecurityUser newSecurityUser) {
-        validateSecurityUserAndUUID(newSecurityUser);
-        SecurityUser oldSecurityUser = getSecurityUser(newSecurityUser);
-        if (!oldSecurityUser.getUsername().equals(newSecurityUser.getUsername())) {
-            throw new IllegalArgumentException("user login can not be changed");
-        }
-        validateNotNull(oldSecurityUser, "securityUser is not persisted");
-        oldSecurityUser.update(newSecurityUser);
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void changeUserRoles(UserDTO userDTO, Set<SecurityUserAuthority> securityUserAuthorities) {
-        changeUserRoles(UserMapper.getUser(userDTO), securityUserAuthorities);
-    }
-
-    private void changeUserRoles(User user, Set<SecurityUserAuthority> securityUserAuthorities) {
-        validateUserAndUUID(user);
-        SecurityUser securityUser = securityUserDAO.getSecurityUserByUserUuid(user.getUuid());
-        securityUser.setAuthorities(securityUserAuthorities);
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public boolean isLoginTaken(String login) {
-        return securityUserDAO.isLoginTaken(login);
     }
 
     @Override

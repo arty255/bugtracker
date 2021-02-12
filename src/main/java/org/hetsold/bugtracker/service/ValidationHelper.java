@@ -13,29 +13,9 @@ public class ValidationHelper {
     private ValidationHelper() {
     }
 
-    public static void validateSecurityUserAndUUID(SecurityUser securityUser) {
-        validateNotNull(securityUser, "securityUser can not be null");
-        validateNotNullUUID(securityUser.getUuid());
-    }
-
-    public static void validateUserAndUUID(User user) {
-        validateNotNull(user, "user can not be null");
-        validateNotNullUUID(user.getUuid());
-    }
-
-    public static void validateTicketAndUUID(Ticket ticket) {
-        validateNotNull(ticket, "ticket can not be null");
-        validateNotNullUUID(ticket.getUuid());
-    }
-
-    public static void validateMessageAndUUID(Message message) {
-        validateNotNull(message, "message can not be null");
-        validateNotNullUUID(message.getUuid());
-    }
-
-    public static void validateIssueAndUUID(Issue issue) {
-        validateNotNull(issue, "issue can not be null");
-        validateNotNullUUID(issue.getUuid());
+    public static void validateNotNullEntityAndUUID(AbstractEntity entity) {
+        validateNotNull(entity, "entity can not be null");
+        validateNotNullUUID(entity.getUuid());
     }
 
     public static void validateUserBeforeSave(User user) {
@@ -58,14 +38,14 @@ public class ValidationHelper {
         validateNotNull(ticket, "ticket can not be empty");
         validateNull(ticket.getUuid(), "ticket uuid need to ne null");
         validateTicketDescription(ticket);
-        validateUserAndUUID(ticket.getCreatedBy());
+        validateNotNullEntityAndUUID(ticket.getCreatedBy());
     }
 
     public static void validateMessageBeforeSave(Message message) {
         validateNotNull(message, "message can not be null");
         validateNull(message.getUuid(), "message uuid need to be null");
         validateMessageContent(message);
-        validateUserAndUUID(message.getMessageCreator());
+        validateNotNullEntityAndUUID(message.getMessageCreator());
     }
 
     public static void validateIssueBeforeSave(Issue issue) {
@@ -75,9 +55,9 @@ public class ValidationHelper {
     }
 
     public static void validateTicketBeforeUpdate(Ticket ticket) {
-        validateTicketAndUUID(ticket);
+        validateNotNullEntityAndUUID(ticket);
         validateTicketDescription(ticket);
-        validateUserAndUUID(ticket.getCreatedBy());
+        validateNotNullEntityAndUUID(ticket.getCreatedBy());
     }
 
     public static void validateTicketDescription(Ticket ticket) {
@@ -107,7 +87,7 @@ public class ValidationHelper {
 
     public static void validateEmail(String email) {
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
-        if (!matcher.find()) {
+        if (!email.isEmpty() && !matcher.find()) {
             throw new EmailFormatException();
         }
     }

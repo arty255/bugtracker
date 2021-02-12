@@ -107,7 +107,7 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
     //@Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<Ticket> getTicketListReportedByUser(User user, Contract contract, int startPosition, int limit) {
-        validateUserAndUUID(user);
+        validateNotNullEntityAndUUID(user);
         user = userService.getUser(user);
         return ticketDao.getTicketListReportedByUser(user, contract, startPosition, limit);
     }
@@ -121,7 +121,7 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
     //@Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public long getTicketCountReportedByUser(User user, Contract contract) {
-        validateUserAndUUID(user);
+        validateNotNullEntityAndUUID(user);
         return ticketDao.getTicketsCountReportedByUser(user, contract);
     }
 
@@ -140,7 +140,7 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
     @Override
     @Secured("ROLE_DELETE_TICKET")
     public void delete(Ticket ticket) {
-        validateTicketAndUUID(ticket);
+        validateNotNullEntityAndUUID(ticket);
         ticket = ticketDao.getTicketById(ticket.getUuid());
         ticketDao.delete(ticket);
     }
@@ -148,7 +148,7 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public Ticket getTicket(Ticket ticket) {
-        validateTicketAndUUID(ticket);
+        validateNotNullEntityAndUUID(ticket);
         return ticketDao.getTicketById(ticket.getUuid());
     }
 
@@ -161,7 +161,7 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void applyForIssue(Ticket ticket) {
-        validateTicketAndUUID(ticket);
+        validateNotNullEntityAndUUID(ticket);
         ticket = ticketDao.getTicketById(ticket.getUuid());
         validateNotNull(ticket, "ticket is not persisted");
         ticket.setVerificationState(TicketVerificationState.Verified);
@@ -183,7 +183,7 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void addTicketMessage(Ticket ticket, Message message) {
-        validateTicketAndUUID(ticket);
+        validateNotNullEntityAndUUID(ticket);
         ticket = getTicket(ticket);
         validateNotNull(ticket, "ticket is not persisted");
         messageService.saveNewMessage(message);
@@ -196,7 +196,7 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<MessageDTO> getTicketMessages(TicketDTO ticketDTO, int fromIndex, int limit, boolean inverseDateOrder) {
         Ticket ticket = TicketMapper.getTicket(ticketDTO);
-        validateTicketAndUUID(ticket);
+        validateNotNullEntityAndUUID(ticket);
         ticket = ticketDao.getTicketById(ticket.getUuid());
         return MessageMapper.getMessageDTOList(messageService.getMessagesForTicket(ticket, fromIndex, limit, inverseDateOrder));
     }
@@ -210,7 +210,7 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public long getMessagesCountByTicket(Ticket ticket) {
-        validateTicketAndUUID(ticket);
+        validateNotNullEntityAndUUID(ticket);
         return messageService.getMessagesCountForTicket(ticket);
     }
 }

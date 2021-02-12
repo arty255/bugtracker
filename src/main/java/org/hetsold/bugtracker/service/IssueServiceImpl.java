@@ -214,7 +214,7 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public Issue getIssue(Issue issue) {
-        validateIssueAndUUID(issue);
+        validateNotNullEntityAndUUID(issue);
         return issueDAO.getIssueByUUID(issue.getUuid());
     }
 
