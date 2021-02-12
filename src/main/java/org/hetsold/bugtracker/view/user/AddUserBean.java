@@ -45,12 +45,12 @@ public class AddUserBean implements Serializable {
         try {
             UserDTO actionResultUser;
             if (registrationAction) {
-                actionResultUser = userService.register(securityUser);
+                actionResultUser = userService.registerUser(securityUser);
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "new user " + actionResultUser.getUuid() + " added",
                                 "new user " + actionResultUser.getUuid() + " added"));
             }else {
-                userService.updateUser(securityUser);
+                userService.fullUserUpdate(securityUser);
             }
         } catch (IllegalArgumentException e) {
             FacesContext.getCurrentInstance().addMessage(null,

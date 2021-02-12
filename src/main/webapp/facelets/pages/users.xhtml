@@ -162,6 +162,12 @@
                                                              rendered="#{addUserBean.inResetMode}"
                                                              style="width: 100%;"/>
                                             </h:panelGroup>
+                                            <h:panelGroup layout="block" styleClass="ui-g-12 columned">
+                                                <p:outputLabel value="Email:"/>
+                                                <p:inputText id="email"
+                                                             value="#{addUserBean.securityUser.email}"
+                                                             style="width: 100%;"/>
+                                            </h:panelGroup>
                                         </div>
                                         <div class="ui-g-6 ui-g-nopad ui-g">
                                             <div class="ui-g-12">

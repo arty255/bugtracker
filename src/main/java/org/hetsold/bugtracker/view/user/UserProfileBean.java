@@ -53,7 +53,7 @@ public class UserProfileBean implements Serializable {
 
     public void save() {
         /*todo:*/
-        userService.updateUserProfileData(user);
+        userService.updateUser(user);
     }
 
     public void setUuid(String uuid) {

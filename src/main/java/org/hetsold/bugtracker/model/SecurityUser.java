@@ -54,7 +54,7 @@ public class SecurityUser extends AbstractEntity implements UserDetails {
         this.setUuid(uuid);
     }
 
-    public void update(SecurityUser newSecurityUser) {
+    public void updateNotSensitiveData(SecurityUser newSecurityUser) {
         this.setEnabled(newSecurityUser.isEnabled());
         this.setAccountNonExpired(newSecurityUser.isAccountNonExpired());
         this.setAccountNonLocked(newSecurityUser.isAccountNonLocked());
@@ -64,8 +64,9 @@ public class SecurityUser extends AbstractEntity implements UserDetails {
     }
 
     public void fullUpdate(SecurityUser securityUser) {
-        update(securityUser);
+        updateNotSensitiveData(securityUser);
         this.setUsername(securityUser.getUsername());
+        this.setPassword(securityUser.getPassword());
     }
 
     @Override

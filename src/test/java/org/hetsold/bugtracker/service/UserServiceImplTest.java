@@ -56,7 +56,7 @@ public class UserServiceImplTest {
         validateMockitoUsage();
     }
 
-    @Test(expected = LoginRegisteredException.class)
+    @Test(expected = TakenLoginException.class)
     public void registerUser_userWithRegisteredLoginThrowException() {
         User user = new User(null, "testFN", "testLN");
         SecurityUser securityUser = new SecurityUser(null, savedSecurityUser.getUsername(), "password");

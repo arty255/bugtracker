@@ -69,7 +69,7 @@ public class MessageServiceImpl implements MessageService, MessageServiceInterna
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public Message getMessage(Message message) {
-        validateMessageAndUUID(message);
+        validateNotNullEntityAndUUID(message);
         return messageDAO.getMessageById(message.getUuid());
     }
 
@@ -80,12 +80,12 @@ public class MessageServiceImpl implements MessageService, MessageServiceInterna
     }
 
     public long getMessagesCountForTicket(Ticket ticket) {
-        validateTicketAndUUID(ticket);
+        validateNotNullEntityAndUUID(ticket);
         return messageDAO.getMessageCountByTicket(ticket);
     }
 
     public List<Message> getMessagesForTicket(Ticket ticket, int startPosition, int limit, boolean inverseDateOrder) {
-        validateTicketAndUUID(ticket);
+        validateNotNullEntityAndUUID(ticket);
         return messageDAO.getMessageListByTicket(ticket, startPosition, limit, inverseDateOrder);
     }
 
@@ -110,7 +110,7 @@ public class MessageServiceImpl implements MessageService, MessageServiceInterna
 
     @Override
     public void delete(Message message) {
-        validateMessageAndUUID(message);
+        validateNotNullEntityAndUUID(message);
         message = getMessage(message);
         validateNotNull(message, "message not persisted");
         messageDAO.delete(message);

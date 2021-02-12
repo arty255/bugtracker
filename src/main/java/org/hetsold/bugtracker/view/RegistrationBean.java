@@ -38,7 +38,7 @@ public class RegistrationBean {
     }
 
     public void registrationAction() {
-        userService.register(registrationData);
+        userService.registerByData(registrationData);
     }
 
     public RegistrationDataDTO getRegistrationData() {

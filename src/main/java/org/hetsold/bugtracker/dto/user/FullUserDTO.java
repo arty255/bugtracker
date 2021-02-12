@@ -16,6 +16,7 @@ public class FullUserDTO extends AbstractDTO implements UserDetails {
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private Collection<SecurityUserAuthority> authorities = new ArrayList<>();
+    private String email;
     private UserDTO userDTO;
 
     public FullUserDTO() {
@@ -29,6 +30,7 @@ public class FullUserDTO extends AbstractDTO implements UserDetails {
         this.accountNonLocked = securityUser.isAccountNonLocked();
         this.credentialsNonExpired = securityUser.isCredentialsNonExpired();
         this.authorities.addAll(securityUser.getAuthorities());
+        this.email = securityUser.getEmail();
         if (securityUser.getUser() != null) {
             this.userDTO = new UserDTO(securityUser.getUser());
         }
@@ -99,6 +101,14 @@ public class FullUserDTO extends AbstractDTO implements UserDetails {
 
     public void setAuthorities(Collection<SecurityUserAuthority> authorities) {
         this.authorities = authorities;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setUserDTO(UserDTO userDTO) {
