@@ -5,10 +5,10 @@ import org.hetsold.bugtracker.dao.util.FilterOperation;
 
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FilterComponentBuilder {
     private static final Map<String, String> labelMap = Map.of(
@@ -19,36 +19,53 @@ public class FilterComponentBuilder {
             "productVersion", "Product version"
     );
 
-    public static List<DisplayableFieldFilter> buildWrappers(Class<?> aClass) {
-        return buildWrappers(aClass, "");
+    public static Set<FieldMaskFilter> buildFieldMaskFilters(Class<?> aClass, String fieldNamesString) {
+        String[] fieldNames = getNamesArray(fieldNamesString);
+        return getFields(aClass).stream()
+                .filter(item -> isSupportedField(item, fieldNames, FilterComponentBuilder::isFieldSupportedType))
+                .map(FilterComponentBuilder::getDisplayableFieldFilter)
+                .collect(Collectors.toSet());
     }
 
-    public static List<DisplayableFieldFilter> buildWrappers(Class<?> aClass, String fieldNames) {
-        Predicate<Field> finalPredicate;
-        Predicate<Field> fieldTypePredicate = field -> field.getType().isEnum()
-                || field.getType().equals(String.class)
-                || field.getType().equals(Boolean.class)
-                || field.getType().equals(Date.class);
-        finalPredicate = fieldTypePredicate;
-        if (!fieldNames.isEmpty()) {
-            finalPredicate = field -> getNamesArray(fieldNames).contains(field.getName()) && fieldTypePredicate.test(field);
-        }
-        List<Field> fields = getFields(aClass).stream()
-                .filter(finalPredicate)
+    public static List<FieldOrderFilter> buildFieldOrderFilters(Class<?> aClass, String orderNamesString) {
+        String[] orderNames = getNamesArray(orderNamesString);
+        Predicate<Field> datePredicate = item ->
+                item.getType().equals(Date.class) || item.getType().equals(String.class) || item.getType().isEnum();
+        return getFields(aClass).stream()
+                .filter(item -> isSupportedField(item, orderNames, datePredicate))
+                .map(FilterComponentBuilder::getOrderFieldFilter)
                 .collect(Collectors.toList());
-        Function<Field, DisplayableFieldFilter> mappingFunction = field -> new DisplayableFieldFilter(
+    }
+
+    private static FieldOrderFilter getOrderFieldFilter(Field field) {
+        return new FieldOrderFilter(field.getName(), null);
+    }
+
+    private static FieldMaskFilter getDisplayableFieldFilter(Field field) {
+        return new FieldMaskFilter(
                 new FieldFilter(field.getName(), null, null),
                 field.getType().getSimpleName(),
                 getFieldLabel(field.getName()),
                 getAvailableOperations(field));
-        return fields.stream()
-                .map(mappingFunction)
-                .collect(Collectors.toList());
     }
 
-    private static List<String> getNamesArray(String names) {
+    private static boolean isSupportedField(Field field, String[] fieldNames, Predicate<Field> predicate) {
+        if (fieldNames.length > 0) {
+            return predicate.test(field) &&
+                    Arrays.stream(fieldNames).anyMatch(item -> item.equals(field.getName()));
+        } else {
+            return predicate.test(field);
+        }
+    }
+
+    private static boolean isFieldSupportedType(Field field) {
+        return field.getType().isEnum() || field.getType().equals(String.class)
+                || field.getType().equals(Boolean.class) || field.getType().equals(Date.class);
+    }
+
+    private static String[] getNamesArray(String names) {
         Pattern pattern = Pattern.compile(" ");
-        return pattern.splitAsStream(names).collect(Collectors.toList());
+        return pattern.splitAsStream(names).toArray(String[]::new);
     }
 
     private static List<Field> getFields(Class<?> type) {

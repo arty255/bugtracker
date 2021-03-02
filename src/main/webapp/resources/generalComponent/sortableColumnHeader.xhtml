@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xml:lang="en" lang="en">
+<composite:interface>
+    <composite:attribute name="addColumnToOrderAction" method-signature="void action()" required="true"/>
+    <composite:attribute name="removeColumnFromOrderAction" method-signature="void action()" required="true"/>
+    <composite:attribute name="columnInOrderFiltersIndex" required="true"/>
+    <composite:attribute name="columnInFilters" required="true"/>
+    <composite:attribute name="isAscending" required="true"/>
+    <composite:attribute name="showIndex" default="false"/>
+    <composite:attribute name="afterActionUpdateSelectors"/>
+    <composite:attribute name="columnKey"/>
+    <composite:attribute name="columnProperty"/>
+    <composite:attribute name="label"/>
+</composite:interface>
+<composite:implementation>
+    <h:panelGroup layout="block" style="display: flex; flex-direction: row; justify-content: center;">
+        <div>
+            <h:outputText value="#{cc.attrs.columnInOrderFiltersIndex + 1}"
+                          rendered="#{cc.attrs.columnInFilters and cc.attrs.showIndex}"/>
+            <h:outputText styleClass="ui-icon pi pi-sort-numeric-down"
+                          rendered="#{cc.attrs.columnInFilters and cc.attrs.isAscending}"/>
+            <h:outputText styleClass="ui-icon pi pi-sort-numeric-up"
+                          rendered="#{cc.attrs.columnInFilters and not cc.attrs.isAscending}"/>
+            <p:commandLink
+                    styleClass="ui-panel-titlebar-icon ui-corner-all ui-issueState-default"
+                    style="margin-right: 0.5em"
+                    process="@this"
+                    rendered="#{cc.attrs.columnInFilters}"
+                    update="#{cc.attrs.afterActionUpdateSelectors}"
+                    action="#{cc.attrs.removeColumnFromOrderAction}">
+                <h:outputText styleClass="ui-icon pi pi-times"/>
+                <f:setPropertyActionListener value="#{cc.attrs.columnKey}" target="#{cc.attrs.columnProperty}"/>
+            </p:commandLink>
+        </div>
+        <p:commandLink
+                process="@this"
+                update="#{cc.attrs.afterActionUpdateSelectors}"
+                action="#{cc.attrs.addColumnToOrderAction}">
+            <h:outputText value="#{cc.attrs.label}"/>
+            <f:setPropertyActionListener value="#{cc.attrs.columnKey}" target="#{cc.attrs.columnProperty}"/>
+        </p:commandLink>
+    </h:panelGroup>
+</composite:implementation>
+</html>

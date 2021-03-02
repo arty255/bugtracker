@@ -27,14 +27,28 @@
                 <f:facet name="header">
                     <div style="width:100%; display: flex; flex-direction: row; justify-content: space-between;">
                         <p:commandButton value="Add Ticket" icon="pi pi-plus"
-                                         style="margin-bottom: 0.5em;"
+                                         style="margin-bottom: 0.5em;" styleClass="addTicketDialogButton"
+                                         rendered="#{p:ifGranted('ROLE_ADD_TICKET')}"
                                          onclick="PF('PFAddTicketDialog').show()"/>
-                        <controls:entityFilterComponent fields="#{ticketListBean.issueFilterList}"
+                        <controls:entityFilterComponent maskFields="#{ticketListBean.issueFilters}"
                                                         applyAction="#{ticketListBean.modelFiltersUpdateAction()}"
                                                         afterApplyActionUpdateSelectors="@(.ticketDataView)"/>
                     </div>
                 </f:facet>
-                <p:column headerText="Ticket data:" styleClass="minimalTicketWidthColumn" style="width: 15%!important;">
+                <p:column styleClass="minimalTicketWidthColumn" style="width: 15%!important;">
+                    <f:facet name="header">
+                        <controls:sortableColumnHeader
+                                addColumnToOrderAction="#{ticketListBean.changeSortOrderAction()}"
+                                removeColumnFromOrderAction="#{ticketListBean.cancelSortedOrderAction()}"
+                                afterActionUpdateSelectors="viewForm:ticketsDataView"
+                                columnInOrderFiltersIndex="#{ticketListBean.getColumnKeyIndex('resolveState')}"
+                                showIndex="#{ticketListBean.columnInOrderFilters('resolveState')}"
+                                columnInFilters="#{ticketListBean.columnInOrderFilters('resolveState')}"
+                                isAscending="#{ticketListBean.isAscending('resolveState')}"
+                                columnKey="resolveState"
+                                columnProperty="#{ticketListBean.columnKey}"
+                                label="Ticket data:"/>
+                    </f:facet>
                     <div>
                         <p:outputLabel value="Ticket:"/>
                     </div>
@@ -46,7 +60,20 @@
                         <ticket:stateLabel issueState="#{ticket.resolveState}"/>
                     </div>
                 </p:column>
-                <p:column headerText="Ticket description and reproduce steps:">
+                <p:column>
+                    <f:facet name="header">
+                        <controls:sortableColumnHeader
+                                addColumnToOrderAction="#{ticketListBean.changeSortOrderAction()}"
+                                removeColumnFromOrderAction="#{ticketListBean.cancelSortedOrderAction()}"
+                                afterActionUpdateSelectors="viewForm:ticketsDataView"
+                                columnInOrderFiltersIndex="#{ticketListBean.getColumnKeyIndex('description')}"
+                                showIndex="#{ticketListBean.columnInOrderFilters('description')}"
+                                columnInFilters="#{ticketListBean.columnInOrderFilters('description')}"
+                                isAscending="#{ticketListBean.isAscending('description')}"
+                                columnKey="description"
+                                columnProperty="#{ticketListBean.columnKey}"
+                                label="Ticket description and reproduce steps:"/>
+                    </f:facet>
                     <div class="descriptionWrapper">
                         <p:outputLabel value="Description:" style="font-weight: bold"/>
                         <br/>
@@ -63,7 +90,20 @@
                 <p:column headerText="Reported by:" styleClass="timeColumn">
                     <user:linkedUser user="#{ticket.user}"/>
                 </p:column>
-                <p:column headerText="Report date:" styleClass="timeColumn">
+                <p:column styleClass="timeColumn">
+                    <f:facet name="header">
+                        <controls:sortableColumnHeader
+                                addColumnToOrderAction="#{ticketListBean.changeSortOrderAction()}"
+                                removeColumnFromOrderAction="#{ticketListBean.cancelSortedOrderAction()}"
+                                afterActionUpdateSelectors="viewForm:ticketsDataView"
+                                columnInOrderFiltersIndex="#{ticketListBean.getColumnKeyIndex('creationTime')}"
+                                showIndex="#{ticketListBean.columnInOrderFilters('creationTime')}"
+                                columnInFilters="#{ticketListBean.columnInOrderFilters('creationTime')}"
+                                isAscending="#{ticketListBean.isAscending('creationTime')}"
+                                columnKey="creationTime"
+                                columnProperty="#{ticketListBean.columnKey}"
+                                label="Creation Time"/>
+                    </f:facet>
                     <h:outputText value="#{ticket.creationTime}" style="white-space: nowrap">
                         <f:convertDateTime type="both" pattern="#{appUtilBean.dateFormat}"/>
                     </h:outputText>
@@ -79,25 +119,28 @@
             </p:dataTable>
         </h:form>
 
-        <p:dialog header="Add new Ticket" widgetVar="PFAddTicketDialog">
+        <p:dialog header="Add new Ticket" widgetVar="PFAddTicketDialog" styleClass="newTicketDialog">
             <h:form id="dialogForm">
                 <p:panel id="ticketPanel" styleClass="ticketPanel">
                     <h:panelGrid columns="1" style="width: 100%">
                         <p:outputLabel value="Product version:"/>
-                        <p:inputText value="#{addTicketBean.ticket.productVersion}"/>
+                        <p:inputText value="#{addTicketBean.ticket.productVersion}"
+                                     styleClass="newTicketProductVersion"/>
 
                         <p:outputLabel value="Description:"/>
-                        <p:inputTextarea value="#{addTicketBean.ticket.description}"/>
+                        <p:inputTextarea value="#{addTicketBean.ticket.description}" styleClass="newTicketDescription"/>
 
                         <p:outputLabel value="Reproduce steps:"/>
-                        <p:inputTextarea value="#{addTicketBean.ticket.reproduceSteps}"/>
+                        <p:inputTextarea value="#{addTicketBean.ticket.reproduceSteps}"
+                                         styleClass="newTicketReproduceSteps"/>
 
                         <h:panelGroup layout="block">
                             <div style="overflow: auto; width: 100%; margin-top: 0.2em">
                                 <p:commandButton value="Save" actionListener="#{addTicketBean.addTicket}"
-                                                 style="float: right;"
+                                                 style="float: right;" styleClass="saveNewTicketButton"
                                                  update=":viewForm:ticketsDataView ticketPanel"
                                                  process="@form"
+                                                 rendered="#{p:ifGranted('ROLE_ADD_TICKET')}"
                                                  onsuccess="PF('PFAddTicketDialog').hide()"/>
                                 <p:commandButton value="Cancel" actionListener="#{addTicketBean.clearTicket}"
                                                  style="float: right; margin-right: 0.5em"

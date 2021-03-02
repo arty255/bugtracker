@@ -9,7 +9,7 @@
       xmlns:composite="http://java.sun.com/jsf/composite"
       xml:lang="en" lang="en">
 <composite:interface>
-    <composite:attribute name="fields" type="java.util.List" required="true"/>
+    <composite:attribute name="maskFields" type="java.util.Set" required="true"/>
     <composite:attribute name="fiedsString" type="java.lang.String"/>
     <composite:attribute name="applyAction" method-signature="void action()" required="true"/>
     <composite:attribute name="afterApplyActionUpdateSelectors"/>
@@ -20,7 +20,7 @@
     </h:panelGroup>
     <p:overlayPanel for="filterButton" hideEffect="fade" dynamic="true" showEffect="fade"
                     widgetVar="moviePicker">
-        <p:dataTable id="fieldTable" var="item" value="#{cc.attrs.fields}"
+        <p:dataTable id="fieldTable" var="item" value="#{cc.attrs.maskFields}"
                      styleClass="filterDataTable">
             <p:column headerText="field" styleClass="fieldNameColumn">
                 <h:outputText value="#{item.label}"/>

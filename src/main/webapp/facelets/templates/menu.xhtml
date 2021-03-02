@@ -12,15 +12,20 @@
     <h:form>
         <p:menubar style="text-align: left; padding: 0.2em">
             <p:menuitem value="Tickets" outcome="tickets" icon="pi pi-ticket"/>
-            <p:menuitem value="Issues" outcome="issues" icon="pi pi-tags" rendered="#{p:ifGranted('ROLE_LIST_ISSUES')}"/>
-            <p:menuitem value="Users" outcome="users" icon="pi pi-users" rendered="#{p:ifGranted('ROLE_LIST_USERS')}"/>
-            <p:menuitem value="Options" url="#" icon="pi pi-cog"/>
+            <p:menuitem value="Issues" outcome="issues" icon="pi pi-tags"
+                        rendered="#{p:ifGranted('ROLE_LIST_ISSUES')}"/>
+            <p:menuitem id="options" value="Users" outcome="users" icon="pi pi-users"
+                        rendered="#{p:ifGranted('ROLE_LIST_USERS')}"/>
+            <p:menuitem id="optionsMenuItem" value="Options" url="#" icon="pi pi-cog"/>
             <f:facet name="options">
-                <h:outputText value="Hi. #{activeUserBean.activeUser.firstName} #{activeUserBean.activeUser.lastName}"
-                              rendered="#{not empty activeUserBean.activeUser}"/>
-                <h:outputText value="ERROR" rendered="#{empty activeUserBean.activeUser}"/>
-                <p:button type="button" value="Logout" icon="pi pi-sign-out"
-                          outcome="logout" style="margin-left: 1em"/>
+                <div id="loggedUserWrapper">
+                    <h:outputText id="userGreetingsText"
+                                  value="Hi. #{activeUserBean.activeUser.firstName} #{activeUserBean.activeUser.lastName}"
+                                  rendered="#{not empty activeUserBean.activeUser}"/>
+                    <h:outputText value="ERROR" rendered="#{empty activeUserBean.activeUser}"/>
+                    <p:button type="button" value="Logout" icon="pi pi-sign-out"
+                              outcome="logout" style="margin-left: 1em"/>
+                </div>
             </f:facet>
         </p:menubar>
     </h:form>

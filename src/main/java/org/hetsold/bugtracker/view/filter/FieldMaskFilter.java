@@ -5,13 +5,13 @@ import org.hetsold.bugtracker.dao.util.FilterOperation;
 
 import java.util.List;
 
-public class DisplayableFieldFilter {
+public class FieldMaskFilter {
     private FieldFilter fieldFilter;
     private String type;
     private String label;
     private List<FilterOperation> availableOperations;
 
-    public DisplayableFieldFilter(FieldFilter fieldFilter, String type, String label, List<FilterOperation> availableOperations) {
+    public FieldMaskFilter(FieldFilter fieldFilter, String type, String label, List<FilterOperation> availableOperations) {
         this.fieldFilter = fieldFilter;
         this.type = type;
         this.label = label;
