@@ -35,29 +35,7 @@ public class SecurityAppConfig extends WebSecurityConfigurerAdapter {
     }
 
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .sessionManagement()
-                .invalidSessionUrl("/facelets/pages/login.jsf")
-                .sessionAuthenticationErrorUrl("/facelets/pages/login.jsf");
-        http
-                .authorizeRequests()
-                .antMatchers("/facelets/pages/login.jsf","/facelets/pages/registration.jsf").permitAll()
-                .antMatchers("/javax.faces.resource/**").permitAll()
-                .antMatchers("/facelets/pages/userProfile.jsf").authenticated()
-                .antMatchers("/facelets/pages/issues.jsf").hasAnyRole("LIST_ISSUES", "DELETE_ISSUE", "EDIT_ISSUE")
-                .antMatchers("/facelets/pages/issueDetail.jsf").hasAnyRole("LIST_ISSUES", "DELETE_ISSUE", "EDIT_ISSUE")
-                .antMatchers("/facelets/pages/tickets.jsf").hasAnyRole("LIST_TICKETS", "DELETE_TICKET", "EDIT_TICKET")
-                .antMatchers("/facelets/pages/ticketDetail.jsf").hasAnyRole("LIST_TICKETS", "DELETE_TICKET", "EDIT_TICKET")
-                .antMatchers("/facelets/pages/users.jsf").permitAll()//hasAnyRole("LIST_USERS", "DELETE_USER", "EDIT_USER")
-                .anyRequest()
-                .authenticated();
-        http
-                .logout()
-                .logoutUrl("/logout")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/facelets/pages/login.jsf");
+
     }
 
     @Override
