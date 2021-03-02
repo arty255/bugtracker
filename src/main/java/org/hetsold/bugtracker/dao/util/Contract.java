@@ -1,21 +1,23 @@
 package org.hetsold.bugtracker.dao.util;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Contract {
-    private List<FieldFilter> fieldFilters;
-    private OrderFilter orderFilter;
+    private Set<FieldFilter> fieldFilters;
+    private List<OrderFilter> orderFilters;
 
-    public Contract() {
-        fieldFilters = new ArrayList<>();
+    public Contract(Set<FieldFilter> fieldFilters, List<OrderFilter> orderFilters) {
+        this.fieldFilters = fieldFilters;
+        this.orderFilters = orderFilters;
     }
 
-    public List<FieldFilter> getFilters() {
+    public Set<FieldFilter> getFilters() {
         return fieldFilters;
     }
 
-    public OrderFilter getOrderFilter() {
-        return orderFilter;
+    public List<OrderFilter> getOrderFilters() {
+        return orderFilters;
     }
 }

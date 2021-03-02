@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.UUID;
@@ -82,9 +83,14 @@ public class TicketHibernateDAO implements TicketDAO {
             Root<Ticket> root = query.from(Ticket.class);
             query.where(ContractReader.readContract(contract, root, builder));
             query.select(root);
+            List<Order> orders = ContractReader.getOrders(contract, root, builder);
+            if (orders.size() > 0) {
+                query.orderBy(orders);
+            }
             return session.createQuery(query).setFirstResult(startPosition).setMaxResults(limit).list();
         });
     }
+
 
     @Override
     public long getTicketsCount(Contract contract) {
