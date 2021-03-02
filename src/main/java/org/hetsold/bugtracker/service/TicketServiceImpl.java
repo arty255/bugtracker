@@ -155,7 +155,7 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public TicketDTO getTicketDTO(TicketDTO ticketDTO) {
-        return TicketMapper.getTicketDTO(TicketMapper.getTicket(ticketDTO));
+        return TicketMapper.getTicketDTO(getTicket(TicketMapper.getTicket(ticketDTO)));
     }
 
     @Override
