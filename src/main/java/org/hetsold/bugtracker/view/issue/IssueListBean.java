@@ -6,7 +6,8 @@ import org.hetsold.bugtracker.dto.IssueShortDTO;
 import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.view.filter.ContractBuilder;
-import org.hetsold.bugtracker.view.filter.DisplayableFieldFilter;
+import org.hetsold.bugtracker.view.filter.FieldMaskFilter;
+import org.hetsold.bugtracker.view.filter.FieldOrderFilter;
 import org.hetsold.bugtracker.view.filter.FilterComponentBuilder;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 @ManagedBean
 @ViewScoped
@@ -29,7 +31,8 @@ public class IssueListBean implements Serializable {
     private IssueService issueService;
     private UserDTO activeUser;
 
-    private List<DisplayableFieldFilter> displayableFieldFilters;
+    private Set<FieldMaskFilter> fieldMaskFilters;
+    private List<FieldOrderFilter> fieldOrderFilters;
 
     @PostConstruct
     public void init() {
@@ -49,12 +52,13 @@ public class IssueListBean implements Serializable {
     }
 
     public void createIssueFilterWrappersAction() {
-        displayableFieldFilters = FilterComponentBuilder.buildWrappers(IssueShortDTO.class,
+        fieldMaskFilters = FilterComponentBuilder.buildFieldMaskFilters(IssueShortDTO.class,
                 "uuid description currentIssueState severity archived");
+        fieldOrderFilters = FilterComponentBuilder.buildFieldOrderFilters(IssueShortDTO.class, "");
     }
 
     public void modelFiltersUpdateAction() {
-        ((IssuesLazyDataModel) issuesLazyDataModel).setContract(ContractBuilder.buildContact(displayableFieldFilters));
+        ((IssuesLazyDataModel) issuesLazyDataModel).setContract(ContractBuilder.buildContact(fieldMaskFilters, fieldOrderFilters));
     }
 
     public void preformArchiveAction() {
@@ -77,7 +81,7 @@ public class IssueListBean implements Serializable {
         this.issue = issue;
     }
 
-    public List<DisplayableFieldFilter> getIssueFilterList() {
-        return displayableFieldFilters;
+    public Set<FieldMaskFilter> getIssueFilterList() {
+        return fieldMaskFilters;
     }
 }

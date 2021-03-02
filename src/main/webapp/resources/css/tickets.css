@@ -76,6 +76,10 @@
     vertical-align: initial;
 }
 
+.minimalWidthColumn {
+    width: 20%;
+}
+
 .autoWidthColumn {
     width: auto;
 }

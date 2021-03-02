@@ -29,7 +29,7 @@
                     <div style=" width: 100%;display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
                         <p:commandButton value="Add user" icon="pi pi-user-plus"
                                          onclick="PF('addUserDialog').show();"/>
-                        <controls:entityFilterComponent fields="#{userListBean.issueFilterList}"
+                        <controls:entityFilterComponent maskFields="#{userListBean.issueFilterList}"
                                                         applyAction="#{userListBean.modelFiltersUpdateAction()}"
                                                         afterApplyActionUpdateSelectors="@(.usersTable)"/>
                     </div>

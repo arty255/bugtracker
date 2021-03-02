@@ -32,6 +32,10 @@
 .filterDataTable {
 }
 
+.filterDataTable td {
+    vertical-align: middle !important;
+}
+
 .filterDataTable table {
     width: auto !important;
 }
