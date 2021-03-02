@@ -36,12 +36,12 @@ public class UserHibernateDAOTest {
     public void checkIfUsersCountCorrectly() {
         userDao.save(new User("First", "User"));
         userDao.save(new User("Second", "User"));
-        assertEquals(2, userDao.getUsersCount(new Contract()));
+        assertEquals(2, userDao.getUsersCount(new Contract(null, null)));
     }
 
     @Test
     public void checkIfUsersCanBeFilteredByContract() {
-        Contract contract = new Contract();
+        Contract contract = new Contract(null, null);
         contract.getFilters().add(new FieldFilter("firstName", FilterOperation.LIKE, "ob"));
         userDao.save(new User("Alex", "Test"));
         userDao.save(new User("Tom", "Test"));

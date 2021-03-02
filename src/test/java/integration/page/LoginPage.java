@@ -1,5 +1,6 @@
-package integration;
+package integration.page;
 
+import integration.WebDriverConfig;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -18,6 +19,9 @@ public class LoginPage {
 
     public LoginPage(WebDriver webDriver) {
         this.webDriver = webDriver;
+        if (!webDriver.getCurrentUrl().equals(WebDriverConfig.getProperty("login.page.url"))) {
+            throw new IllegalArgumentException();
+        }
         PageFactory.initElements(webDriver, this);
     }
 
