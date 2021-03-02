@@ -10,10 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,10 +35,8 @@ public class IssueHibernateDAO implements IssueDAO {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<Issue> query = builder.createQuery(Issue.class);
             Root<Issue> root = query.from(Issue.class);
-            Predicate[] predicates = ContractReader.readContract(contract, root, builder);
-            if (predicates.length > 0) {
-                query.where(predicates);
-            }
+            query.where(ContractReader.readContract(contract, root, builder));
+            query.orderBy(ContractReader.getOrders(contract, root, builder));
             TypedQuery<Issue> typedQuery = session.createQuery(query);
             typedQuery.setHint("javax.persistence.loadgraph", issueEntityGraph);
             return typedQuery.setFirstResult(startPosition).setMaxResults(limit).getResultList();
@@ -59,10 +54,7 @@ public class IssueHibernateDAO implements IssueDAO {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
             Root<Issue> root = query.from(Issue.class);
-            Predicate[] predicates = ContractReader.readContract(contract, root, criteriaBuilder);
-            if (predicates.length > 0) {
-                query.where(predicates);
-            }
+            query.where(ContractReader.readContract(contract, root, criteriaBuilder));
             query.select(criteriaBuilder.count(root));
             return session.createQuery(query).getSingleResult();
         });

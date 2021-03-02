@@ -46,7 +46,20 @@
                 <p:column headerText="Last name">
                     <h:outputText value="#{user.lastName}"/>
                 </p:column>
-                <p:column headerText="Registration date">
+                <p:column>
+                    <f:facet name="header">
+                        <controls:sortableColumnHeader
+                                addColumnToOrderAction="#{userListBean.changeSortOrderAction()}"
+                                removeColumnFromOrderAction="#{userListBean.cancelSortedOrderAction()}"
+                                afterActionUpdateSelectors="@(.usersTable)"
+                                columnInOrderFiltersIndex="#{userListBean.getColumnKeyIndex('registrationDate')}"
+                                showIndex="#{userListBean.columnInOrderFilters('registrationDate')}"
+                                columnInFilters="#{userListBean.columnInOrderFilters('registrationDate')}"
+                                isAscending="#{userListBean.isAscending('registrationDate')}"
+                                columnKey="registrationDate"
+                                columnProperty="#{userListBean.columnKey}"
+                                label="Registration date:"/>
+                    </f:facet>
                     <h:outputText value="#{user.registrationDate}">
                         <f:convertDateTime pattern="#{appUtilBean.dateFormat}"/>
                     </h:outputText>

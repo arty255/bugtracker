@@ -53,6 +53,7 @@ public class TicketHibernateDAO implements TicketDAO {
                     )
             );
             query.select(root);
+            query.orderBy(ContractReader.getOrders(contract, root, builder));
             return session.createQuery(query).setFirstResult(startPosition).setMaxResults(limit).list();
         });
     }
@@ -83,14 +84,10 @@ public class TicketHibernateDAO implements TicketDAO {
             Root<Ticket> root = query.from(Ticket.class);
             query.where(ContractReader.readContract(contract, root, builder));
             query.select(root);
-            List<Order> orders = ContractReader.getOrders(contract, root, builder);
-            if (orders.size() > 0) {
-                query.orderBy(orders);
-            }
+            query.orderBy(ContractReader.getOrders(contract, root, builder));
             return session.createQuery(query).setFirstResult(startPosition).setMaxResults(limit).list();
         });
     }
-
 
     @Override
     public long getTicketsCount(Contract contract) {

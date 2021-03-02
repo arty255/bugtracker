@@ -1,14 +1,12 @@
 package org.hetsold.bugtracker.view.issue;
 
+import org.hetsold.bugtracker.dao.util.Contract;
 import org.hetsold.bugtracker.dto.user.SecurityUserDetails;
 import org.hetsold.bugtracker.dto.IssueDTO;
 import org.hetsold.bugtracker.dto.IssueShortDTO;
 import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.service.IssueService;
-import org.hetsold.bugtracker.view.filter.ContractBuilder;
-import org.hetsold.bugtracker.view.filter.FieldMaskFilter;
-import org.hetsold.bugtracker.view.filter.FieldOrderFilter;
-import org.hetsold.bugtracker.view.filter.FilterComponentBuilder;
+import org.hetsold.bugtracker.view.filter.*;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,7 +30,10 @@ public class IssueListBean implements Serializable {
     private UserDTO activeUser;
 
     private Set<FieldMaskFilter> fieldMaskFilters;
-    private List<FieldOrderFilter> fieldOrderFilters;
+
+    private String columnKey;
+    private SortedColumnsContainer sortedColumnsContainer;
+    private Contract contract;
 
     @PostConstruct
     public void init() {
@@ -54,11 +55,30 @@ public class IssueListBean implements Serializable {
     public void createIssueFilterWrappersAction() {
         fieldMaskFilters = FilterComponentBuilder.buildFieldMaskFilters(IssueShortDTO.class,
                 "uuid description currentIssueState severity archived");
-        fieldOrderFilters = FilterComponentBuilder.buildFieldOrderFilters(IssueShortDTO.class, "");
+        sortedColumnsContainer = new SortedColumnsContainer(FilterComponentBuilder.buildFieldOrderFilters(IssueShortDTO.class, "currentIssueState severity creationTime"));
+    }
+
+    private void buildContract() {
+        contract = ContractBuilder.buildContact(fieldMaskFilters, sortedColumnsContainer.getFinalOrderFilters());
     }
 
     public void modelFiltersUpdateAction() {
-        ((IssuesLazyDataModel) issuesLazyDataModel).setContract(ContractBuilder.buildContact(fieldMaskFilters, fieldOrderFilters));
+        ((IssuesLazyDataModel) issuesLazyDataModel).setContract(ContractBuilder.buildContact(fieldMaskFilters, sortedColumnsContainer.getFinalOrderFilters()));
+    }
+
+    public void changeSortOrderAction() {
+        sortedColumnsContainer.twoStateToggle(columnKey);
+        updateDataModelContract();
+    }
+
+    public void cancelSortedOrderAction() {
+        sortedColumnsContainer.removeColumnNameFromOrder(columnKey);
+        updateDataModelContract();
+    }
+
+    private void updateDataModelContract() {
+        buildContract();
+        ((IssuesLazyDataModel) issuesLazyDataModel).setContract(contract);
     }
 
     public void preformArchiveAction() {
@@ -83,5 +103,25 @@ public class IssueListBean implements Serializable {
 
     public Set<FieldMaskFilter> getIssueFilterList() {
         return fieldMaskFilters;
+    }
+
+    public String getColumnKey() {
+        return columnKey;
+    }
+
+    public void setColumnKey(String columnKey) {
+        this.columnKey = columnKey;
+    }
+
+    public int getColumnKeyIndex(String columnKey) {
+        return sortedColumnsContainer.getColumnKeyIndex(columnKey);
+    }
+
+    public boolean columnInOrderFilters(String columnKey) {
+        return sortedColumnsContainer.containsColumnKeyInFilters(columnKey);
+    }
+
+    public boolean isAscending(String columnKey) {
+        return sortedColumnsContainer.isAscending(columnKey);
     }
 }

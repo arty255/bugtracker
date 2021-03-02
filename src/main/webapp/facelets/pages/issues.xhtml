@@ -35,13 +35,27 @@
                 <f:facet name="header">
                     <div style="width: 100%; display: flex; flex-direction: row;justify-content: space-between;">
                         <p:commandButton value="Add Issue" icon="pi pi-plus"
+                                         rendered="#{p:ifGranted('ROLE_ADD_ISSUE')}"
                                          onclick="PF('addIssueDialog').show()"/>
                         <controls:entityFilterComponent maskFields="#{issueListBean.issueFilterList}"
                                                         applyAction="#{issueListBean.modelFiltersUpdateAction()}"
                                                         afterApplyActionUpdateSelectors="@(.issuesTable)"/>
                     </div>
                 </f:facet>
-                <p:column headerText="ID" styleClass="issueUUIDColumn">
+                <p:column styleClass="issueUUIDColumn">
+                    <f:facet name="header">
+                        <controls:sortableColumnHeader
+                                addColumnToOrderAction="#{issueListBean.changeSortOrderAction()}"
+                                removeColumnFromOrderAction="#{issueListBean.cancelSortedOrderAction()}"
+                                afterActionUpdateSelectors="@(.issuesTable)"
+                                columnInOrderFiltersIndex="#{issueListBean.getColumnKeyIndex('currentIssueState')}"
+                                showIndex="#{issueListBean.columnInOrderFilters('currentIssueState')}"
+                                columnInFilters="#{issueListBean.columnInOrderFilters('currentIssueState')}"
+                                isAscending="#{issueListBean.isAscending('currentIssueState')}"
+                                columnKey="currentIssueState"
+                                columnProperty="#{issueListBean.columnKey}"
+                                label="ID and State:"/>
+                    </f:facet>
                     <div>
                         <div>
                             <issue:linkedIssue uuid="#{issue.uuid}"/>
@@ -63,7 +77,20 @@
                         </h:panelGroup>
                     </div>
                 </p:column>
-                <p:column headerText="Severity" styleClass="minimalWidthColumn centeredColumn">
+                <p:column styleClass="minimalWidthColumn centeredColumn">
+                    <f:facet name="header">
+                        <controls:sortableColumnHeader
+                                addColumnToOrderAction="#{issueListBean.changeSortOrderAction()}"
+                                removeColumnFromOrderAction="#{issueListBean.cancelSortedOrderAction()}"
+                                afterActionUpdateSelectors="@(.issuesTable)"
+                                columnInOrderFiltersIndex="#{issueListBean.getColumnKeyIndex('severity')}"
+                                showIndex="#{issueListBean.columnInOrderFilters('severity')}"
+                                columnInFilters="#{issueListBean.columnInOrderFilters('severity')}"
+                                isAscending="#{issueListBean.isAscending('severity')}"
+                                columnKey="severity"
+                                columnProperty="#{issueListBean.columnKey}"
+                                label="Severity:"/>
+                    </f:facet>
                     <issue:severityLabel issueSeverity="#{issue.severity}"/>
                 </p:column>
                 <p:column headerText="Reported By" styleClass="minimalWidthColumn centeredColumn">
@@ -76,7 +103,20 @@
                     <user:linkedUser user="#{issue.assignedTo}" rendered="#{not empty issue.assignedTo}"/>
                     <!--todo: show warning with time=cur.time-creat.time and color range-->
                 </p:column>
-                <p:column headerText="Creation date" styleClass="minimalWidthColumn centeredColumn">
+                <p:column styleClass="minimalWidthColumn centeredColumn">
+                    <f:facet name="header">
+                        <controls:sortableColumnHeader
+                                addColumnToOrderAction="#{issueListBean.changeSortOrderAction()}"
+                                removeColumnFromOrderAction="#{issueListBean.cancelSortedOrderAction()}"
+                                afterActionUpdateSelectors="@(.issuesTable)"
+                                columnInOrderFiltersIndex="#{issueListBean.getColumnKeyIndex('creationTime')}"
+                                showIndex="#{issueListBean.columnInOrderFilters('creationTime')}"
+                                columnInFilters="#{issueListBean.columnInOrderFilters('creationTime')}"
+                                isAscending="#{issueListBean.isAscending('creationTime')}"
+                                columnKey="creationTime"
+                                columnProperty="#{issueListBean.columnKey}"
+                                label="Creation date:"/>
+                    </f:facet>
                     <h:outputText value="#{issue.creationTime}">
                         <f:convertDateTime pattern="#{appUtilBean.dateFormat}"/>
                     </h:outputText>

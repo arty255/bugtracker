@@ -60,20 +60,7 @@
                         <ticket:stateLabel issueState="#{ticket.resolveState}"/>
                     </div>
                 </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <controls:sortableColumnHeader
-                                addColumnToOrderAction="#{ticketListBean.changeSortOrderAction()}"
-                                removeColumnFromOrderAction="#{ticketListBean.cancelSortedOrderAction()}"
-                                afterActionUpdateSelectors="viewForm:ticketsDataView"
-                                columnInOrderFiltersIndex="#{ticketListBean.getColumnKeyIndex('description')}"
-                                showIndex="#{ticketListBean.columnInOrderFilters('description')}"
-                                columnInFilters="#{ticketListBean.columnInOrderFilters('description')}"
-                                isAscending="#{ticketListBean.isAscending('description')}"
-                                columnKey="description"
-                                columnProperty="#{ticketListBean.columnKey}"
-                                label="Ticket description and reproduce steps:"/>
-                    </f:facet>
+                <p:column headerText="Ticket description and reproduce steps:">
                     <div class="descriptionWrapper">
                         <p:outputLabel value="Description:" style="font-weight: bold"/>
                         <br/>

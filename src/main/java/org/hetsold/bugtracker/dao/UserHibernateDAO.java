@@ -58,12 +58,8 @@ public class UserHibernateDAO implements UserDAO {
             CriteriaQuery<User> query = builder.createQuery(User.class);
             Root<User> root = query.from(User.class);
             query.where(ContractReader.readContract(contract, root, builder));
+            query.orderBy(ContractReader.getOrders(contract, root, builder));
             query.select(root);
-            if (dateAsc) {
-                query.orderBy(builder.asc(root.get(User_.registrationDate)));
-            } else {
-                query.orderBy(builder.desc(root.get(User_.registrationDate)));
-            }
             return session.createQuery(query).setFirstResult(first).setMaxResults(limit).getResultList();
         });
     }
