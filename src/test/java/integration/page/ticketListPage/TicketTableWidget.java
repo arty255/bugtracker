@@ -25,12 +25,13 @@ public class TicketTableWidget {
     }
 
     public void sortTicketToFirstPosition() {
-        webDriver.findElement(By.xpath("//a[text()='Creation Time']")).click();
+        By linkXpath = By.xpath("//a[text()='Creation Time']");
+        webDriver.findElement(linkXpath).click();
         waitAjaxExecution();
-        waitForVisibility(By.xpath("//a[text()='Creation Time']"));
-        webDriver.findElement(By.xpath("//a[text()='Creation Time']")).click();
+        waitForVisibility(linkXpath);
+        webDriver.findElement(linkXpath).click();
         waitAjaxExecution();
-        waitForVisibility(By.xpath("//a[text()='Creation Time']"));
+        waitForVisibility(linkXpath);
     }
 
     private void waitForVisibility(By by) {

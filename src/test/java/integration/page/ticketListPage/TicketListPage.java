@@ -21,7 +21,7 @@ public class TicketListPage extends AbstractLoginFirstPage {
     public AddTicketDialog addTicketDialog;
 
     private TicketListPage(WebDriver webDriver, String login, String password) {
-        super(LoginPage.loginUrl, webDriver, login, password);
+        super(webDriver, login, password);
         PageFactory.initElements(webDriver, this);
         addTicketDialog = new AddTicketDialog(webDriver);
         ticketTable = new TicketTableWidget(webDriver);

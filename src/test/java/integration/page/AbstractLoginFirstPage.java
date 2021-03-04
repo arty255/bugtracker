@@ -8,8 +8,8 @@ public class AbstractLoginFirstPage extends AbstractPage {
     private final String login;
     private final String password;
 
-    public AbstractLoginFirstPage(String pageUrl, WebDriver webDriver, String login, String password) {
-        super(pageUrl, webDriver);
+    public AbstractLoginFirstPage(WebDriver webDriver, String login, String password) {
+        super(LoginPage.loginUrl, webDriver);
         this.login = login;
         this.password = password;
     }

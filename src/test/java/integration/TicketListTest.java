@@ -23,7 +23,7 @@ public class TicketListTest {
 
     @Before
     public void before() {
-        ticketListPage = Factory.getTicketListPage();
+        ticketListPage = MinimalPageDataFactory.getTicketListPage();
     }
 
     @Test

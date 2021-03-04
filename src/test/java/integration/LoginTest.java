@@ -21,7 +21,7 @@ public class LoginTest {
 
     @Before
     public void before() {
-        loginPage = Factory.getLoginPage();
+        loginPage = MinimalPageDataFactory.getLoginPage();
     }
 
     @Test
