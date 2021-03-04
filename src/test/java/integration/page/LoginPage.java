@@ -1,13 +1,13 @@
 package integration.page;
 
-import integration.WebDriverConfig;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class LoginPage {
-    private WebDriver webDriver;
+public class LoginPage extends AbstractPage {
+    public static final String loginUrl = "http://localhost:8080/bugtracker_war_exploded/facelets/pages/login.jsf";
     @FindBy(xpath = "//*[@id=\"j_idt7:j_idt15\"]")
     private WebElement loginField;
     @FindBy(xpath = "//*[@id=\"j_idt7:j_idt19\"]")
@@ -17,22 +17,31 @@ public class LoginPage {
     @FindBy(xpath = "//*[@id=\"j_idt7:j_idt11\"]/div/ul/li/span")
     private WebElement errorMessage;
 
-    public LoginPage(WebDriver webDriver) {
-        this.webDriver = webDriver;
-        if (!webDriver.getCurrentUrl().equals(WebDriverConfig.getProperty("login.page.url"))) {
-            throw new IllegalArgumentException();
-        }
+    private LoginPage(WebDriver webDriver) {
+        super(loginUrl, webDriver);
         PageFactory.initElements(webDriver, this);
     }
 
-    public LoggedInPage login(String login, String password) {
+    public static LoginPage createLoginPage(WebDriver webDriver) {
+        LoginPage loginPage = new LoginPage(webDriver);
+        loginPage.loadPage(loginUrl);
+        return loginPage;
+    }
+
+    public void login(String login, String password) {
         loginField.sendKeys(login);
         passField.sendKeys(password);
         loginButton.click();
-        return new LoggedInPage(webDriver);
+        PageUtil.waitAjaxExecution(webDriver);
     }
 
-    public String errorMessage() {
+    public boolean containsErrorMessage(){
+        PageUtil.waitForVisibility(By.className("ui-messages-error"), webDriver);
+        return errorMessage.isDisplayed();
+    }
+
+    public String errorMessageText() {
+        PageUtil.waitForVisibility(By.className("ui-messages-error"), webDriver);
         return errorMessage.getText();
     }
 }

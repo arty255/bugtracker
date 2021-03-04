@@ -1,16 +1,17 @@
-package integration.page;
+package integration.page.ticketListPage;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class TicketListPage extends LoggedInPage {
-    @FindBy(className = "addTicketDialogButton")
-    private WebElement addTicketButton;
+public class AddTicketDialog {
+    private WebDriver webDriver;
+
     @FindBy(className = "newTicketProductVersion")
     private WebElement productVersionField;
     @FindBy(className = "newTicketDescription")
@@ -19,53 +20,40 @@ public class TicketListPage extends LoggedInPage {
     private WebElement reproducerStepsField;
     @FindBy(className = "saveNewTicketButton")
     private WebElement saveTicketButton;
-    @FindBy(xpath = "//*[@id=\"dialogForm:j_idt107\"]")
+    @FindBy(className = "clearButton")
     private WebElement clearTicketDataButton;
     @FindBy(xpath = "//*[@id=\"dialogForm:j_idt106\"]")
     private WebElement cancelSaveTicketButton;
-    @FindBy(xpath = "//*[@id=\"viewForm:ticketsDataView_data\"]/tr[1]/td[2]/div[1]/span")
-    private WebElement firstInRowTicketDescription;
 
-    private WebElement sortButton;
-
-
-    public TicketListPage(WebDriver webDriver) {
-        super(webDriver);
+    public AddTicketDialog(WebDriver webDriver) {
+        this.webDriver = webDriver;
+        PageFactory.initElements(webDriver, this);
     }
 
-    public void fillNewTicketData(String productVersion, String description, String steps) {
-        addTicketButton.click();
-        new WebDriverWait(webDriver, 10)
-                .until(ExpectedConditions.visibilityOfElementLocated(By.className("newTicketDialog")));
+    public AddTicketDialog fillNewTicketData(String productVersion, String description, String steps) {
         productVersionField.sendKeys(productVersion);
         descriptionField.sendKeys(description);
         reproducerStepsField.sendKeys(steps);
+        return this;
     }
 
-    public void addNewTicket() {
+    public void saveTicket() {
         saveTicketButton.click();
         waitAjaxExecution();
+        waitDialogNotDisplayed();
     }
 
-    public void clearNewTicket() {
+    public AddTicketDialog clearFilledTicketData() {
         clearTicketDataButton.click();
         waitAjaxExecution();
+        return this;
     }
 
-    public String getFirstTicketDescription() {
-        return firstInRowTicketDescription.getText();
-    }
-
-    public void latestFirstSort(){
-
-    }
-
-    public void waitAjaxExecution() {
-        new WebDriverWait(webDriver, 5).until(d -> (boolean) ((JavascriptExecutor) d).executeScript("return jQuery.active == 0"));
-    }
-
-    public void cancelSaveTicket() {
+    public AddTicketDialog cancelSaveTicket() {
         cancelSaveTicketButton.click();
+        waitAjaxExecution();
+        waitDialogNotDisplayed();
+        return this;
     }
 
     public String getFilledProductVersion() {
@@ -79,4 +67,14 @@ public class TicketListPage extends LoggedInPage {
     public String getReproduceSteps() {
         return reproducerStepsField.getText();
     }
+
+    private void waitAjaxExecution() {
+        new WebDriverWait(webDriver, 5).until(d -> ((JavascriptExecutor) d).executeScript("return jQuery.active == 0"));
+        new WebDriverWait(webDriver, 5).until(driver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete"));
+    }
+
+    private void waitDialogNotDisplayed() {
+        new WebDriverWait(webDriver, 5).until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.className("newTicketDialog"))));
+    }
+
 }

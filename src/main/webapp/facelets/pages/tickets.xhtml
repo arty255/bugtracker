@@ -27,7 +27,7 @@
                 <f:facet name="header">
                     <div style="width:100%; display: flex; flex-direction: row; justify-content: space-between;">
                         <p:commandButton value="Add Ticket" icon="pi pi-plus"
-                                         style="margin-bottom: 0.5em;" styleClass="addTicketDialogButton"
+                                         styleClass="addTicketDialogButton"
                                          rendered="#{p:ifGranted('ROLE_ADD_TICKET')}"
                                          onclick="PF('PFAddTicketDialog').show()"/>
                         <controls:entityFilterComponent maskFields="#{ticketListBean.issueFilters}"
@@ -132,7 +132,7 @@
                                 <p:commandButton value="Cancel" actionListener="#{addTicketBean.clearTicket}"
                                                  style="float: right; margin-right: 0.5em"
                                                  update="ticketPanel" onclick="PF('PFAddTicketDialog').hide()"/>
-                                <p:commandButton value="Clear" style="float: left;"
+                                <p:commandButton value="Clear" style="float: left;" styleClass="clearButton"
                                                  actionListener="#{addTicketBean.clearTicket}"
                                                  update="ticketPanel"/>
                             </div>

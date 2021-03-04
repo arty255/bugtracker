@@ -1,5 +1,10 @@
 package integration;
 
+import org.openqa.selenium.PageLoadStrategy;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,5 +24,21 @@ public class WebDriverConfig {
 
     public static String getProperty(String key) {
         return properties.getProperty(key);
+    }
+
+    public static void init() {
+        System.setProperty("webdriver.chrome.driver", WebDriverConfig.getProperty("webdriver.chrome.driver"));
+    }
+
+    private static ChromeOptions getChromeOptions() {
+        ChromeOptions options = new ChromeOptions();
+        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
+        return options;
+    }
+
+    public static WebDriver getWebDriverWithOptions() {
+        WebDriver webDriver = new ChromeDriver(getChromeOptions());
+        webDriver.manage().window().maximize();
+        return webDriver;
     }
 }

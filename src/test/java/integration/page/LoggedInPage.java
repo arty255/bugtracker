@@ -16,23 +16,32 @@ public class LoggedInPage {
         PageFactory.initElements(webDriver, this);
     }
 
+    private void waitForLoading() {
+        new WebDriverWait(webDriver, 10)
+                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[contains(@id, 'userGreetingsText')]")));
+    }
+
     public String getWelcomeMessage() {
+        waitForLoading();
         return webDriver.findElement(By.xpath("//*[contains(@id, 'userGreetingsText')]")).getText();
     }
 
     public boolean containsTicketMenuItem() {
+        waitForLoading();
         return webDriver.findElement(By
                 .xpath("//*/li/a[contains(@href,'/facelets/pages/tickets.jsf')]"))
                 .isDisplayed();
     }
 
     public boolean containsIssuesMenuItem() {
+        waitForLoading();
         return webDriver.findElement(By
                 .xpath("//*/li/a[contains(@href,'/bugtracker_war_exploded/facelets/pages/issues.jsf')]"))
                 .isDisplayed();
     }
 
     public boolean containsUsersMenuItem() {
+        waitForLoading();
         return webDriver.findElement(By
                 .xpath("//*/li/a[contains(@href,'/bugtracker_war_exploded/facelets/pages/users.jsf')]"))
                 .isDisplayed();
