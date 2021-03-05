@@ -42,7 +42,7 @@ public class AddIssueBean implements Serializable {
 
     public void initIssueListener() {
         issue = new IssueDTO();
-        userList = userService.getUsers(null, 0, Integer.MAX_VALUE, false);
+        userList = userService.getUsers(null, 0, Integer.MAX_VALUE);
     }
 
     public void addIssueAction() {

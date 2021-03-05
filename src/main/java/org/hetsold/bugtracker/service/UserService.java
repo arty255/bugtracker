@@ -4,7 +4,6 @@ import org.hetsold.bugtracker.dao.util.Contract;
 import org.hetsold.bugtracker.dto.user.RegistrationDataDTO;
 import org.hetsold.bugtracker.dto.user.FullUserDTO;
 import org.hetsold.bugtracker.dto.user.UserDTO;
-import org.hetsold.bugtracker.model.SecurityUser;
 import org.hetsold.bugtracker.model.SecurityUserAuthority;
 
 import java.util.List;
@@ -31,7 +30,7 @@ public interface UserService {
 
     boolean isLoginTaken(String login);
 
-    List<UserDTO> getUsers(Contract contract, int first, int count, boolean dateAsc);
+    List<UserDTO> getUsers(Contract contract, int first, int count);
 
     long getUsersCount(Contract contract);
 

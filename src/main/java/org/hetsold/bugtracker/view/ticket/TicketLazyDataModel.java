@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class TicketLazyDataModel extends LazyDataModel<TicketDTO> {
-    private TicketService ticketService;
+    private final TicketService ticketService;
     private UserDTO selectedUser;
     private Contract contract;
 

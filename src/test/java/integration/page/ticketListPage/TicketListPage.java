@@ -1,7 +1,6 @@
 package integration.page.ticketListPage;
 
 import integration.page.AbstractLoginFirstPage;
-import integration.page.LoginPage;
 import integration.page.PageUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

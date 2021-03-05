@@ -2,7 +2,6 @@ package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.dao.util.Contract;
 import org.hetsold.bugtracker.model.User;
-import org.hetsold.bugtracker.model.User_;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
@@ -16,7 +15,7 @@ import java.util.UUID;
 
 @Repository
 public class UserHibernateDAO implements UserDAO {
-    private HibernateTemplate hibernateTemplate;
+    private final HibernateTemplate hibernateTemplate;
 
     @Autowired
     public UserHibernateDAO(SessionFactory sessionFactory) {
@@ -52,7 +51,7 @@ public class UserHibernateDAO implements UserDAO {
     }
 
     @Override
-    public List<User> getUsers(Contract contract, int first, int limit, boolean dateAsc) {
+    public List<User> getUsers(Contract contract, int first, int limit) {
         return hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<User> query = builder.createQuery(User.class);

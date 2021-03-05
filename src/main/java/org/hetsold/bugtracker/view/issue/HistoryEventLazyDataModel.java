@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 public class HistoryEventLazyDataModel extends LazyDataModel<IssueEventDTO> {
-    private IssueService issueService;
-    private MessageService messageService;
+    private final IssueService issueService;
+    private final MessageService messageService;
     private IssueDTO issueDTO;
     private boolean inverseDateOrder;
 

@@ -243,7 +243,7 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
 
     private void updateAndEncodeSecurityUserPassword(SecurityUser securityUser, String newPassword) {
         validatePassword(newPassword);
-        securityUser.setUsername(encodePassword(newPassword));
+        securityUser.setPassword(encodePassword(newPassword));
     }
 
     @Override
@@ -310,8 +310,8 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public List<UserDTO> getUsers(Contract contract, int first, int limit, boolean dateAsc) {
-        return UserMapper.getUserDTOS(userDAO.getUsers(contract, first, limit, dateAsc));
+    public List<UserDTO> getUsers(Contract contract, int first, int limit) {
+        return UserMapper.getUserDTOS(userDAO.getUsers(contract, first, limit));
     }
 
     @Override

@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Repository
 public class HistoryEventHibernateDAO implements HistoryEventDAO {
-    private HibernateTemplate hibernateTemplate;
+    private final HibernateTemplate hibernateTemplate;
 
     @Autowired
     public HistoryEventHibernateDAO(SessionFactory sessionFactory) {

@@ -4,8 +4,6 @@ import integration.page.LoginPage;
 import integration.page.detailedTicketPage.DetailedTicketPage;
 import integration.page.ticketListPage.TicketListPage;
 
-import java.util.Locale;
-
 public class MinimalPageDataFactory {
 
     public static LoginPage getLoginPage() {

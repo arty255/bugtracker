@@ -1,7 +1,7 @@
 package integration.page.ticketListPage;
 
+import integration.page.PageUtil;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -10,7 +10,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class TicketTableWidget {
-    private WebDriver webDriver;
+    private final WebDriver webDriver;
     @FindBy(xpath = "//*[@id=\"viewForm:ticketsDataView_data\"]/tr[1]/td[2]/div[1]/span")
     private WebElement firstInRowTicketDescription;
 
@@ -20,26 +20,21 @@ public class TicketTableWidget {
     }
 
     public String getFirstTicketDescription() {
-        waitAjaxExecution();
+        PageUtil.waitForAjaxAndPage(webDriver);
         return firstInRowTicketDescription.getText();
     }
 
     public void sortTicketToFirstPosition() {
         By linkXpath = By.xpath("//a[text()='Creation Time']");
         webDriver.findElement(linkXpath).click();
-        waitAjaxExecution();
+        PageUtil.waitForAjaxAndPage(webDriver);
         waitForVisibility(linkXpath);
         webDriver.findElement(linkXpath).click();
-        waitAjaxExecution();
+        PageUtil.waitForAjaxAndPage(webDriver);
         waitForVisibility(linkXpath);
     }
 
     private void waitForVisibility(By by) {
         new WebDriverWait(webDriver, 5).until(ExpectedConditions.visibilityOfElementLocated(by));
-    }
-
-    private void waitAjaxExecution() {
-        new WebDriverWait(webDriver, 5).until(d -> ((JavascriptExecutor) d).executeScript("return jQuery.active == 0"));
-        new WebDriverWait(webDriver, 5).until(driver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete"));
     }
 }

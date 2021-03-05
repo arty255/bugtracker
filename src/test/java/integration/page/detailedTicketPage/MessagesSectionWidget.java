@@ -8,7 +8,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 public class MessagesSectionWidget {
-    private WebDriver webDriver;
+    private final WebDriver webDriver;
     @FindBy(xpath = "//ul[@class='ui-datalist-data']")
     private WebElement messagesContainer;
     @FindBy(xpath = "//div[@class='ticketMessagesWrapper']//span[@id='ticketForm:ticketMessages:orderContainer']//a")
@@ -25,23 +25,26 @@ public class MessagesSectionWidget {
 
     public MessagesSectionWidget sortByDate() {
         sortLink.click();
-        PageUtil.waitAjaxExecution(webDriver);
+        PageUtil.waitForAjaxAndPage(webDriver);
         return this;
     }
 
-
     public void deleteMessage(int index) {
-
+        WebElement message = getMessageElement(index);
+        message.findElement(By.xpath("//a[./span[contains(@class,'pi-trash')]]")).click();
+        PageUtil.waitForAjaxAndPage(webDriver);
+        PageUtil.waitSeconds(webDriver, 1);
     }
 
     public void editMessage(int index) {
-
+        WebElement message = getMessageElement(index);
+        message.findElement(By.xpath("//a[./span[contains(@class,'pi-pencil')]]")).click();
+        PageUtil.waitForAjaxAndPage(webDriver);
     }
 
-
-    public String getMessageContent(int index) {
+    public String getMessageUUID(int index) {
         WebElement message = getMessageElement(index);
-        return message.findElement(By.className("messageContentArea")).getText();
+        return message.findElement(By.className("ui-panel-title")).getText();
     }
 
     private WebElement getMessageElement(int index) {

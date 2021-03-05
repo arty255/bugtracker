@@ -8,8 +8,7 @@ import org.junit.Test;
 
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class DetailedTicketTest {
     private DetailedTicketPage detailedTicketPage;
@@ -26,7 +25,7 @@ public class DetailedTicketTest {
 
     @After
     public void after() {
-        detailedTicketPage.closeWebDriver();
+        //detailedTicketPage.closeWebDriver();
     }
 
     @Test
@@ -38,7 +37,6 @@ public class DetailedTicketTest {
                 .selectWrite()
                 .fillMessage(messageContent)
                 .sendMessage();
-
 
         //assertEquals(messageContent, detailedTicketPage.messagesSectionWidget.getLastByDateMessage());
     }
@@ -81,8 +79,22 @@ public class DetailedTicketTest {
     public void testFirstMessageText() {
         String messageText = detailedTicketPage
                 .messagesSectionWidget
-                .getMessageContent(1);
+                .getMessageUUID(1);
         assertEquals("fgsdfgs", messageText);
     }
 
+    @Test
+    public void checkIfMessageCanBeDeleted() {
+        detailedTicketPage
+                .postMessageSectionWidget
+                .fillMessage("added message")
+                .sendMessage();
+        String messageID = detailedTicketPage
+                .messagesSectionWidget
+                .getMessageUUID(1);
+        detailedTicketPage
+                .messagesSectionWidget
+                .deleteMessage(1);
+        assertNotEquals(messageID, detailedTicketPage.messagesSectionWidget.getMessageUUID(1));
+    }
 }

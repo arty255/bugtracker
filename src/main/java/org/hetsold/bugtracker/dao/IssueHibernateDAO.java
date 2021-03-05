@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Repository
 public class IssueHibernateDAO implements IssueDAO {
-    private HibernateTemplate hibernateTemplate;
+    private final HibernateTemplate hibernateTemplate;
 
     @Autowired
     public IssueHibernateDAO(SessionFactory sessionFactory) {

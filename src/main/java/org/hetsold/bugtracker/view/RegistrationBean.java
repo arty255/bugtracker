@@ -20,7 +20,7 @@ public class RegistrationBean {
     RegistrationDataDTO registrationData;
 
     @PostConstruct
-    private void postConstruct() {
+    public void postConstruct() {
         FacesContextUtils.getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
         initRegistrationDataListener();

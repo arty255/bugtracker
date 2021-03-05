@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SortedColumnsContainer {
-    private List<FieldOrderFilter> acceptableOrderFilters;
-    private List<FieldOrderFilter> orderFilters;
+    private final List<FieldOrderFilter> acceptableOrderFilters;
+    private final List<FieldOrderFilter> orderFilters;
 
     public SortedColumnsContainer(List<FieldOrderFilter> acceptableOrderFilters) {
         this.acceptableOrderFilters = acceptableOrderFilters;

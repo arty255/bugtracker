@@ -20,10 +20,6 @@ public class MessageDTO extends IssueEventType implements Serializable {
         this.setUuid(uuid);
     }
 
-    public MessageDTO(String content, Date createDate) {
-        this.content = content;
-    }
-
     public MessageDTO(Message message) {
         this.setUuid(message.getUuid().toString());
         this.content = message.getContent();
@@ -33,6 +29,12 @@ public class MessageDTO extends IssueEventType implements Serializable {
         if (message.getMessageEditor() != null) {
             this.editor = new UserDTO(message.getMessageEditor());
         }
+    }
+
+    public static MessageDTO createMessageDTOWithContent(String content) {
+        MessageDTO messageDTO = new MessageDTO();
+        messageDTO.setContent(content);
+        return messageDTO;
     }
 
     public String getContent() {

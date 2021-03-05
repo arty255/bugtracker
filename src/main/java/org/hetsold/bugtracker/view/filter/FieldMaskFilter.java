@@ -6,10 +6,10 @@ import org.hetsold.bugtracker.dao.util.FilterOperation;
 import java.util.List;
 
 public class FieldMaskFilter {
-    private FieldFilter fieldFilter;
-    private String type;
-    private String label;
-    private List<FilterOperation> availableOperations;
+    private final FieldFilter fieldFilter;
+    private final String type;
+    private final String label;
+    private final List<FilterOperation> availableOperations;
 
     public FieldMaskFilter(FieldFilter fieldFilter, String type, String label, List<FilterOperation> availableOperations) {
         this.fieldFilter = fieldFilter;

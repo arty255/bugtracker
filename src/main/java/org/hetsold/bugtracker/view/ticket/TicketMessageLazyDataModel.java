@@ -13,9 +13,9 @@ import java.util.Map;
 
 public class TicketMessageLazyDataModel extends LazyDataModel<MessageDTO> {
     private boolean inverseDateOrder;
-    private TicketService ticketService;
-    private MessageService messageService;
-    private TicketDTO ticket;
+    private final TicketService ticketService;
+    private final MessageService messageService;
+    private final TicketDTO ticket;
 
     public TicketMessageLazyDataModel(TicketService ticketService, MessageService messageService, TicketDTO ticket) {
         this.ticketService = ticketService;

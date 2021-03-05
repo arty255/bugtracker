@@ -8,7 +8,6 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class FilterComponentBuilder {
     private static final Map<String, String> labelMap = Map.of(

@@ -6,7 +6,7 @@ import org.hetsold.bugtracker.model.User;
 import java.util.Date;
 
 public class TicketFactory {
-    private User user;
+    private final User user;
 
     public TicketFactory(User user) {
         this.user = user;

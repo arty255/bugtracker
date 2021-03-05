@@ -6,7 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class TicketDetailWidget {
-    private WebDriver webDriver;
+    private final WebDriver webDriver;
 
     private WebElement ticketDescription;
 
@@ -48,6 +48,6 @@ public class TicketDetailWidget {
 
     public void saveTicket() {
         ticketSaveButton.click();
-        PageUtil.waitAjaxExecution(webDriver);
+        PageUtil.waitForAjaxAndPage(webDriver);
     }
 }

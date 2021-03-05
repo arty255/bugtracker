@@ -140,6 +140,7 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
         return IssueMapper.getIssueShortDTO(issue);
     }
 
+    @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void assignIssueToTicket(Issue issue, Ticket ticket) {
         if (isEligibleOperation(issue, ticket)) {
@@ -307,6 +308,7 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
                 UserMapper.getUser(userDTO));
     }
 
+    @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void changeIssueAssignedUser(Issue issue, User assignedTo, User user) {
         if (assignedTo != null) {
@@ -388,6 +390,7 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
         return getIssueHistoryEventsCount(IssueMapper.getIssue(issueDTO));
     }
 
+    @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void addIssueMessage(IssueDTO issueDTO, MessageDTO messageDTO) {
         addIssueMessage(IssueMapper.getIssue(issueDTO),

@@ -23,8 +23,8 @@ import static org.junit.Assert.assertEquals;
 public class TicketHibernateDAOTest {
     @Autowired
     private TicketDAO ticketDao;
-    private User user = new User("first name", "last name");
-    private TicketFactory ticketFactory = new TicketFactory(user);
+    private final User user = new User("first name", "last name");
+    private final TicketFactory ticketFactory = new TicketFactory(user);
 
     @Test
     public void checkIfTicketCanBeSavedAndFound() {

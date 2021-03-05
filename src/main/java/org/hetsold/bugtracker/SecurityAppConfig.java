@@ -27,13 +27,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
         securedEnabled = true)
 public class SecurityAppConfig extends WebSecurityConfigurerAdapter {
 
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
     public SecurityAppConfig(UserService userService) {
         this.userService = userService;
     }
 
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()

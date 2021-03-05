@@ -32,7 +32,7 @@ public class LoginPage extends AbstractPage {
         loginField.sendKeys(login);
         passField.sendKeys(password);
         loginButton.click();
-        PageUtil.waitAjaxExecution(webDriver);
+        PageUtil.waitForAjaxAndPage(webDriver);
     }
 
     public boolean containsErrorMessage(){

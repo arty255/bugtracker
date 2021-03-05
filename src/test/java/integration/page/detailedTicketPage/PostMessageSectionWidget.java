@@ -8,7 +8,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 public class PostMessageSectionWidget {
-    private WebDriver webDriver;
+    private final WebDriver webDriver;
 
     @FindBy(xpath = "//div[contains(@data-widget,'commentAccordionWidget')]")
     private WebElement expandButton;
@@ -39,22 +39,22 @@ public class PostMessageSectionWidget {
     }
 
     public boolean isWriteTabSelected() {
-        return activeTypeHeader.getText().equals("Write");
+        return "Write".equals(activeTypeHeader.getText());
     }
 
     public boolean isPreviewHeaderSelected() {
-        return activeTypeHeader.getText().equals("Preview");
+        return "Preview".equals(activeTypeHeader.getText());
     }
 
     public PostMessageSectionWidget selectWrite() {
         webDriver.findElement(By.xpath("//ul[contains(@role,'tablist')]//a[contains(text(),'Write')]")).click();
-        PageUtil.waitAjaxExecution(webDriver);
+        PageUtil.waitForAjaxAndPage(webDriver);
         return this;
     }
 
     public PostMessageSectionWidget selectPreview() {
         webDriver.findElement(By.xpath("//ul[contains(@role,'tablist')]//a[contains(text(),'Preview')]")).click();
-        PageUtil.waitAjaxExecution(webDriver);
+        PageUtil.waitForAjaxAndPage(webDriver);
         PageUtil.waitForVisibility(renderedPreview, webDriver);
         return this;
     }
@@ -65,7 +65,7 @@ public class PostMessageSectionWidget {
 
     public PostMessageSectionWidget expand() {
         expandButton.click();
-        PageUtil.waitAjaxExecution(webDriver);
+        PageUtil.waitForAjaxAndPage(webDriver);
         PageUtil.waitForVisibility(clearMessageButton, webDriver);
         return this;
     }
@@ -84,7 +84,8 @@ public class PostMessageSectionWidget {
 
     public void sendMessage() {
         sendMessageButton.click();
-        PageUtil.waitAjaxExecution(webDriver);
+        PageUtil.waitForAjaxAndPage(webDriver);
+        PageUtil.waitSeconds(webDriver, 1);
     }
 
     public PostMessageSectionWidget clearMessage() {
@@ -94,6 +95,6 @@ public class PostMessageSectionWidget {
 
     public void hideCommentWindow() {
         hideCommentWindowButton.click();
-        PageUtil.waitAjaxExecution(webDriver);
+        PageUtil.waitForAjaxAndPage(webDriver);
     }
 }

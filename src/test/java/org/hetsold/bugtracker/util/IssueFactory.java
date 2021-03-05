@@ -6,8 +6,8 @@ import org.hetsold.bugtracker.model.User;
 import java.util.Date;
 
 public class IssueFactory {
-    private User savedUser;
-    private Issue baseIssue;
+    private final User savedUser;
+    private final Issue baseIssue;
 
     public IssueFactory(Issue baseIssue, User savedUser) {
         this.baseIssue = baseIssue;

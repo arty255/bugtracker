@@ -181,6 +181,7 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
                 MessageMapper.getMessage(messageDTO));
     }
 
+    @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void addTicketMessage(Ticket ticket, Message message) {
         validateNotNullEntityAndUUID(ticket);

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class IssuesLazyDataModel extends LazyDataModel<IssueShortDTO> {
-    private IssueService issueService;
+    private final IssueService issueService;
     private Contract contract;
 
     public IssuesLazyDataModel(IssueService issueService) {

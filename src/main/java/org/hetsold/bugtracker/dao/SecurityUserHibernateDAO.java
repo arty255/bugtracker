@@ -17,13 +17,14 @@ import java.util.UUID;
 
 @Repository
 public class SecurityUserHibernateDAO implements SecurityUserDAO {
-    private HibernateTemplate hibernateTemplate;
+    private final HibernateTemplate hibernateTemplate;
 
     @Autowired
     public SecurityUserHibernateDAO(SessionFactory sessionFactory) {
         hibernateTemplate = new HibernateTemplate(sessionFactory);
     }
 
+    @Override
     public SecurityUser getSecUserByUsername(String username) {
         return hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();

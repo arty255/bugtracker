@@ -1,12 +1,11 @@
 package org.hetsold.bugtracker.dao.util;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 public class Contract {
-    private Set<FieldFilter> fieldFilters;
-    private List<OrderFilter> orderFilters;
+    private final Set<FieldFilter> fieldFilters;
+    private final List<OrderFilter> orderFilters;
 
     public Contract(Set<FieldFilter> fieldFilters, List<OrderFilter> orderFilters) {
         this.fieldFilters = fieldFilters;

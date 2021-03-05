@@ -47,6 +47,6 @@ public class UserHibernateDAOTest {
         userDao.save(new User("Tom", "Test"));
         userDao.save(new User("Rob", "Test"));
         userDao.save(new User("Bob", "Test"));
-        assertEquals(2, userDao.getUsers(contract, 0, 100, false).size());
+        assertEquals(2, userDao.getUsers(contract, 0, 100).size());
     }
 }

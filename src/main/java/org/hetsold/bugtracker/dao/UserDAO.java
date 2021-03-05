@@ -15,5 +15,5 @@ public interface UserDAO {
 
     long getUsersCount(Contract contract);
 
-    List<User> getUsers(Contract contract, int first, int limit, boolean dateAsc);
+    List<User> getUsers(Contract contract, int first, int limit);
 }

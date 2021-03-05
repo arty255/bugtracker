@@ -71,6 +71,9 @@ public class TicketServiceImplTest {
     public void addTicket_correctSave() {
         Ticket ticket = new Ticket(null, "description", "steps", savedUser);
         ticketService.addTicket(ticket);
+        ArgumentCaptor<Ticket> ticketArgumentCaptor = ArgumentCaptor.forClass(Ticket.class);
+        Mockito.verify(ticketDao).save(ticketArgumentCaptor.capture());
+        assertEquals(ticket.getDescription(), ticketArgumentCaptor.getValue().getDescription());
     }
 
     @Test(expected = IllegalArgumentException.class)

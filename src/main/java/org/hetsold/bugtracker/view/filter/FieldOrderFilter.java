@@ -1,7 +1,7 @@
 package org.hetsold.bugtracker.view.filter;
 
 public class FieldOrderFilter {
-    private String fieldName;
+    private final String fieldName;
     private Boolean value;
 
     public FieldOrderFilter(String fieldName, Boolean value) {

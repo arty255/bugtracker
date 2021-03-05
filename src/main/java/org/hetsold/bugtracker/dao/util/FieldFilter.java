@@ -1,7 +1,7 @@
 package org.hetsold.bugtracker.dao.util;
 
 public class FieldFilter {
-    private String fieldName;
+    private final String fieldName;
     private FilterOperation filterOperation;
     private Object value;
 

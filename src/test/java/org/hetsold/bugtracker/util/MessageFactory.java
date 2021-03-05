@@ -8,7 +8,7 @@ import java.time.ZoneId;
 import java.util.Date;
 
 public class MessageFactory {
-    private User user;
+    private final User user;
 
     public MessageFactory(User user) {
         this.user = user;

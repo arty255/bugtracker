@@ -21,8 +21,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.validateMockitoUsage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -139,8 +139,10 @@ public class UserServiceImplTest {
 
     @Test()
     public void updatePassword_correctUpdate() {
+        String oldPassword = savedSecurityUser.getPassword();
         UserDTO userDTO = new UserDTO(savedUser);
         userService.updatePassword(userDTO, "leth61");
+        assertNotEquals(oldPassword, savedSecurityUser.getPassword());
     }
 
     @Test()

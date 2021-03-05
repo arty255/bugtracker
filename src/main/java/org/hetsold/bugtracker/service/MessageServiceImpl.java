@@ -79,11 +79,13 @@ public class MessageServiceImpl implements MessageService, MessageServiceInterna
         return MessageMapper.getMessageDTO(getMessage(MessageMapper.getMessage(messageDTO)));
     }
 
+    @Override
     public long getMessagesCountForTicket(Ticket ticket) {
         validateNotNullEntityAndUUID(ticket);
         return messageDAO.getMessageCountByTicket(ticket);
     }
 
+    @Override
     public List<Message> getMessagesForTicket(Ticket ticket, int startPosition, int limit, boolean inverseDateOrder) {
         validateNotNullEntityAndUUID(ticket);
         return messageDAO.getMessageListByTicket(ticket, startPosition, limit, inverseDateOrder);

@@ -11,14 +11,13 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.UUID;
 
 @Repository
 public class TicketHibernateDAO implements TicketDAO {
-    private HibernateTemplate hibernateTemplate;
+    private final HibernateTemplate hibernateTemplate;
 
     @Autowired
     public TicketHibernateDAO(SessionFactory sessionFactory) {

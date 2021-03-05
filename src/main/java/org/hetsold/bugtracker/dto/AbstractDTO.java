@@ -5,6 +5,9 @@ import java.util.Objects;
 public abstract class AbstractDTO {
     private String uuid;
 
+    public AbstractDTO() {
+    }
+
     public String getUuid() {
         return uuid;
     }
@@ -13,6 +16,7 @@ public abstract class AbstractDTO {
         this.uuid = uuid;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

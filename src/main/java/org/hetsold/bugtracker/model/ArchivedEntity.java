@@ -10,6 +10,9 @@ public class ArchivedEntity extends AbstractEntity {
     @Convert(converter = BooleanToStringConverter.class)
     private Boolean archived;
 
+    public ArchivedEntity() {
+    }
+
     public Boolean getArchived() {
         return archived;
     }

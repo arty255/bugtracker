@@ -1,7 +1,7 @@
 package integration.page.ticketListPage;
 
+import integration.page.PageUtil;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -10,7 +10,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class AddTicketDialog {
-    private WebDriver webDriver;
+    private final WebDriver webDriver;
 
     @FindBy(className = "newTicketProductVersion")
     private WebElement productVersionField;
@@ -39,19 +39,19 @@ public class AddTicketDialog {
 
     public void saveTicket() {
         saveTicketButton.click();
-        waitAjaxExecution();
+        PageUtil.waitForAjaxAndPage(webDriver);
         waitDialogNotDisplayed();
     }
 
     public AddTicketDialog clearFilledTicketData() {
         clearTicketDataButton.click();
-        waitAjaxExecution();
+        PageUtil.waitForAjaxAndPage(webDriver);
         return this;
     }
 
     public AddTicketDialog cancelSaveTicket() {
         cancelSaveTicketButton.click();
-        waitAjaxExecution();
+        PageUtil.waitForAjaxAndPage(webDriver);
         waitDialogNotDisplayed();
         return this;
     }
@@ -68,10 +68,6 @@ public class AddTicketDialog {
         return reproducerStepsField.getText();
     }
 
-    private void waitAjaxExecution() {
-        new WebDriverWait(webDriver, 5).until(d -> ((JavascriptExecutor) d).executeScript("return jQuery.active == 0"));
-        new WebDriverWait(webDriver, 5).until(driver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete"));
-    }
 
     private void waitDialogNotDisplayed() {
         new WebDriverWait(webDriver, 5).until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.className("newTicketDialog"))));

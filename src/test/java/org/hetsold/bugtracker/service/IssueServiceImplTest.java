@@ -22,8 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.validateMockitoUsage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -253,7 +252,7 @@ public class IssueServiceImplTest {
     @Test
     public void changeIssueArchiveState_correctChange() {
         issueService.changeIssueArchiveState(savedIssue, false);
-        assertEquals(false, savedIssue.getArchived());
+        assertFalse(savedIssue.getArchived());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -305,14 +304,12 @@ public class IssueServiceImplTest {
     @Test(expected = IllegalArgumentException.class)
     public void addIssueMessage_nullMessageThrowException() {
         IssueDTO issueDTO = new IssueDTO(savedIssue);
-        UserDTO userDTO = new UserDTO(savedUser);
         issueService.addIssueMessage(issueDTO, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void addIssueMessage_emptyMessageContentThrowException() {
         IssueDTO issueDTO = new IssueDTO(savedIssue);
-        UserDTO userDTO = new UserDTO(savedUser);
         MessageDTO messageDTO = new MessageDTO(new Message(savedUser, ""));
         issueService.addIssueMessage(issueDTO, messageDTO);
     }
