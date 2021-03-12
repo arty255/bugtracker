@@ -28,12 +28,18 @@ public class SortedColumnsContainer {
     }
 
     public boolean isAscending(String columnKey) {
-        return getSelectedOrderFilter(columnKey).getValue();
+        FieldOrderFilter selectedOrderFilter = getSelectedOrderFilter(columnKey);
+        if (selectedOrderFilter != null) {
+            return selectedOrderFilter.getValue();
+        }
+        return false;
     }
 
     public void addColumnNameToOrder(String columnKey) {
         FieldOrderFilter fieldOrderFilter = getOrderFilter(columnKey);
-        fieldOrderFilter.setValue(true);
+        if (fieldOrderFilter != null) {
+            fieldOrderFilter.setValue(true);
+        }
         orderFilters.add(fieldOrderFilter);
     }
 
@@ -54,10 +60,12 @@ public class SortedColumnsContainer {
             orderFilters.add(getOrderFilter(columnKey));
         }
         FieldOrderFilter fieldOrderFilter = getSelectedOrderFilter(columnKey);
-        if (fieldOrderFilter.getValue() == null) {
-            fieldOrderFilter.setValue(true);
-        } else {
-            fieldOrderFilter.setValue(!fieldOrderFilter.getValue());
+        if (fieldOrderFilter != null) {
+            if (fieldOrderFilter.getValue() == null) {
+                fieldOrderFilter.setValue(true);
+            } else {
+                fieldOrderFilter.setValue(!fieldOrderFilter.getValue());
+            }
         }
     }
 
@@ -66,12 +74,16 @@ public class SortedColumnsContainer {
             orderFilters.add(getOrderFilter(columnKey));
         }
         FieldOrderFilter fieldOrderFilter = getSelectedOrderFilter(columnKey);
-        if (fieldOrderFilter.getValue() == null) {
-            fieldOrderFilter.setValue(true);
-        } else if (fieldOrderFilter.getValue()) {
-            fieldOrderFilter.setValue(false);
+        if (fieldOrderFilter != null) {
+            if (fieldOrderFilter.getValue() == null) {
+                fieldOrderFilter.setValue(true);
+            } else if (Boolean.TRUE.equals(fieldOrderFilter.getValue())) {
+                fieldOrderFilter.setValue(false);
+            } else {
+                fieldOrderFilter.setValue(null);
+            }
         } else {
-            fieldOrderFilter.setValue(null);
+            throw new UnsupportedOperationException();
         }
     }
 

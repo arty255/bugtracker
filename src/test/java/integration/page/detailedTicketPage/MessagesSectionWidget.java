@@ -11,8 +11,6 @@ public class MessagesSectionWidget {
     private final WebDriver webDriver;
     @FindBy(xpath = "//ul[@class='ui-datalist-data']")
     private WebElement messagesContainer;
-    @FindBy(xpath = "//div[@class='ticketMessagesWrapper']//span[@id='ticketForm:ticketMessages:orderContainer']//a")
-    private WebElement sortLink;
 
     public MessagesSectionWidget(WebDriver webDriver) {
         this.webDriver = webDriver;
@@ -24,8 +22,11 @@ public class MessagesSectionWidget {
     }
 
     public MessagesSectionWidget sortByDate() {
-        sortLink.click();
+        PageUtil.waitForVisibility(By.xpath("//div[@id='ticketForm:ticketMessages_content']//ul[contains(@class,'ui-datalist-data')]"), webDriver);
+        WebElement sortByDateLink = webDriver.findElement(By.xpath("//div[@class='ticketMessagesWrapper']//span[@id='ticketForm:ticketMessages:orderContainer']//a"));
+        sortByDateLink.click();
         PageUtil.waitForAjaxAndPage(webDriver);
+        PageUtil.waitForVisibility(By.xpath("//div[@id='ticketForm:ticketMessages_content']//ul[contains(@class,'ui-datalist-data')]"), webDriver);
         return this;
     }
 
@@ -45,6 +46,12 @@ public class MessagesSectionWidget {
     public String getMessageUUID(int index) {
         WebElement message = getMessageElement(index);
         return message.findElement(By.className("ui-panel-title")).getText();
+    }
+
+    public String getMessageContent(int index){
+        WebElement message = getMessageElement(index);
+        return message.findElement(By.className("messageContentArea")).getText();
+
     }
 
     private WebElement getMessageElement(int index) {

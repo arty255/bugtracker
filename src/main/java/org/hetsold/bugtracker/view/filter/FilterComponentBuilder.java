@@ -10,6 +10,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class FilterComponentBuilder {
+    private FilterComponentBuilder() {
+    }
+
     private static final Map<String, String> labelMap = Map.of(
             "currentIssueState", "Issue state",
             "severity", "Severity",

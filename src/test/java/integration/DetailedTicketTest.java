@@ -25,20 +25,23 @@ public class DetailedTicketTest {
 
     @After
     public void after() {
-        //detailedTicketPage.closeWebDriver();
+        detailedTicketPage.closeWebDriver();
     }
 
     @Test
     public void messageCanBeAdded() {
-        String messageContent = "message content " + UUID.randomUUID().toString();
+        String postedMessageContent = "message content " + UUID.randomUUID().toString();
         detailedTicketPage
                 .postMessageSectionWidget
                 .expand()
                 .selectWrite()
-                .fillMessage(messageContent)
+                .fillMessage(postedMessageContent)
                 .sendMessage();
-
-        //assertEquals(messageContent, detailedTicketPage.messagesSectionWidget.getLastByDateMessage());
+        String fetchedMessageContent = detailedTicketPage
+                .messagesSectionWidget
+                .sortByDate()
+                .getMessageContent(1);
+        assertEquals("message content not equals", postedMessageContent, fetchedMessageContent);
     }
 
     @Test
@@ -50,7 +53,7 @@ public class DetailedTicketTest {
                 .selectWrite()
                 .fillMessage(testMessage)
                 .clearMessage();
-        assertEquals("", detailedTicketPage.postMessageSectionWidget.getFilledMessageContent());
+        assertEquals("message is not clear", "", detailedTicketPage.postMessageSectionWidget.getFilledMessageContent());
     }
 
     @Test
@@ -72,15 +75,6 @@ public class DetailedTicketTest {
                 .expand()
                 .hideCommentWindow();
         assertFalse(detailedTicketPage.postMessageSectionWidget.isExpanded());
-
-    }
-
-    @Test
-    public void testFirstMessageText() {
-        String messageText = detailedTicketPage
-                .messagesSectionWidget
-                .getMessageUUID(1);
-        assertEquals("fgsdfgs", messageText);
     }
 
     @Test

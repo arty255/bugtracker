@@ -14,6 +14,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.transaction.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -36,12 +39,13 @@ public class UserHibernateDAOTest {
     public void checkIfUsersCountCorrectly() {
         userDao.save(new User("First", "User"));
         userDao.save(new User("Second", "User"));
-        assertEquals(2, userDao.getUsersCount(new Contract(null, null)));
+        //expected added count + 1(added default admin)
+        assertEquals(3, userDao.getUsersCount(new Contract(new HashSet<>(), new ArrayList<>())));
     }
 
     @Test
     public void checkIfUsersCanBeFilteredByContract() {
-        Contract contract = new Contract(null, null);
+        Contract contract = new Contract(new HashSet<>(), new ArrayList<>());
         contract.getFilters().add(new FieldFilter("firstName", FilterOperation.LIKE, "ob"));
         userDao.save(new User("Alex", "Test"));
         userDao.save(new User("Tom", "Test"));

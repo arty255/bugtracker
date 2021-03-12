@@ -39,7 +39,7 @@
                                                process="@this"
                                                update="@(.messageEditorWrappedArea)"
                                                styleClass="cancelEditLink">
-                                    <i class="pi pi-times"/>
+                                    <em class="pi pi-times"/>
                                     <h:outputText value="Cancel"/>
                                 </p:commandLink>
                             </p:outputPanel>
@@ -54,9 +54,8 @@
                             <p:commandButton value="Hide coment window"
                                              onclick="PF('commentAccordionWidget').unselect(0);"/>
                             <h:panelGroup layout="block" styleClass="rightGroupControls">
-                                <!--todo: clear method-->
                                 <p:commandButton type="button" value="Clear" icon="pi pi-minus"
-                                                 onclick="PF('messageContentWidget').clear();"/>
+                                                 onclick="document.getElementById(PF('messageContentWidget').id).value ='';"/>
                                 <p:commandButton value="Comment" icon="pi pi-check"
                                                  rendered="#{not cc.attrs.inEditMode}"
                                                  action="#{cc.attrs.saveMessageAction}"

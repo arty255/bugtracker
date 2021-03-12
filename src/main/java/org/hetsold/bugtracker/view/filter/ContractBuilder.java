@@ -15,6 +15,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ContractBuilder {
+    protected ContractBuilder() {
+    }
+
     private static final Map<String, Function<Object, ?>> codedTypeToObjectMappingFunctionMap = Map.of(
             "String", Object::toString,
             "IssueState", i -> IssueState.valueOf(i.toString()),

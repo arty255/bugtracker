@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContractReader {
+    private ContractReader() {
+    }
+
     public static Predicate[] readContract(Contract contract, Root<?> root, CriteriaBuilder criteriaBuilder) {
         if (contract == null) {
             return new Predicate[0];
