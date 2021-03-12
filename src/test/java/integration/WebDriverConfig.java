@@ -17,7 +17,7 @@ public class WebDriverConfig {
             properties = new Properties();
             properties.load(fileInputStream);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException("problems with loading selenium properties file");
         }
     }
 

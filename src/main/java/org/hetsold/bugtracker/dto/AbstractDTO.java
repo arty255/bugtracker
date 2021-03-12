@@ -5,7 +5,7 @@ import java.util.Objects;
 public abstract class AbstractDTO {
     private String uuid;
 
-    public AbstractDTO() {
+    protected AbstractDTO() {
     }
 
     public String getUuid() {

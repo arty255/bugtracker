@@ -54,9 +54,9 @@ public class MessageServiceImpl implements MessageService, MessageServiceInterna
         validateMessageContent(message);
         Message oldMessage = messageDAO.getMessageById(message.getUuid());
         validateNotNull(message, "message can not be not persisted");
-        user = userService.getUser(user);
-        validateNotNull(user, "user can not be not persisted");
-        oldMessage.updateContentAndEditor(message, user);
+        User fetchedUser = userService.getUser(user);
+        validateNotNull(fetchedUser, "user can not be not persisted");
+        oldMessage.updateContentAndEditor(message, fetchedUser);
         return oldMessage;
     }
 
@@ -113,8 +113,8 @@ public class MessageServiceImpl implements MessageService, MessageServiceInterna
     @Override
     public void delete(Message message) {
         validateNotNullEntityAndUUID(message);
-        message = getMessage(message);
-        validateNotNull(message, "message not persisted");
-        messageDAO.delete(message);
+        Message fetchedMessage = getMessage(message);
+        validateNotNull(fetchedMessage, "message not persisted");
+        messageDAO.delete(fetchedMessage);
     }
 }

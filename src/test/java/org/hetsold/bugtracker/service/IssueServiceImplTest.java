@@ -5,8 +5,8 @@ import org.hetsold.bugtracker.TestAppConfig;
 import org.hetsold.bugtracker.dao.HistoryEventDAO;
 import org.hetsold.bugtracker.dao.IssueDAO;
 import org.hetsold.bugtracker.dto.IssueDTO;
+import org.hetsold.bugtracker.dto.IssueShortDTO;
 import org.hetsold.bugtracker.dto.MessageDTO;
-import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.model.*;
 import org.hetsold.bugtracker.service.exception.EmptyIssueDescriptionException;
 import org.hetsold.bugtracker.service.exception.EmptyUUIDKeyException;
@@ -42,14 +42,18 @@ public class IssueServiceImplTest {
     @InjectMocks
     private final IssueServiceImpl issueService = new IssueServiceImpl();
 
-    private static final User savedUser = new User("Alex", "Tester");
-    private static final Issue savedIssue = new Issue("issue description", "steps", savedUser);
-    private static final Message savedMessage = new Message(savedUser, "message content");
-    private static final Ticket savedTicket = new Ticket("ticket description", "steps", savedUser);
+    private User savedUser;
+    private Issue savedIssue;
+    private Message savedMessage;
+    private Ticket savedTicket;
     private IssueFactory issueFactory;
 
     @Before
     public void prepareData() {
+        savedUser = new User("Alex", "Tester");
+        savedIssue = new Issue("issue description", "steps", savedUser);
+        savedMessage = new Message(savedUser, "message content");
+        savedTicket = new Ticket("ticket description", "steps", savedUser);
         MockitoAnnotations.openMocks(this);
         Mockito.when(userService.getUser(savedUser)).thenReturn(savedUser);
         Mockito.when(issueDAO.getIssueByUUID(savedIssue.getUuid())).thenReturn(savedIssue);
@@ -112,7 +116,6 @@ public class IssueServiceImplTest {
         issueService.updateIssue(issue, user);
     }
 
-    @Ignore
     @Test(expected = IllegalArgumentException.class)
     public void updateIssue_nullEditorThrowException() {
         Issue issue = issueFactory.getIssue(FactoryIssueType.ISSUE_ON_BASE_OF_PERSISTED);
@@ -168,49 +171,66 @@ public class IssueServiceImplTest {
     }
 
     @Test
-    public void assignIssueToTicket_correctAssign() {
-        issueService.assignIssueToTicket(savedIssue, savedTicket);
-        assertEquals(savedIssue.getTicket(), savedTicket);
-    }
-
-    @Ignore
-    @Test
-    public void assignIssueToTicket_nullIssueLinkedToTicketCorrect() {
-        savedTicket.setIssue(savedIssue);
-        issueService.assignIssueToTicket(null, savedTicket);
-        assertNull(savedTicket.getIssue());
-    }
-
-    @Ignore
-    @Test
-    public void assignIssueToTicket_nullTicketLinkedToIssueCorrect() {
-        savedIssue.setTicket(savedTicket);
-        issueService.assignIssueToTicket(savedIssue, null);
-        assertNull(savedIssue.getTicket());
+    public void linkIssueToTicket_correctLink() {
+        issueService.linkIssueToTicket(savedIssue, savedTicket, false);
+        assertEquals("issue and ticket not linked", savedTicket, savedIssue.getTicket());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void assignIssueToTicket_linkedIssueAndTicketThrowException() {
+    public void linkIssueToTicket_nullIssueThrowException() {
+        savedTicket.setIssue(savedIssue);
+        issueService.linkIssueToTicket(null, savedTicket, false);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void linkIssueToTicket_nullTicketLinkedToIssueThrowException() {
+        savedIssue.setTicket(savedTicket);
+        issueService.linkIssueToTicket(savedIssue, null, false);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void linkIssueToTicket_linkedIssueAndTicketThrowExceptionWithNoReplacementOption() {
         savedIssue.setTicket(savedTicket);
         savedTicket.setIssue(savedIssue);
-        issueService.assignIssueToTicket(savedIssue, savedTicket);
+        issueService.linkIssueToTicket(savedIssue, savedTicket, false);
+    }
+
+    @Test
+    public void linkIssueToTicket_linkedIssueAndTicketCorrectLinkWithNoReplacementOption() {
+        savedIssue.setTicket(savedTicket);
+        savedTicket.setIssue(savedIssue);
+        issueService.linkIssueToTicket(savedIssue, savedTicket, true);
+        assertEquals("ticket not linked", savedTicket, savedIssue.getTicket());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void unLinkIssue_nullIssueThrowException() {
+        issueService.unLinkIssue(null);
+    }
+
+    @Test
+    public void unLinkIssue_correctUnlink() {
+        savedIssue.setTicket(savedTicket);
+        IssueShortDTO issueShortDTO = new IssueShortDTO(savedIssue);
+        issueService.unLinkIssue(issueShortDTO);
+        assertNull("issue not unlinked", savedIssue.getTicket());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void assignIssueToTicket_notPersistedIssueThrowException() {
         Issue issue = issueFactory.getIssue(FactoryIssueType.ISSUE_WITH_PERSISTED_USER);
-        issueService.assignIssueToTicket(issue, savedTicket);
+        issueService.linkIssueToTicket(issue, savedTicket, false);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void assignIssueToTicket_notPersistedTicketThrowException() {
         Ticket ticket = new Ticket("description", "steps", savedUser);
-        issueService.assignIssueToTicket(savedIssue, ticket);
+        issueService.linkIssueToTicket(savedIssue, ticket, false);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkIfNullIssueAndNullTicketThrowExceptionOnLinking() {
-        issueService.assignIssueToTicket((Issue) null, null);
+        issueService.linkIssueToTicket((Issue) null, null, false);
     }
 
     @Test

@@ -74,7 +74,7 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
     public Ticket updateTicket(Ticket ticket, User editor) {
         validateTicketBeforeUpdate(ticket);
         Ticket oldTicket = ticketDao.getTicketById(ticket.getUuid());
-        validateNotNull(oldTicket, "ticket is not persisted");
+        validateNotNull(oldTicket, TICKET_NOT_PERSISTED);
         oldTicket.update(ticket);
         return oldTicket;
     }
@@ -104,12 +104,11 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
         return ticketDao.getTicketsCount(contract);
     }
 
-    //@Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<Ticket> getTicketListReportedByUser(User user, Contract contract, int startPosition, int limit) {
         validateNotNullEntityAndUUID(user);
-        user = userService.getUser(user);
-        return ticketDao.getTicketListReportedByUser(user, contract, startPosition, limit);
+        User fetchedUser = userService.getUser(user);
+        return ticketDao.getTicketListReportedByUser(fetchedUser, contract, startPosition, limit);
     }
 
     @Override
@@ -141,8 +140,8 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
     @Secured("ROLE_DELETE_TICKET")
     public void delete(Ticket ticket) {
         validateNotNullEntityAndUUID(ticket);
-        ticket = ticketDao.getTicketById(ticket.getUuid());
-        ticketDao.delete(ticket);
+        Ticket fetchedTicket = ticketDao.getTicketById(ticket.getUuid());
+        ticketDao.delete(fetchedTicket);
     }
 
     @Override
@@ -162,10 +161,10 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
     @Transactional(propagation = Propagation.REQUIRED)
     public void applyForIssue(Ticket ticket) {
         validateNotNullEntityAndUUID(ticket);
-        ticket = ticketDao.getTicketById(ticket.getUuid());
-        validateNotNull(ticket, "ticket is not persisted");
-        ticket.setVerificationState(TicketVerificationState.Verified);
-        ticket.setResolveState(TicketResolveState.Resolving);
+        Ticket fetchedTicket = ticketDao.getTicketById(ticket.getUuid());
+        validateNotNull(fetchedTicket, TICKET_NOT_PERSISTED);
+        fetchedTicket.setVerificationState(TicketVerificationState.Verified);
+        fetchedTicket.setResolveState(TicketResolveState.Resolving);
     }
 
     @Override
@@ -185,11 +184,11 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
     @Transactional(propagation = Propagation.REQUIRED)
     public void addTicketMessage(Ticket ticket, Message message) {
         validateNotNullEntityAndUUID(ticket);
-        ticket = getTicket(ticket);
-        validateNotNull(ticket, "ticket is not persisted");
+        Ticket fetchedTicket = getTicket(ticket);
+        validateNotNull(fetchedTicket, TICKET_NOT_PERSISTED);
         messageService.saveNewMessage(message);
-        if (!ticket.getMessageList().contains(message)) {
-            ticket.getMessageList().add(message);
+        if (!fetchedTicket.getMessageList().contains(message)) {
+            fetchedTicket.getMessageList().add(message);
         }
     }
 

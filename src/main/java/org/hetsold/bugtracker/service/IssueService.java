@@ -14,7 +14,9 @@ public interface IssueService {
 
     IssueShortDTO createIssueFromTicket(TicketDTO selectedTicketDTO, UserDTO user);
 
-    void assignIssueToTicket(IssueShortDTO issueShortDTO, TicketDTO ticketDTO);
+    void linkIssueToTicket(IssueShortDTO issueShortDTO, TicketDTO ticketDTO,  boolean replaceOldAssignment);
+
+    void unLinkIssue(IssueShortDTO issueShortDTO);
 
     void changeIssueState(IssueDTO issueDTO, IssueState newIssueState, UserDTO userDTO);
 

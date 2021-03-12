@@ -13,7 +13,7 @@ public interface IssueServiceInternal {
 
     Issue createIssueFromTicket(Ticket ticket, User editor);
 
-    void assignIssueToTicket(Issue issue, Ticket ticket);
+    void linkIssueToTicket(Issue issue, Ticket ticket, boolean replaceOldAssignment);
 
     void changeIssueState(Issue issue, IssueState newIssueState, User editor);
 

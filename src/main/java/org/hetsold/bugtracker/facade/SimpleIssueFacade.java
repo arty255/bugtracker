@@ -5,7 +5,6 @@ import org.hetsold.bugtracker.dto.IssueShortDTO;
 import org.hetsold.bugtracker.dto.TicketDTO;
 import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.service.IssueService;
-import org.hetsold.bugtracker.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,20 +13,13 @@ import java.util.List;
 @Component
 public class SimpleIssueFacade implements IssueFacade {
     private IssueService issueService;
-    private TicketService ticketService;
 
     @Autowired
-    public SimpleIssueFacade(IssueService issueService, TicketService ticketService) {
+    public SimpleIssueFacade(IssueService issueService) {
         this.issueService = issueService;
-        this.ticketService = ticketService;
     }
 
     public SimpleIssueFacade() {
-    }
-
-    @Override
-    public void generateRandomIssue() {
-
     }
 
     @Override
@@ -47,6 +39,7 @@ public class SimpleIssueFacade implements IssueFacade {
 
     @Override
     public void updateIssue(IssueShortDTO issueShortDTO, UserDTO userDTO) {
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
     @Override

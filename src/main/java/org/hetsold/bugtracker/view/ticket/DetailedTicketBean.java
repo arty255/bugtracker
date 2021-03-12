@@ -64,13 +64,13 @@ public class DetailedTicketBean extends ListableMessageBean implements Serializa
     }
 
     public void linkIssueAction() {
-        issueService.assignIssueToTicket(selectedIssue, ticket);
+        issueService.linkIssueToTicket(selectedIssue, ticket, false);
         initTicket();
         selectedIssue = null;
     }
 
     public void unlinkIssueAction() {
-        issueService.assignIssueToTicket(null, ticket);
+        issueService.unLinkIssue(selectedIssue);
         initTicket();
     }
 

@@ -90,9 +90,9 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
     @Transactional(propagation = Propagation.REQUIRED)
     public Issue updateIssue(Issue issue, User user) {
         Issue oldIssue = getIssue(issue);
-        validateNotNull(oldIssue, "issue is not persisted");
-        user = userService.getUser(user);
-        validateNotNull(user, "user is not persisted");
+        validateNotNull(oldIssue, ISSUE_NOT_PERSISTED);
+        User fetchedUser = userService.getUser(user);
+        validateNotNull(fetchedUser, "user is not persisted");
         oldIssue.update(issue);
         return oldIssue;
     }
@@ -108,18 +108,18 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Issue createIssueFromTicket(Ticket ticket, User user) {
-        user = userService.getUser(user);
-        validateNotNull(user, "user can not be not persisted");
-        ticket = ticketService.getTicket(ticket);
-        validateNotNull(ticket, "ticket can not be not persisted");
-        if (ticket.getIssue() != null) {
+        User fetchedUser = userService.getUser(user);
+        validateNotNull(fetchedUser, "user can not be not persisted");
+        Ticket fetchedTicket = ticketService.getTicket(ticket);
+        validateNotNull(fetchedTicket, "ticket can not be not persisted");
+        if (fetchedTicket.getIssue() != null) {
             throw new IllegalArgumentException("issue for this ticket is already created");
         }
-        Issue issue = buildIssueFromTicket(ticket);
-        issue.setReportedBy(user);
-        issue.setTicket(ticket);
+        Issue issue = buildIssueFromTicket(fetchedTicket);
+        issue.setReportedBy(fetchedUser);
+        issue.setTicket(fetchedTicket);
         createNewIssue(issue);
-        ticketService.applyForIssue(ticket);
+        ticketService.applyForIssue(fetchedTicket);
         return issue;
     }
 
@@ -142,61 +142,57 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void assignIssueToTicket(Issue issue, Ticket ticket) {
-        if (isEligibleOperation(issue, ticket)) {
-            if (ticket != null && ticket.getUuid() != null) {
-                ticket = ticketService.getTicket(ticket);
-            }
-            if (issue != null && issue.getUuid() != null) {
-                issue = getIssue(issue);
-                validateNotNull(issue, "issue is not persisted");
-            }
-            if (issue != null) {
-                if (isLinkOperationEligible(issue, ticket)) {
-                    issue.setTicket(ticket);
-                } else {
-                    throw new IllegalArgumentException("issue already assigned");
-                }
-            } else if (ticket != null) {
-                if (ticket.getIssue() != null) {
-                    ticket.getIssue().setTicket(null);
-                }
-            }
-        } else {
-            throw new IllegalArgumentException("wrong operation: ticket and issue can not be null");
+    public void linkIssueToTicket(Issue issue, Ticket ticket, boolean replaceOldAssignment) {
+        Issue fetchedIssue = getIssue(issue);
+        Ticket fetchedTicket = ticketService.getTicket(ticket);
+        validateNotNull(fetchedIssue, ISSUE_NOT_PERSISTED);
+        validateNotNull(fetchedTicket, TICKET_NOT_PERSISTED);
+        if (isAlreadyAssigned(fetchedIssue, fetchedTicket) && !replaceOldAssignment) {
+            throw new IllegalArgumentException("issue or ticket already assigned");
         }
+        if (replaceOldAssignment) {
+            unLinkTicket(fetchedTicket);
+            unLinkIssueOneDirection(fetchedIssue);
+        }
+        fetchedIssue.setTicket(fetchedTicket);
     }
 
-    private boolean isEligibleOperation(Issue issue, Ticket ticket) {
-        return issue != null || ticket != null;
+    private boolean isAlreadyAssigned(Issue issue, Ticket ticket) {
+        return issue.getTicket() != null || ticket.getIssue() != null;
     }
 
-    private boolean isLinkOperationEligible(Issue issue, Ticket ticket) {
-        boolean result = false;
-        if (issue != null && issue.getTicket() == null) {
-            if (ticket == null || ticket.getIssue() == null) {
-                result = true;
-            }
-        }
-        if (ticket != null && ticket.getIssue() == null) {
-            if (issue == null || issue.getTicket() == null) {
-                result = true;
-            }
-        }
-        return result;
+    private void unLinkIssueOneDirection(Issue issue) {
+        issue.setTicket(null);
+    }
+
+    private void unLinkTicket(Ticket ticket) {
+        Issue issueToUnLink = ticket.getIssue();
+        issueToUnLink.setTicket(null);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void assignIssueToTicket(IssueShortDTO issueShortDTO, TicketDTO ticketDTO) {
-        assignIssueToTicket(IssueMapper.getIssue(issueShortDTO), TicketMapper.getTicket(ticketDTO));
+    public void linkIssueToTicket(IssueShortDTO issueShortDTO, TicketDTO ticketDTO, boolean replaceOldAssignment) {
+        linkIssueToTicket(IssueMapper.getIssue(issueShortDTO), TicketMapper.getTicket(ticketDTO), replaceOldAssignment);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void unLinkIssue(IssueShortDTO issueShortDTO) {
+        unLinkIssue(IssueMapper.getIssue(issueShortDTO));
+    }
+
+    private void unLinkIssue(Issue issue){
+        Issue fetchedIssue = getIssue(issue);
+        validateNotNull(fetchedIssue, ISSUE_NOT_PERSISTED);
+        unLinkIssueOneDirection(fetchedIssue);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void changeIssueArchiveState(Issue issue, boolean newState) {
         Issue oldIssue = getIssue(issue);
-        validateNotNull(oldIssue, "issue is not persisted");
+        validateNotNull(oldIssue, ISSUE_NOT_PERSISTED);
         oldIssue.setArchived(newState);
     }
 
@@ -234,9 +230,9 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void delete(Issue issue) {
-        issue = getIssue(issue);
-        validateNotNull(issue, "issue not persisted");
-        issueDAO.delete(issue);
+        Issue fetchedIssue = getIssue(issue);
+        validateNotNull(fetchedIssue, ISSUE_NOT_PERSISTED);
+        issueDAO.delete(fetchedIssue);
     }
 
     @Override
@@ -271,11 +267,11 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
         if (newIssueState == IssueState.ASSIGNED && issue.getAssignedTo() == null) {
             throw new IllegalArgumentException("cannot change State to assigned with unassigned User. use changeIssueAssignedUser");
         }
-        issue = getIssue(issue);
-        validateNotNull(issue, "issue is not persisted");
-        user = userService.getUser(user);
-        validateNotNull(user, "user can not be null");
-        changeIssueStateAndSaveHistory(issue, newIssueState, user);
+        Issue fetchedIssue = getIssue(issue);
+        validateNotNull(fetchedIssue, ISSUE_NOT_PERSISTED);
+        User fetchedUser = userService.getUser(user);
+        validateNotNull(fetchedUser, "user can not be null");
+        changeIssueStateAndSaveHistory(fetchedIssue, newIssueState, fetchedUser);
     }
 
     private void changeIssueStateAndSaveHistory(Issue issue, IssueState newIssueState, User editor) {
@@ -311,16 +307,17 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void changeIssueAssignedUser(Issue issue, User assignedTo, User user) {
+        User fetchedAssignedUser = null;
         if (assignedTo != null) {
-            assignedTo = userService.getUser(assignedTo);
-            validateNotNull(assignedTo, "assigned user is not persisted");
+            fetchedAssignedUser = userService.getUser(assignedTo);
+            validateNotNull(fetchedAssignedUser, "assigned user is not persisted");
         }
-        issue = getIssue(issue);
-        validateNotNull(issue, "issue is not persisted");
-        user = userService.getUser(user);
-        validateNotNull(user, "user is not persisted");
-        if (isAssignedUserChanged(issue, assignedTo)) {
-            processAssignation(issue, assignedTo, user);
+        Issue fetchedIssue = getIssue(issue);
+        validateNotNull(fetchedIssue, "issue is not persisted");
+        User fetchedUser = userService.getUser(user);
+        validateNotNull(fetchedUser, "user is not persisted");
+        if (isAssignedUserChanged(fetchedIssue, fetchedAssignedUser)) {
+            processAssignation(fetchedIssue, fetchedAssignedUser, fetchedUser);
         }
     }
 
@@ -366,8 +363,8 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
     }
 
     private List<IssueEvent> getIssueEvents(Issue issue, int startPosition, int limit, boolean inverseDateOrder) {
-        issue = getIssue(issue);
-        return historyEventDAO.getHistoryIssueEventsByIssue(issue, startPosition, limit, inverseDateOrder);
+        Issue fetchedIssue = getIssue(issue);
+        return historyEventDAO.getHistoryIssueEventsByIssue(fetchedIssue, startPosition, limit, inverseDateOrder);
     }
 
     @Override
@@ -380,8 +377,8 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
     }
 
     private long getIssueHistoryEventsCount(Issue issue) {
-        issue = getIssue(issue);
-        return historyEventDAO.getHistoryIssueEventsCountForIssue(issue);
+        Issue fetchedIssue = getIssue(issue);
+        return historyEventDAO.getHistoryIssueEventsCountForIssue(fetchedIssue);
     }
 
     @Override
@@ -399,11 +396,11 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
 
     public void addIssueMessage(Issue issue, Message message) {
         validateMessageBeforeSave(message);
-        issue = getIssue(issue);
-        validateNotNull(issue, "issue is not persisted");
+        Issue fetchedIssue = getIssue(issue);
+        validateNotNull(fetchedIssue, "issue is not persisted");
         validateNotNull(message.getMessageCreator(), "message creator can not be null");
         messageService.saveNewMessage(message);
-        generateAndSaveMessageEvent(issue, message);
+        generateAndSaveMessageEvent(fetchedIssue, message);
     }
 
     @Override

@@ -15,12 +15,9 @@ public abstract class AbstractEntity {
     @Version
     private Integer version;
 
-    {
+    protected AbstractEntity() {
         version = 0;
         uuid = java.util.UUID.randomUUID();
-    }
-
-    public AbstractEntity() {
     }
 
     public UUID getUuid() {

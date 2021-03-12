@@ -80,13 +80,13 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
         validateNotNull(securityUser, "securityUser can not be null");
         /*todo: implement strategy for default user enabling*/
         securityUser.setEnabled(true);
-        user = evaluateUser(user);
-        registerUser(user, securityUser);
+        User fetchedUser = evaluateUser(user);
+        registerUser(fetchedUser, securityUser);
     }
 
     private User evaluateUser(User user) {
         if (isUserDataEmpty(user)) {
-            user = new User(null, "user " + UUID.randomUUID().toString(), "");
+            return new User(null, "user " + UUID.randomUUID().toString(), "");
         }
         return user;
     }
@@ -141,7 +141,7 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
         validateNotNullEntityAndUUID(updatedUser);
         validateUserLastName(updatedUser);
         User oldUser = getUser(updatedUser);
-        validateNotNull(oldUser, "user is not persisted");
+        validateNotNull(oldUser, USER_NOT_PERSISTED);
         oldUser.update(updatedUser);
         return oldUser;
     }
@@ -157,8 +157,8 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
     @Transactional(propagation = Propagation.REQUIRED)
     public void deleteUser(User user) {
         validateNotNullEntityAndUUID(user);
-        user = getUser(user);
-        userDAO.delete(user);
+        User fetchedUser = getUser(user);
+        userDAO.delete(fetchedUser);
     }
 
     @Override
@@ -170,16 +170,16 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
 
     @Transactional(propagation = Propagation.REQUIRED)
     public SecurityUser getSecurityUserByUser(User user) {
-        user = getUser(user);
-        validateNotNull(user, "user is not persisted");
-        return securityUserDAO.getSecurityUserByUserUuid(user.getUuid());
+        User fetchedUser = getUser(user);
+        validateNotNull(fetchedUser, USER_NOT_PERSISTED);
+        return securityUserDAO.getSecurityUserByUserUuid(fetchedUser.getUuid());
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void deleteSecurityUser(SecurityUser securityUser) {
-        securityUser = getSecurityUser(securityUser);
-        securityUserDAO.delete(securityUser);
+        SecurityUser fetchedSecurityUser = getSecurityUser(securityUser);
+        securityUserDAO.delete(fetchedSecurityUser);
     }
 
     @Override
@@ -224,7 +224,7 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
         validateNotNullEntityAndUUID(user);
         validateEmail(email);
         SecurityUser securityUser = getSecurityUserByUser(user);
-        validateNotNull(user, "user is not persisted");
+        validateNotNull(user, USER_NOT_PERSISTED);
         securityUser.setEmail(email);
     }
 

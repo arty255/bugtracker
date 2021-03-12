@@ -9,6 +9,9 @@ import java.util.regex.Pattern;
 
 public class ValidationHelper {
     static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+    public static final String ISSUE_NOT_PERSISTED = "issue is not persisted";
+    public static final String TICKET_NOT_PERSISTED = "ticket is not Persisted";
+    public static final String USER_NOT_PERSISTED = "use is not persisted";
 
     private ValidationHelper() {
     }

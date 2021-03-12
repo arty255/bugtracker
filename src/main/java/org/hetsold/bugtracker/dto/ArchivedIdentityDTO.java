@@ -3,7 +3,7 @@ package org.hetsold.bugtracker.dto;
 public abstract class ArchivedIdentityDTO extends AbstractDTO {
     private Boolean archived;
 
-    public ArchivedIdentityDTO() {
+    protected ArchivedIdentityDTO() {
     }
 
     public Boolean getArchived() {

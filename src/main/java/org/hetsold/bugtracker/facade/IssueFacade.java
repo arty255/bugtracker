@@ -8,7 +8,6 @@ import org.hetsold.bugtracker.dto.user.UserDTO;
 import java.util.List;
 
 public interface IssueFacade {
-    void generateRandomIssue();
 
     void createIssue(IssueDTO issueDTO);
 
