@@ -29,7 +29,7 @@ public class AppConfig {
     @Primary
     @Profile("dev")
     public DataSource getDataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl(environment.getProperty("db.devUrl"));
         dataSource.setDriverClassName(environment.getProperty("db.driverClassName"));
         dataSource.setUsername(environment.getProperty("db.username"));
@@ -40,7 +40,7 @@ public class AppConfig {
     @Bean
     @Autowired
     public LocalSessionFactoryBean getSessionFactory(DataSource dataSource) {
-        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+        final LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
         sessionFactory.setPackagesToScan("org.hetsold.bugtracker.model");
         sessionFactory.setHibernateProperties(getAdditionalHibernateProperties());
@@ -50,13 +50,13 @@ public class AppConfig {
 
     @Bean
     public HibernateTransactionManager getDataSourceTransactionManagerBean(@Autowired SessionFactory sessionFactory) {
-        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+        final HibernateTransactionManager transactionManager = new HibernateTransactionManager();
         transactionManager.setSessionFactory(sessionFactory);
         return transactionManager;
     }
 
     private Properties getAdditionalHibernateProperties() {
-        Properties properties = new Properties();
+        final Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
         properties.setProperty("hibernate.show_sql", environment.getProperty("hibernate.show_sql"));
         properties.setProperty("hibernate.format_sql", environment.getProperty("hibernate.format_sql"));

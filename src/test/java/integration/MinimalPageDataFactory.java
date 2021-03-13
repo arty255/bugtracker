@@ -4,7 +4,10 @@ import integration.page.LoginPage;
 import integration.page.detailedTicketPage.DetailedTicketPage;
 import integration.page.ticketListPage.TicketListPage;
 
-public class MinimalPageDataFactory {
+public final class MinimalPageDataFactory {
+
+    private MinimalPageDataFactory() {
+    }
 
     public static LoginPage getLoginPage() {
         return LoginPage.createLoginPage(WebDriverConfig.getWebDriverWithOptions());

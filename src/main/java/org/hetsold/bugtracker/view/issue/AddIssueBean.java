@@ -22,10 +22,11 @@ import java.util.List;
 @ManagedBean
 @ViewScoped
 public class AddIssueBean implements Serializable {
+    private static final long serialVersionUID = 2497481449010971119L;
     @Autowired
-    private IssueService issueService;
+    private transient IssueService issueService;
     @Autowired
-    private UserService userService;
+    private transient UserService userService;
 
     private IssueDTO issue;
     private List<UserDTO> userList;

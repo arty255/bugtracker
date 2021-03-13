@@ -20,12 +20,12 @@ public class SecurityUserHibernateDAO implements SecurityUserDAO {
     private final HibernateTemplate hibernateTemplate;
 
     @Autowired
-    public SecurityUserHibernateDAO(SessionFactory sessionFactory) {
+    public SecurityUserHibernateDAO(final SessionFactory sessionFactory) {
         hibernateTemplate = new HibernateTemplate(sessionFactory);
     }
 
     @Override
-    public SecurityUser getSecUserByUsername(String username) {
+    public SecurityUser getSecUserByUsername(final String username) {
         return hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<SecurityUser> query = builder.createQuery(SecurityUser.class);
@@ -37,12 +37,12 @@ public class SecurityUserHibernateDAO implements SecurityUserDAO {
     }
 
     @Override
-    public void save(SecurityUser securityUser) {
+    public void save(final SecurityUser securityUser) {
         hibernateTemplate.saveOrUpdate(securityUser);
     }
 
     @Override
-    public boolean isLoginTaken(String login) {
+    public boolean isLoginTaken(final String login) {
         Boolean result = hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<String> query = builder.createQuery(String.class);
@@ -55,7 +55,7 @@ public class SecurityUserHibernateDAO implements SecurityUserDAO {
     }
 
     @Override
-    public User getUserBySecurityUserLogin(String login) {
+    public User getUserBySecurityUserLogin(final String login) {
         return hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<User> query = builder.createQuery(User.class);
@@ -67,12 +67,12 @@ public class SecurityUserHibernateDAO implements SecurityUserDAO {
     }
 
     @Override
-    public SecurityUser getSecurityUserByUuid(UUID uuid) {
+    public SecurityUser getSecurityUserByUuid(final UUID uuid) {
         return hibernateTemplate.get(SecurityUser.class, uuid);
     }
 
     @Override
-    public SecurityUser getSecurityUserByUserUuid(UUID uuid) {
+    public SecurityUser getSecurityUserByUserUuid(final UUID uuid) {
         return hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<SecurityUser> query = builder.createQuery(SecurityUser.class);
@@ -85,7 +85,7 @@ public class SecurityUserHibernateDAO implements SecurityUserDAO {
     }
 
     @Override
-    public void delete(SecurityUser securityUser) {
+    public void delete(final SecurityUser securityUser) {
         hibernateTemplate.delete(securityUser);
     }
 }

@@ -21,17 +21,17 @@ public class IssueHibernateDAO implements IssueDAO {
     private final HibernateTemplate hibernateTemplate;
 
     @Autowired
-    public IssueHibernateDAO(SessionFactory sessionFactory) {
+    public IssueHibernateDAO(final SessionFactory sessionFactory) {
         this.hibernateTemplate = new HibernateTemplate(sessionFactory);
     }
 
     @Override
-    public void save(Issue issue) {
+    public void save(final Issue issue) {
         hibernateTemplate.save(issue);
     }
 
     @Override
-    public List<Issue> getIssueList(Contract contract, int startPosition, int limit) {
+    public List<Issue> getIssueList(final Contract contract, final int startPosition, final int limit) {
         return hibernateTemplate.execute(session -> {
             EntityGraph issueEntityGraph = session.getEntityGraph("IssueEntityGraphToShortView");
             CriteriaBuilder builder = session.getCriteriaBuilder();
@@ -46,12 +46,12 @@ public class IssueHibernateDAO implements IssueDAO {
     }
 
     @Override
-    public void delete(Issue issue) {
+    public void delete(final Issue issue) {
         hibernateTemplate.delete(issue);
     }
 
     @Override
-    public long getIssueCount(Contract contract) {
+    public long getIssueCount(final Contract contract) {
         Long count = hibernateTemplate.execute(session -> {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
@@ -64,12 +64,12 @@ public class IssueHibernateDAO implements IssueDAO {
     }
 
     @Override
-    public Issue getIssueByUUID(UUID uuid) {
+    public Issue getIssueByUUID(final UUID uuid) {
         return hibernateTemplate.get(Issue.class, uuid);
     }
 
     @Override
-    public Issue getIssueToDetailedViewById(UUID uuid) {
+    public Issue getIssueToDetailedViewById(final UUID uuid) {
         return hibernateTemplate.execute(session -> {
             EntityGraph issueEntityGraph = session.getEntityGraph("IssueEntityGraphToDetailedView");
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();

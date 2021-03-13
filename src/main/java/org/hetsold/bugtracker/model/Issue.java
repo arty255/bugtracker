@@ -246,7 +246,7 @@ public class Issue extends ArchivedEntity {
     }
 
     public static class Builder {
-        private Issue newIssue;
+        private final Issue newIssue;
 
         public Builder() {
             newIssue = new Issue();

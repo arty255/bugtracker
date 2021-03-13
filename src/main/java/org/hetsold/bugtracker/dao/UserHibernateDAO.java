@@ -18,27 +18,27 @@ public class UserHibernateDAO implements UserDAO {
     private final HibernateTemplate hibernateTemplate;
 
     @Autowired
-    public UserHibernateDAO(SessionFactory sessionFactory) {
+    public UserHibernateDAO(final SessionFactory sessionFactory) {
         hibernateTemplate = new HibernateTemplate(sessionFactory);
     }
 
     @Override
-    public void save(User user) {
+    public void save(final User user) {
         hibernateTemplate.saveOrUpdate(user);
     }
 
     @Override
-    public void delete(User user) {
+    public void delete(final User user) {
         hibernateTemplate.delete(user);
     }
 
     @Override
-    public User getUserByUUID(UUID uuid) {
+    public User getUserByUUID(final UUID uuid) {
         return hibernateTemplate.get(User.class, uuid);
     }
 
     @Override
-    public long getUsersCount(Contract contract) {
+    public long getUsersCount(final Contract contract) {
         Long count = hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<Long> query = builder.createQuery(Long.class);
@@ -51,7 +51,7 @@ public class UserHibernateDAO implements UserDAO {
     }
 
     @Override
-    public List<User> getUsers(Contract contract, int first, int limit) {
+    public List<User> getUsers(final Contract contract, final int first, final int limit) {
         return hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<User> query = builder.createQuery(User.class);

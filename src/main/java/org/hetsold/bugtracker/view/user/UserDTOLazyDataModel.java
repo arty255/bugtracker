@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 public class UserDTOLazyDataModel extends LazyDataModel<UserDTO> {
-    private final UserService userService;
-    private Contract contract;
+    private static final long serialVersionUID = -8219658726385057668L;
+    private final transient UserService userService;
+    private transient Contract contract;
 
     public UserDTOLazyDataModel(UserService userService) {
         this.userService = userService;

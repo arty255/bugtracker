@@ -7,7 +7,7 @@ import org.hetsold.bugtracker.model.Issue;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class IssueMapper {
+public final class IssueMapper {
 
     private IssueMapper() {
     }

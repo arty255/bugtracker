@@ -17,6 +17,8 @@ import java.io.Serializable;
 @ManagedBean
 @ApplicationScoped
 public class AppUtilBean implements Serializable {
+    private static final String DEFAULT_TIME_PATTERN = "dd-MM-yyyy HH:mm";
+
     public TicketResolveState[] getTicketResolveStates() {
         return TicketResolveState.values();
     }
@@ -46,7 +48,7 @@ public class AppUtilBean implements Serializable {
     }
 
     public String getDateFormat() {
-        return "dd-MM-yyyy HH:mm";
+        return DEFAULT_TIME_PATTERN;
     }
 
     public boolean isMessageInHistory(IssueEventDTO.EventType eventType) {
@@ -54,11 +56,11 @@ public class AppUtilBean implements Serializable {
     }
 
     public boolean isLoggedInUserAreTicketCreator(TicketDTO ticketDTO) {
-        UserDTO user;
-        if (SecurityContextHolder.getContext().getAuthentication() != null
-                && (user = ((SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO()) != null
-                && ticketDTO != null && ticketDTO.getUser() != null) {
-            return ticketDTO.getUser().equals(user);
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            UserDTO user = ((SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
+            if (user != null && ticketDTO != null && ticketDTO.getUser() != null) {
+                return ticketDTO.getUser().equals(user);
+            }
         }
         return false;
     }

@@ -5,11 +5,9 @@ import org.openqa.selenium.WebDriver;
 import static integration.page.PageUtil.waitForPageLoad;
 
 public abstract class AbstractPage {
-    private final String pageUrl;
     protected WebDriver webDriver;
 
-    protected AbstractPage(String pageUrl, WebDriver webDriver) {
-        this.pageUrl = pageUrl;
+    protected AbstractPage(WebDriver webDriver) {
         this.webDriver = webDriver;
     }
 

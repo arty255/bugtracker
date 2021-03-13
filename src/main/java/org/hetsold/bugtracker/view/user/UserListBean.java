@@ -22,14 +22,15 @@ import java.util.Set;
 @ManagedBean
 @ViewScoped
 public class UserListBean implements Serializable {
-    private UserService userService;
+    private static final long serialVersionUID = -1231997257240711340L;
+    private transient UserService userService;
     private UserDTO selectedUserDTO;
     private LazyDataModel<UserDTO> usersLazyDataModel;
-    private Set<FieldMaskFilter> fieldMaskFilters;
+    private transient Set<FieldMaskFilter> fieldMaskFilters;
 
     private String columnKey;
-    private SortedColumnsContainer sortedColumnsContainer;
-    private Contract contract;
+    private transient SortedColumnsContainer sortedColumnsContainer;
+    private transient Contract contract;
 
     @Autowired
     public void setUserService(UserService userService) {

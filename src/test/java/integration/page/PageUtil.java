@@ -9,7 +9,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.concurrent.TimeUnit;
 
-public class PageUtil {
+public final class PageUtil {
+
+    private PageUtil() {
+    }
+
     public static void waitForPageLoad(WebDriver webDriver) {
         new WebDriverWait(webDriver, 10)
                 .until(driver -> "complete".equals(((JavascriptExecutor) driver).executeScript("return document.readyState")));

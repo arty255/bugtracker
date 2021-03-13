@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 public class IssuesLazyDataModel extends LazyDataModel<IssueShortDTO> {
-    private final IssueService issueService;
-    private Contract contract;
+    private static final long serialVersionUID = 3533587834521806709L;
+    private final transient IssueService issueService;
+    private transient Contract contract;
 
     public IssuesLazyDataModel(IssueService issueService) {
         this.issueService = issueService;

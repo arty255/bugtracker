@@ -3,7 +3,7 @@ package integration.page.detailedTicketPage;
 import integration.page.AbstractLoginFirstPage;
 import org.openqa.selenium.WebDriver;
 
-public class DetailedTicketPage extends AbstractLoginFirstPage {
+public final class DetailedTicketPage extends AbstractLoginFirstPage {
     private final String detailedTicketUrl = "http://localhost:8080/bugtracker_war_exploded/facelets/pages/ticketDetail.jsf?uuid=";
 
     public TicketDetailWidget ticketDetailWidget;

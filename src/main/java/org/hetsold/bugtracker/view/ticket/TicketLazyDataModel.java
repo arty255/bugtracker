@@ -12,9 +12,10 @@ import java.util.List;
 import java.util.Map;
 
 public class TicketLazyDataModel extends LazyDataModel<TicketDTO> {
-    private final TicketService ticketService;
+    private static final long serialVersionUID = 7977214164254220191L;
+    private final transient TicketService ticketService;
     private UserDTO selectedUser;
-    private Contract contract;
+    private transient Contract contract;
 
     public TicketLazyDataModel(TicketService ticketService, UserDTO selectedUser) {
         this.ticketService = ticketService;

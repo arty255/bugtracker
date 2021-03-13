@@ -10,7 +10,7 @@ public enum FilterOperation {
 
     private String label;
 
-    FilterOperation(String label) {
+    FilterOperation(final String label) {
         this.label = label;
     }
 

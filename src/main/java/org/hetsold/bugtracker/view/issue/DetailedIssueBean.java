@@ -27,18 +27,19 @@ import java.io.Serializable;
 @ManagedBean
 @ViewScoped
 public class DetailedIssueBean extends ListableMessageBean implements Serializable {
+    private static final long serialVersionUID = 6989725927868734951L;
     private String uuid;
     private IssueDTO issue;
     @Autowired
-    private IssueService issueService;
+    private transient IssueService issueService;
     @Autowired
-    private MessageService messageService;
+    private transient MessageService messageService;
     @Autowired
-    private UserService userService;
+    private transient UserService userService;
 
     private HistoryEventLazyDataModel historyEventDataModel;
 
-    private boolean isOriginalStateChanged;
+    private boolean originalStateChanged;
     private IssueState originalIssueState;
 
     private LazyDataModel<UserDTO> userDTODataModel;
@@ -48,8 +49,7 @@ public class DetailedIssueBean extends ListableMessageBean implements Serializab
     public void initBean() {
         FacesContextUtils.getRequiredWebApplicationContext(FacesContext.getCurrentInstance())
                 .getAutowireCapableBeanFactory().autowireBean(this);
-        isOriginalStateChanged = false;
-        selectedToAssignUser = null;
+        originalStateChanged = false;
         userDTODataModel = new UserDTOLazyDataModel(userService);
         activeUser = ((SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
         initMessageListener();
@@ -73,7 +73,7 @@ public class DetailedIssueBean extends ListableMessageBean implements Serializab
     }
 
     public void issueStateChanged() {
-        isOriginalStateChanged = issue.getCurrentIssueState() != originalIssueState;
+        originalStateChanged = issue.getCurrentIssueState() != originalIssueState;
     }
 
     public void changeIssueState() {
@@ -152,7 +152,7 @@ public class DetailedIssueBean extends ListableMessageBean implements Serializab
     }
 
     public boolean isOriginalStateChanged() {
-        return isOriginalStateChanged;
+        return originalStateChanged;
     }
 
     public UserDTO getSelectedToAssignUser() {

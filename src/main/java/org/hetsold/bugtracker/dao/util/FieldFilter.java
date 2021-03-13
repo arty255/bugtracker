@@ -5,7 +5,7 @@ public class FieldFilter {
     private FilterOperation filterOperation;
     private Object value;
 
-    public FieldFilter(String fieldName, FilterOperation filterOperation, Object value) {
+    public FieldFilter(final String fieldName, final FilterOperation filterOperation, final Object value) {
         this.fieldName = fieldName;
         this.filterOperation = filterOperation;
         this.value = value;
@@ -15,7 +15,7 @@ public class FieldFilter {
         return fieldName;
     }
 
-    public void setFilterOperation(FilterOperation filterOperation) {
+    public void setFilterOperation(final FilterOperation filterOperation) {
         this.filterOperation = filterOperation;
     }
 
@@ -23,7 +23,7 @@ public class FieldFilter {
         return filterOperation;
     }
 
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         this.value = value;
     }
 

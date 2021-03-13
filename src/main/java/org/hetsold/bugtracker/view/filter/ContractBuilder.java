@@ -14,8 +14,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class ContractBuilder {
-    protected ContractBuilder() {
+public final class ContractBuilder {
+    private ContractBuilder() {
     }
 
     private static final Map<String, Function<Object, ?>> codedTypeToObjectMappingFunctionMap = Map.of(

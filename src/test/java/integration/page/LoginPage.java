@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class LoginPage extends AbstractPage {
+public final class LoginPage extends AbstractPage {
     public static final String loginUrl = "http://localhost:8080/bugtracker_war_exploded/facelets/pages/login.jsf";
     @FindBy(xpath = "//*[@id=\"j_idt7:j_idt15\"]")
     private WebElement loginField;
@@ -18,7 +18,7 @@ public class LoginPage extends AbstractPage {
     private WebElement errorMessage;
 
     private LoginPage(WebDriver webDriver) {
-        super(loginUrl, webDriver);
+        super(webDriver);
         PageFactory.initElements(webDriver, this);
     }
 

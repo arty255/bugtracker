@@ -24,6 +24,7 @@ import java.io.Serializable;
 @ManagedBean
 @ViewScoped
 public class DetailedTicketBean extends ListableMessageBean implements Serializable {
+    private static final long serialVersionUID = 5927752950619086401L;
     private String uuid;
     private TicketDTO ticket;
     private TicketMessageLazyDataModel messageLazyDataModel;
@@ -32,11 +33,11 @@ public class DetailedTicketBean extends ListableMessageBean implements Serializa
     private IssueShortDTO selectedIssue;
 
     @Autowired
-    private TicketService ticketService;
+    private transient TicketService ticketService;
     @Autowired
-    private MessageService messageService;
+    private transient MessageService messageService;
     @Autowired
-    private IssueService issueService;
+    private transient IssueService issueService;
 
     @PostConstruct
     public void init() {
@@ -86,7 +87,7 @@ public class DetailedTicketBean extends ListableMessageBean implements Serializa
         ticketService.updateTicket(ticket, activeUser);
     }
 
-    public void tickedChangedListener(ValueChangeEvent event) {
+    public void tickedChangedListener() {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Warning!", "Ticked changed. Dont forget save."));
     }
 

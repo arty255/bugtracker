@@ -12,9 +12,10 @@ import java.util.List;
 import java.util.Map;
 
 public class TicketMessageLazyDataModel extends LazyDataModel<MessageDTO> {
+    private static final long serialVersionUID = 222458217491597163L;
     private boolean inverseDateOrder;
-    private final TicketService ticketService;
-    private final MessageService messageService;
+    private final transient TicketService ticketService;
+    private final transient MessageService messageService;
     private final TicketDTO ticket;
 
     public TicketMessageLazyDataModel(TicketService ticketService, MessageService messageService, TicketDTO ticket) {

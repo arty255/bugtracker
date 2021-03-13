@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public abstract class AbstractDTO implements Serializable {
+    private static final long serialVersionUID = -4039508287740280632L;
     private String uuid;
 
     protected AbstractDTO() {
@@ -13,12 +14,12 @@ public abstract class AbstractDTO implements Serializable {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
+    public void setUuid(final String uuid) {
         this.uuid = uuid;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AbstractDTO abstractDTO = (AbstractDTO) o;

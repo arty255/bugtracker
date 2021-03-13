@@ -3,8 +3,6 @@ package org.hetsold.bugtracker.view.issue;
 import org.hetsold.bugtracker.dao.util.Contract;
 import org.hetsold.bugtracker.dto.IssueDTO;
 import org.hetsold.bugtracker.dto.IssueShortDTO;
-import org.hetsold.bugtracker.dto.user.SecurityUserDetails;
-import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.view.filter.ContractBuilder;
 import org.hetsold.bugtracker.view.filter.FieldMaskFilter;
@@ -12,7 +10,6 @@ import org.hetsold.bugtracker.view.filter.FilterComponentBuilder;
 import org.hetsold.bugtracker.view.filter.SortedColumnsContainer;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.jsf.FacesContextUtils;
 
 import javax.annotation.PostConstruct;
@@ -25,17 +22,17 @@ import java.util.Set;
 @ManagedBean
 @ViewScoped
 public class IssueListBean implements Serializable {
+    private static final long serialVersionUID = 1041654617948155760L;
     private LazyDataModel<IssueShortDTO> issuesLazyDataModel;
     private IssueShortDTO issue;
     @Autowired
-    private IssueService issueService;
-    private UserDTO activeUser;
+    private transient IssueService issueService;
 
-    private Set<FieldMaskFilter> fieldMaskFilters;
+    private transient Set<FieldMaskFilter> fieldMaskFilters;
 
     private String columnKey;
-    private SortedColumnsContainer sortedColumnsContainer;
-    private Contract contract;
+    private transient SortedColumnsContainer sortedColumnsContainer;
+    private transient Contract contract;
 
     @PostConstruct
     public void init() {
@@ -43,7 +40,6 @@ public class IssueListBean implements Serializable {
                 .getAutowireCapableBeanFactory().autowireBean(this);
         initIssueList();
         createIssueFilterWrappersAction();
-        activeUser = ((SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
     }
 
     public void initIssueList() {

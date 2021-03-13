@@ -17,7 +17,7 @@ public class SecurityUserDetails extends AbstractDTO implements UserDetails, Ser
     private final boolean accountNonExpired;
     private final boolean accountNonLocked;
     private final boolean credentialsNonExpired;
-    private Collection<SecurityUserAuthority> authorities = new ArrayList<>();
+    private final Collection<SecurityUserAuthority> authorities = new ArrayList<>();
     private UserDTO userDTO;
 
     public SecurityUserDetails(SecurityUser securityUser) {

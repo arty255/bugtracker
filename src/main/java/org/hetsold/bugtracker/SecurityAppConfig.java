@@ -69,7 +69,7 @@ public class SecurityAppConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthenticationManager getManager() throws Exception {
-        return super.authenticationManager();
+        return this.authenticationManager();
     }
 
     @Bean
@@ -79,7 +79,7 @@ public class SecurityAppConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        final DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(getPasswordEncoder());
         provider.setUserDetailsService((UserDetailsService) userService);
         return provider;

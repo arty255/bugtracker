@@ -6,7 +6,7 @@ import org.hetsold.bugtracker.model.Message;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MessageMapper {
+public final class MessageMapper {
 
     private MessageMapper() {
     }

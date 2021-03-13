@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class FilterComponentBuilder {
+public final class FilterComponentBuilder {
     private FilterComponentBuilder() {
     }
 
@@ -99,8 +99,8 @@ public class FilterComponentBuilder {
     }
 
     private static String getFieldLabel(String name) {
-        String value;
-        if ((value = labelMap.get(name)) != null) {
+        String value = labelMap.get(name);
+        if (value != null) {
             return value;
         }
         return name;

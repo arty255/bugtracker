@@ -20,27 +20,27 @@ public class TicketHibernateDAO implements TicketDAO {
     private final HibernateTemplate hibernateTemplate;
 
     @Autowired
-    public TicketHibernateDAO(SessionFactory sessionFactory) {
+    public TicketHibernateDAO(final SessionFactory sessionFactory) {
         this.hibernateTemplate = new HibernateTemplate(sessionFactory);
     }
 
     @Override
-    public void save(Ticket ticket) {
+    public void save(final Ticket ticket) {
         hibernateTemplate.save(ticket);
     }
 
     @Override
-    public Ticket getTicketById(UUID uuid) {
+    public Ticket getTicketById(final UUID uuid) {
         return hibernateTemplate.get(Ticket.class, uuid);
     }
 
     @Override
-    public void delete(Ticket ticket) {
+    public void delete(final Ticket ticket) {
         hibernateTemplate.delete(ticket);
     }
 
     @Override
-    public List<Ticket> getTicketListReportedByUser(User user, Contract contract, int startPosition, int limit) {
+    public List<Ticket> getTicketListReportedByUser(final User user, final Contract contract, final int startPosition, final int limit) {
         return hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<Ticket> query = builder.createQuery(Ticket.class);
@@ -58,7 +58,7 @@ public class TicketHibernateDAO implements TicketDAO {
     }
 
     @Override
-    public long getTicketsCountReportedByUser(User user, Contract contract) {
+    public long getTicketsCountReportedByUser(final User user, final Contract contract) {
         Long count = hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<Long> query = builder.createQuery(Long.class);
@@ -76,7 +76,7 @@ public class TicketHibernateDAO implements TicketDAO {
     }
 
     @Override
-    public List<Ticket> getTickets(Contract contract, int startPosition, int limit) {
+    public List<Ticket> getTickets(final Contract contract, final int startPosition, final int limit) {
         return hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<Ticket> query = builder.createQuery(Ticket.class);
@@ -89,7 +89,7 @@ public class TicketHibernateDAO implements TicketDAO {
     }
 
     @Override
-    public long getTicketsCount(Contract contract) {
+    public long getTicketsCount(final Contract contract) {
         Long count = hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<Long> query = builder.createQuery(Long.class);

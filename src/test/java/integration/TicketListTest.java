@@ -40,7 +40,7 @@ public class TicketListTest {
                 .ticketTable
                 .sortTicketToFirstPosition();
         String ticketDescription = ticketListPage.ticketTable.getFirstTicketDescription();
-        assertEquals(uniqueDescription, ticketDescription);
+        assertEquals("added ticket contains different data", uniqueDescription, ticketDescription);
     }
 
     @Test
@@ -49,7 +49,7 @@ public class TicketListTest {
                 .openTicketDialog()
                 .fillNewTicketData("version 0.1", "ticket description", "reproduce steps")
                 .clearFilledTicketData();
-        assertTrue(ticketListPage.addTicketDialog.getFilledProductVersion().isEmpty() &&
+        assertTrue("entered ticket data not cleared", ticketListPage.addTicketDialog.getFilledProductVersion().isEmpty() &&
                 ticketListPage.addTicketDialog.getDescription().isEmpty() &&
                 ticketListPage.addTicketDialog.getReproduceSteps().isEmpty());
     }

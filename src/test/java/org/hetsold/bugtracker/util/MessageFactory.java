@@ -31,6 +31,7 @@ public class MessageFactory {
                 break;
             case IncorrectNullDateMessage:
                 message.setCreateDate(null);
+                break;
             case CorrectMessage:
                 break;
             case CorrectMessageNow:

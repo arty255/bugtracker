@@ -20,12 +20,13 @@ import java.io.Serializable;
 @ManagedBean
 @ViewScoped
 public class UserProfileBean implements Serializable {
+    private static final long serialVersionUID = 2640793355567443006L;
     private String uuid;
     private UserDTO user;
     @Autowired
-    private UserService userService;
+    private transient UserService userService;
     @Autowired
-    private TicketService ticketService;
+    private transient TicketService ticketService;
 
     private LazyDataModel<TicketDTO> reportedTickets;
     private int totalReportedTickets;

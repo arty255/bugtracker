@@ -1,27 +1,19 @@
 package org.hetsold.bugtracker.dao.util;
 
 public class OrderFilter {
-    private String fieldName;
-    private boolean isAscending;
+    private final String fieldName;
+    private final boolean ascending;
 
-    public OrderFilter(String fieldName, boolean isAscending) {
+    public OrderFilter(final String fieldName, final boolean ascending) {
         this.fieldName = fieldName;
-        this.isAscending = isAscending;
+        this.ascending = ascending;
     }
 
     public String getFieldName() {
         return fieldName;
     }
 
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
     public boolean isAscending() {
-        return isAscending;
-    }
-
-    public void setAscending(boolean ascending) {
-        isAscending = ascending;
+        return ascending;
     }
 }

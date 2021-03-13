@@ -9,7 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public class WebDriverConfig {
+public final class WebDriverConfig {
     protected static Properties properties;
 
     static {
@@ -17,8 +17,11 @@ public class WebDriverConfig {
             properties = new Properties();
             properties.load(fileInputStream);
         } catch (IOException e) {
-            throw new IllegalArgumentException("problems with loading selenium properties file");
+            throw new IllegalArgumentException("problems with loading selenium properties file", e);
         }
+    }
+
+    private WebDriverConfig() {
     }
 
     public static String getProperty(String key) {

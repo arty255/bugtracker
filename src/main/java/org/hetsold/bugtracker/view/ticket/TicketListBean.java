@@ -20,14 +20,15 @@ import java.util.Set;
 @ManagedBean
 @ViewScoped
 public class TicketListBean implements Serializable {
+    private static final long serialVersionUID = 8923362778600089408L;
     private TicketLazyDataModel ticketLazyDataModel;
     @Autowired
-    private TicketService ticketService;
-    private Set<FieldMaskFilter> fieldMaskFilters;
+    private transient TicketService ticketService;
+    private transient Set<FieldMaskFilter> fieldMaskFilters;
 
     private String columnKey;
-    private SortedColumnsContainer sortedColumnsContainer;
-    private Contract contract;
+    private transient SortedColumnsContainer sortedColumnsContainer;
+    private transient Contract contract;
 
     @PostConstruct
     public void init() {

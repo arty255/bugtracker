@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public abstract class ListableMessageBean implements Serializable {
+    private static final long serialVersionUID = -2847783214216740037L;
     private boolean editMode;
     private MessageDTO selectedToEditMessage;
     private MessageDTO selectedToDeleteMessage;
@@ -38,7 +39,7 @@ public abstract class ListableMessageBean implements Serializable {
 
     public void deleteMessageAction() {
         preformDeleteOperation(selectedToDeleteMessage);
-        if (selectedToEditMessage == selectedToDeleteMessage) {
+        if (selectedToEditMessage.equals(selectedToDeleteMessage)) {
             cancelEditAction();
         }
     }

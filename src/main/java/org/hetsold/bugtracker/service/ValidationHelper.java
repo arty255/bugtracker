@@ -7,7 +7,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ValidationHelper {
+public final class ValidationHelper {
     static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     public static final String ISSUE_NOT_PERSISTED = "issue is not persisted";
     public static final String TICKET_NOT_PERSISTED = "ticket is not Persisted";

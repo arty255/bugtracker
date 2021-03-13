@@ -12,22 +12,22 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContractReader {
+public final class ContractReader {
     private ContractReader() {
     }
 
-    public static Predicate[] readContract(Contract contract, Root<?> root, CriteriaBuilder criteriaBuilder) {
+    public static Predicate[] readContract(final Contract contract, final Root<?> root, final CriteriaBuilder criteriaBuilder) {
         if (contract == null) {
             return new Predicate[0];
         }
-        List<Predicate> predicateList = new ArrayList<>();
+        final List<Predicate> predicateList = new ArrayList<>();
         contract.getFilters().forEach(
                 item -> predicateList.add(createPredicate(item, root, criteriaBuilder))
         );
         return predicateList.toArray(new Predicate[0]);
     }
 
-    private static Predicate createPredicate(FieldFilter fieldFilter, Root<?> root, CriteriaBuilder criteriaBuilder) {
+    private static Predicate createPredicate(final FieldFilter fieldFilter, final Root<?> root, final CriteriaBuilder criteriaBuilder) {
         if (fieldFilter.getFilterOperation() == FilterOperation.EQUAL) {
             return criteriaBuilder.equal(root.get(fieldFilter.getFieldName()), fieldFilter.getValue());
         } else if (fieldFilter.getFilterOperation() == FilterOperation.NOT_EQUAL) {
@@ -38,8 +38,8 @@ public class ContractReader {
         return null;
     }
 
-    public static List<Order> getOrders(Contract contract, Root<?> root, CriteriaBuilder criteriaBuilder) {
-        List<Order> orderList = new ArrayList<>();
+    public static List<Order> getOrders(final Contract contract, final Root<?> root, final CriteriaBuilder criteriaBuilder) {
+        final List<Order> orderList = new ArrayList<>();
         if (contract != null && contract.getOrderFilters() != null) {
             contract.getOrderFilters()
                     .forEach(item -> orderList.add(getOrderByFilterItem(item, root, criteriaBuilder)));
@@ -47,7 +47,7 @@ public class ContractReader {
         return orderList;
     }
 
-    private static Order getOrderByFilterItem(OrderFilter orderFilter, Root<?> root, CriteriaBuilder criteriaBuilder) {
+    private static Order getOrderByFilterItem(final OrderFilter orderFilter, final Root<?> root, final CriteriaBuilder criteriaBuilder) {
         if (orderFilter.isAscending()) {
             return criteriaBuilder.asc(root.get(orderFilter.getFieldName()));
         } else {

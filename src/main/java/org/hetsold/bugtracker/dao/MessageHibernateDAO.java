@@ -18,22 +18,22 @@ public class MessageHibernateDAO implements MessageDAO {
     private final HibernateTemplate hibernateTemplate;
 
     @Autowired
-    public MessageHibernateDAO(SessionFactory sessionFactory) {
+    public MessageHibernateDAO(final SessionFactory sessionFactory) {
         this.hibernateTemplate = new HibernateTemplate(sessionFactory);
     }
 
     @Override
-    public void save(Message message) {
+    public void save(final Message message) {
         hibernateTemplate.save(message);
     }
 
     @Override
-    public Message getMessageById(UUID uuid) {
+    public Message getMessageById(final UUID uuid) {
         return hibernateTemplate.get(Message.class, uuid);
     }
 
     @Override
-    public void delete(Message message) {
+    public void delete(final Message message) {
         hibernateTemplate.delete(message);
     }
 
@@ -43,7 +43,7 @@ public class MessageHibernateDAO implements MessageDAO {
     }
 
     @Override
-    public long getMessageCountByTicket(Ticket ticket) {
+    public long getMessageCountByTicket(final Ticket ticket) {
         Long count = hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
@@ -51,14 +51,11 @@ public class MessageHibernateDAO implements MessageDAO {
             countQuery.select(builder.count(messageJoin));
             return session.createQuery(countQuery).getSingleResult();
         });
-        if (count == null) {
-            return 0;
-        }
-        return count;
+        return count != null ? count : 0;
     }
 
     @Override
-    public List<Message> getMessageListByTicket(Ticket ticket, int fromIndex, int limit, boolean inverseDateOrder) {
+    public List<Message> getMessageListByTicket(final Ticket ticket, final int fromIndex, final int limit, final boolean inverseDateOrder) {
         return hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<Message> messageQuery = builder.createQuery(Message.class);
@@ -73,7 +70,7 @@ public class MessageHibernateDAO implements MessageDAO {
         });
     }
 
-    private Join<Ticket, Message> getTicketMessageJoinByUUID(CriteriaBuilder builder, Ticket ticket, CriteriaQuery<?> query) {
+    private Join<Ticket, Message> getTicketMessageJoinByUUID(final CriteriaBuilder builder, final Ticket ticket, final CriteriaQuery<?> query) {
         CriteriaQuery<Ticket> ticketQuery = builder.createQuery(Ticket.class);
         Root<Ticket> ticketRoot = query.from(Ticket.class);
         ticketQuery.where(builder.equal(ticketRoot.get(AbstractEntity_.uuid), ticket.getUuid()));

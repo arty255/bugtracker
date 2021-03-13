@@ -20,6 +20,7 @@ public class IssueShortDTO extends ArchivedIdentityDTO implements Serializable {
     private String ticketId;
 
     public IssueShortDTO(Issue issue) {
+        super();
         this.setUuid(issue.getUuid().toString());
         this.issueNumber = issue.getIssueNumber();
         this.description = issue.getDescription();
@@ -43,6 +44,7 @@ public class IssueShortDTO extends ArchivedIdentityDTO implements Serializable {
     }
 
     public IssueShortDTO(String uuid) {
+        super();
         this.setUuid(uuid);
     }
 

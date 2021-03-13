@@ -4,7 +4,7 @@ import org.hetsold.bugtracker.dto.AbstractDTO;
 
 import java.util.UUID;
 
-public class UUIDMapper {
+public final class UUIDMapper {
 
     private UUIDMapper() {
     }

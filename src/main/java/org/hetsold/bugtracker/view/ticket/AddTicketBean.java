@@ -20,10 +20,11 @@ import java.util.Date;
 @ManagedBean
 @ViewScoped
 public class AddTicketBean implements Serializable {
+    private static final long serialVersionUID = 533973185621503432L;
     private UserDTO activeUser;
     private TicketDTO ticket;
     @Autowired
-    private TicketService ticketService;
+    private transient TicketService ticketService;
 
 
     @PostConstruct

@@ -22,6 +22,7 @@ import java.util.List;
 @ManagedBean
 @ViewScoped
 public class AddUserBean implements Serializable {
+    private static final long serialVersionUID = 1032301529701678934L;
     private FullUserDTO securityUser;
     private List<SecurityUserAuthority> selectedSecurityUserAuthorities;
     private UserPreset selectedUserPreset;
@@ -30,7 +31,7 @@ public class AddUserBean implements Serializable {
     private boolean registrationAction;
     private boolean inResetMode;
     @Autowired
-    private UserService userService;
+    private transient UserService userService;
 
 
     @PostConstruct
@@ -94,13 +95,13 @@ public class AddUserBean implements Serializable {
         }
     }
 
-    public void onTabChangeListener(TabChangeEvent event) {
+    public void onTabChangeListener(TabChangeEvent<?> event) {
         if (!registrationAction && isActiveTabCredentialsTab(event)) {
-//            securityUser = securityService.getSecurityUserByUserUuid(user.getUuid());
+            //securityUser = securityService.getSecurityUserByUserUuid(user.getUuid());
         }
     }
 
-    private boolean isActiveTabCredentialsTab(TabChangeEvent event) {
+    private boolean isActiveTabCredentialsTab(TabChangeEvent<?> event) {
         TabView tabView = (TabView) event.getComponent();
         return tabView.getChildren().indexOf(event.getTab()) == 1;
     }

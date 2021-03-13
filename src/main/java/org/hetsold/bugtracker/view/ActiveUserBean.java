@@ -10,8 +10,9 @@ import javax.faces.bean.SessionScoped;
 @ManagedBean
 @SessionScoped
 public class ActiveUserBean {
+    private static final String ANONYMOUS_USER = "anonymousUser";
     public UserDTO getActiveUser() {
-        if (!"anonymousUser".equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
+        if (!ANONYMOUS_USER.equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
             return ((SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();
         }
         return null;

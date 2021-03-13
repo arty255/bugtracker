@@ -17,12 +17,12 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
     private final HibernateTemplate hibernateTemplate;
 
     @Autowired
-    public HistoryEventHibernateDAO(SessionFactory sessionFactory) {
+    public HistoryEventHibernateDAO(final SessionFactory sessionFactory) {
         hibernateTemplate = new HibernateTemplate(sessionFactory);
     }
 
     @Override
-    public void saveIssueMessage(IssueMessageEvent messageEvent) {
+    public void saveIssueMessage(final IssueMessageEvent messageEvent) {
         hibernateTemplate.save(messageEvent);
     }
 
@@ -32,12 +32,12 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
     }
 
     @Override
-    public IssueMessageEvent getMessageEventById(UUID uuid) {
+    public IssueMessageEvent getMessageEventById(final UUID uuid) {
         return hibernateTemplate.get(IssueMessageEvent.class, uuid);
     }
 
     @Override
-    public IssueMessageEvent getMessageEventByMessage(Message message) {
+    public IssueMessageEvent getMessageEventByMessage(final Message message) {
         return hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<IssueMessageEvent> query = builder.createQuery(IssueMessageEvent.class);
@@ -49,22 +49,22 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
     }
 
     @Override
-    public void saveStateChange(IssueStateChangeEvent stateChangeEvent) {
+    public void saveStateChange(final IssueStateChangeEvent stateChangeEvent) {
         hibernateTemplate.save(stateChangeEvent);
     }
 
     @Override
-    public IssueStateChangeEvent getStateChangeEventById(UUID uuid) {
+    public IssueStateChangeEvent getStateChangeEventById(final UUID uuid) {
         return hibernateTemplate.load(IssueStateChangeEvent.class, uuid);
     }
 
     @Override
-    public void deleteIssueMessageEvent(IssueMessageEvent messageEvent) {
+    public void deleteIssueMessageEvent(final IssueMessageEvent messageEvent) {
         hibernateTemplate.delete(messageEvent);
     }
 
     @Override
-    public long getHistoryIssueEventsCountForIssue(Issue issue) {
+    public long getHistoryIssueEventsCountForIssue(final Issue issue) {
         Long count = hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<Long> query = builder.createQuery(Long.class);
@@ -77,7 +77,7 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
     }
 
     @Override
-    public IssueState getPreviousOpenOrReopenStateForIssue(Issue issue) {
+    public IssueState getPreviousOpenOrReopenStateForIssue(final Issue issue) {
         return hibernateTemplate.execute(session -> {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<IssueState> query = builder.createQuery(IssueState.class);
@@ -93,7 +93,7 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
     }
 
     @Override
-    public List<IssueEvent> getHistoryIssueEventsByIssue(Issue issue, int firstResult, int limit, boolean inverseDateOrder) {
+    public List<IssueEvent> getHistoryIssueEventsByIssue(final Issue issue, final int firstResult, final int limit, final boolean inverseDateOrder) {
         if (limit < 1) {
             throw new IllegalArgumentException("limit cannot be negative");
         }
@@ -111,6 +111,4 @@ public class HistoryEventHibernateDAO implements HistoryEventDAO {
             return session.createQuery(query).setFirstResult(firstResult).setMaxResults(limit).list();
         });
     }
-
-
 }

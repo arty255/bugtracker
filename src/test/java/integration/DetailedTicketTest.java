@@ -65,7 +65,7 @@ public class DetailedTicketTest {
                 .selectWrite()
                 .fillMessage(messageContent)
                 .selectPreview();
-        assertEquals(messageContent, detailedTicketPage.postMessageSectionWidget.getPreviewContent());
+        assertEquals("no data in preview", messageContent, detailedTicketPage.postMessageSectionWidget.getPreviewContent());
     }
 
     @Test
@@ -74,7 +74,7 @@ public class DetailedTicketTest {
                 .postMessageSectionWidget
                 .expand()
                 .hideCommentWindow();
-        assertFalse(detailedTicketPage.postMessageSectionWidget.isExpanded());
+        assertFalse("post comment widget not collapsed", detailedTicketPage.postMessageSectionWidget.isExpanded());
     }
 
     @Test

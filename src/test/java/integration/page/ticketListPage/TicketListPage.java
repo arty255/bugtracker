@@ -9,7 +9,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 
-public class TicketListPage extends AbstractLoginFirstPage {
+public final class TicketListPage extends AbstractLoginFirstPage {
     private static final String ticketsUrl = "http://localhost:8080/bugtracker_war_exploded/facelets/pages/tickets.jsf";
 
     @FindBy(className = "addTicketDialogButton")

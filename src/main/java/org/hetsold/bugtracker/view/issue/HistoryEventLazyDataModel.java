@@ -13,12 +13,13 @@ import java.util.List;
 import java.util.Map;
 
 public class HistoryEventLazyDataModel extends LazyDataModel<IssueEventDTO> {
-    private final IssueService issueService;
-    private final MessageService messageService;
-    private IssueDTO issueDTO;
+    private static final long serialVersionUID = -6275313689757318349L;
+    private final transient IssueService issueService;
+    private final transient MessageService messageService;
+    private final IssueDTO issueDTO;
     private boolean inverseDateOrder;
 
-    public HistoryEventLazyDataModel(IssueService issueService, MessageService messageService, IssueDTO issueDTO) {
+    public HistoryEventLazyDataModel(final IssueService issueService, final MessageService messageService, final IssueDTO issueDTO) {
         this.issueService = issueService;
         this.messageService = messageService;
         this.issueDTO = issueDTO;
@@ -28,7 +29,7 @@ public class HistoryEventLazyDataModel extends LazyDataModel<IssueEventDTO> {
         return inverseDateOrder;
     }
 
-    public void setInverseDateOrder(boolean inverseDateOrder) {
+    public void setInverseDateOrder(final boolean inverseDateOrder) {
         this.inverseDateOrder = inverseDateOrder;
     }
 
