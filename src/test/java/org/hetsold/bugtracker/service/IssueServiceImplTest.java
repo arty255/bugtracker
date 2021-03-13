@@ -14,7 +14,6 @@ import org.hetsold.bugtracker.util.FactoryIssueType;
 import org.hetsold.bugtracker.util.IssueFactory;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;

@@ -182,7 +182,7 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
         unLinkIssue(IssueMapper.getIssue(issueShortDTO));
     }
 
-    private void unLinkIssue(Issue issue){
+    private void unLinkIssue(Issue issue) {
         Issue fetchedIssue = getIssue(issue);
         validateNotNull(fetchedIssue, ISSUE_NOT_PERSISTED);
         unLinkIssueOneDirection(fetchedIssue);

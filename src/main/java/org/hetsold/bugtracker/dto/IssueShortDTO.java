@@ -5,9 +5,11 @@ import org.hetsold.bugtracker.model.Issue;
 import org.hetsold.bugtracker.model.IssueState;
 import org.hetsold.bugtracker.model.Severity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class IssueShortDTO extends ArchivedIdentityDTO {
+public class IssueShortDTO extends ArchivedIdentityDTO implements Serializable {
+    private static final long serialVersionUID = 2442651354873213359L;
     private String issueNumber;
     private String description;
     private Date creationTime;

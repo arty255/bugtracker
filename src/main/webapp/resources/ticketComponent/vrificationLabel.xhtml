@@ -13,8 +13,8 @@
 <composite:implementation>
     <h:outputStylesheet library="css" name="coloredStateLabel.css"/>
     <h:panelGroup layout="block" styleClass="stateContainer">
-        <div class="stateIndicator #{cc.attrs.verificationState == 'NotVerified' ? 'gray' :
-        (cc.attrs.verificationState == 'Verified' ? 'green': 'gray')}"></div>
+        <div class="stateIndicator #{cc.attrs.verificationState == 'NOT_VERIFIED' ? 'gray' :
+        (cc.attrs.verificationState == 'VERIFIED' ? 'green': 'gray')}"></div>
         <h:outputText value="#{cc.attrs.verificationState.label}" styleClass="coloredStateLabel"/>
     </h:panelGroup>
 </composite:implementation>

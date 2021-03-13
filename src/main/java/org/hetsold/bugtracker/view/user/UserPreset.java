@@ -34,8 +34,8 @@ public enum UserPreset {
             SecurityUserAuthority.ROLE_LIST_TICKETS,
             SecurityUserAuthority.ROLE_ADD_TICKET));
 
-    private String label;
-    private Set<SecurityUserAuthority> securityUserAuthorities;
+    private final String label;
+    private final Set<SecurityUserAuthority> securityUserAuthorities;
 
     UserPreset(String label, Set<SecurityUserAuthority> securityUserAuthorities) {
         this.label = label;
@@ -46,15 +46,7 @@ public enum UserPreset {
         return label;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
     public Set<SecurityUserAuthority> getSecurityUserAuthorities() {
         return securityUserAuthorities;
-    }
-
-    public void setSecurityUserAuthorities(Set<SecurityUserAuthority> securityUserAuthorities) {
-        this.securityUserAuthorities = securityUserAuthorities;
     }
 }

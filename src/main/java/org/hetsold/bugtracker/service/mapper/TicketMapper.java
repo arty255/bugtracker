@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TicketMapper {
+
+    private TicketMapper() {
+    }
+
     public static Ticket getTicket(TicketDTO ticketDTO) {
         if (ticketDTO != null) {
             Ticket ticket = new Ticket();

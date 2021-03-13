@@ -15,6 +15,7 @@ import javax.sql.DataSource;
 public class TestAppConfig {
     @Autowired
     private Environment environment;
+
     @Bean()
     @Profile("test")
     public DataSource getDataSourceBean() {

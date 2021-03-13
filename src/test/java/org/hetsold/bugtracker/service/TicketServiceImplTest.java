@@ -8,7 +8,6 @@ import org.hetsold.bugtracker.service.exception.EmptyTicketDescriptionException;
 import org.hetsold.bugtracker.service.exception.EmptyUUIDKeyException;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
@@ -33,12 +32,14 @@ public class TicketServiceImplTest {
     @InjectMocks
     private final TicketServiceImpl ticketService = new TicketServiceImpl();
 
-    private final User savedUser = new User("testFN", "testLN");
-    private final Ticket savedTicket = new Ticket("ticket description", "steps", savedUser);
-    private final Message savedMessage = new Message(savedUser, "test message content");
+    private User savedUser;
+    private Ticket savedTicket;
 
     @Before
     public void beforeTest() {
+        savedUser = new User("testFN", "testLN");
+        savedTicket = new Ticket("ticket description", "steps", savedUser);
+        Message savedMessage = new Message(savedUser, "test message content");
         MockitoAnnotations.openMocks(this);
         Mockito.when(userService.getUser(savedUser)).thenReturn(savedUser);
         Mockito.when(ticketDao.getTicketById(savedTicket.getUuid())).thenReturn(savedTicket);
@@ -99,14 +100,6 @@ public class TicketServiceImplTest {
         ticketService.updateTicket(ticket, savedUser);
     }
 
-    @Ignore //not fully implemented - ticket dont have editor field
-    @Test(expected = IllegalArgumentException.class)
-    public void updateTicket_NotPersistedTicketEditorThrowException() {
-        Ticket ticket = new Ticket(savedTicket.getUuid(), "description", "reproduce", savedUser);
-        User editor = new User("test", "test");
-        ticketService.updateTicket(ticket, editor);
-    }
-
     @Test
     public void updateTicket_preformCorrect() {
         Ticket ticket = new Ticket(savedTicket.getUuid(), "new Description", "reproduce", savedUser);
@@ -142,8 +135,8 @@ public class TicketServiceImplTest {
     @Test
     public void applyForIssue_applyCorrect() {
         ticketService.applyForIssue(savedTicket);
-        assertEquals(TicketResolveState.Resolving, savedTicket.getResolveState());
-        assertEquals(TicketVerificationState.Verified, savedTicket.getVerificationState());
+        assertEquals(TicketResolveState.RESOLVING, savedTicket.getResolveState());
+        assertEquals(TicketVerificationState.VERIFIED, savedTicket.getVerificationState());
     }
 
     @Test(expected = IllegalArgumentException.class)

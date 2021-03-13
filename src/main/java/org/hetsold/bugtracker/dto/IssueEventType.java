@@ -1,4 +1,6 @@
 package org.hetsold.bugtracker.dto;
 
-public abstract class IssueEventType extends AbstractDTO {
+import java.io.Serializable;
+
+public abstract class IssueEventType extends AbstractDTO implements Serializable {
 }

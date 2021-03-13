@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 
 public class IssueMapper {
 
+    private IssueMapper() {
+    }
+
     public static Issue getIssue(IssueDTO issueDTO) {
         if (issueDTO != null) {
             Issue issue = new Issue();

@@ -2,10 +2,8 @@ package org.hetsold.bugtracker.model;
 
 import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SingularAttribute;
-import javax.persistence.metamodel.StaticMetamodel;
 import java.util.Date;
 
-@StaticMetamodel(Issue.class)
 public class Issue_ extends ArchivedEntity_ {
     public static volatile SingularAttribute<Issue, Date> creationTime;
     public static volatile SingularAttribute<Issue, User> reportedBy;

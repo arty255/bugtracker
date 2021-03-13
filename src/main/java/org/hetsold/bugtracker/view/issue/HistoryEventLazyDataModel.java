@@ -41,7 +41,7 @@ public class HistoryEventLazyDataModel extends LazyDataModel<IssueEventDTO> {
     @Override
     public IssueEventDTO getRowData(String rowKey) {
         if (!rowKey.isEmpty()) {
-            return new IssueEventDTO(IssueEventDTO.EventType.MessageEvent
+            return new IssueEventDTO(IssueEventDTO.EventType.MESSAGE_EVENT
                     , messageService.getMessage(new MessageDTO(rowKey)));
         } else {
             return null;
@@ -50,7 +50,7 @@ public class HistoryEventLazyDataModel extends LazyDataModel<IssueEventDTO> {
 
     @Override
     public String getRowKey(IssueEventDTO object) {
-        if (object.getEventType() == IssueEventDTO.EventType.MessageEvent) {
+        if (object.getEventType() == IssueEventDTO.EventType.MESSAGE_EVENT) {
             return ((MessageDTO) object.getEntityDTO()).getUuid();
         }
         return "";

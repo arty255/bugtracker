@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class IssueEventMapper {
+    private IssueEventMapper() {
+    }
+
     public static List<IssueEventDTO> getIssueEventList(List<IssueEvent> issueEvents) {
         return issueEvents.stream()
                 .map(IssueEventDTO::new)

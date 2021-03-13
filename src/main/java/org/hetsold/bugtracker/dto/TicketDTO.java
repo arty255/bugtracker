@@ -5,9 +5,11 @@ import org.hetsold.bugtracker.model.Ticket;
 import org.hetsold.bugtracker.model.TicketResolveState;
 import org.hetsold.bugtracker.model.TicketVerificationState;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class TicketDTO extends ArchivedIdentityDTO {
+public class TicketDTO extends ArchivedIdentityDTO implements Serializable {
+    private static final long serialVersionUID = 2157657766444222549L;
     private String description;
     private String reproduceSteps;
     private String productVersion;

@@ -5,10 +5,12 @@ import org.hetsold.bugtracker.model.SecurityUser;
 import org.hetsold.bugtracker.model.SecurityUserAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class SecurityUserDetails extends AbstractDTO implements UserDetails {
+public class SecurityUserDetails extends AbstractDTO implements UserDetails, Serializable {
+    private static final long serialVersionUID = 2936687026040755549L;
     private final String username;
     private final String password;
     private final boolean enabled;

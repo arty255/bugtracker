@@ -12,8 +12,8 @@
 <composite:implementation>
     <h:outputStylesheet library="css" name="coloredStateLabel.css"/>
     <h:panelGroup layout="block" styleClass="stateContainer">
-        <div class="stateIndicator #{cc.attrs.issueState == 'NotResolved' ? 'red' :
-        (cc.attrs.issueState == 'Resolved' ? 'green': 'gray')}"></div>
+        <div class="stateIndicator #{cc.attrs.issueState == 'NOT_RESOLVED' ? 'red' :
+        (cc.attrs.issueState == 'RESOLVED' ? 'green': 'gray')}"></div>
         <h:outputText value="#{cc.attrs.issueState.label}" styleClass="coloredStateLabel"/>
     </h:panelGroup>
 </composite:implementation>

@@ -8,7 +8,7 @@ public enum Severity {
     CRITICAL("critical"),
     BLOCKER("blocker");
 
-    private String label;
+    private final String label;
 
     Severity(String label) {
         this.label = label;

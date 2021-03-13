@@ -30,7 +30,7 @@ public class RegistrationBean {
         registrationData = new RegistrationDataDTO();
     }
 
-    public void onLoginChangeListener(){
+    public void onLoginChangeListener() {
         if (userService.isLoginTaken(registrationData.getLogin())) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "login is taken", "login is taken"));

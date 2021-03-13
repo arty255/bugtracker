@@ -48,7 +48,7 @@ public class MessagesSectionWidget {
         return message.findElement(By.className("ui-panel-title")).getText();
     }
 
-    public String getMessageContent(int index){
+    public String getMessageContent(int index) {
         WebElement message = getMessageElement(index);
         return message.findElement(By.className("messageContentArea")).getText();
 

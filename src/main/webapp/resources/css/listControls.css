@@ -1,5 +1,5 @@
 .controlsColumn {
-    vertical-align: middle!important;
+    vertical-align: middle !important;
 }
 
 .controlsWrapper {
@@ -11,11 +11,11 @@
     margin-top: 0.5em;
 }
 
-.yellowHoverButton{
+.yellowHoverButton {
 
 }
 
-.yellowHoverButton.ui-state-hover{
+.yellowHoverButton.ui-state-hover {
     background-color: #ff5722 !important;
     border-color: #ff5722 !important;
     color: #fff;

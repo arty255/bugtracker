@@ -26,6 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
         prePostEnabled = true,
         securedEnabled = true)
 public class SecurityAppConfig extends WebSecurityConfigurerAdapter {
+    private static final String LOGIN_URL = "/facelets/pages/login.jsf";
 
     private final UserService userService;
 
@@ -39,11 +40,11 @@ public class SecurityAppConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .sessionManagement()
-                .invalidSessionUrl("/facelets/pages/login.jsf")
-                .sessionAuthenticationErrorUrl("/facelets/pages/login.jsf");
+                .invalidSessionUrl(LOGIN_URL)
+                .sessionAuthenticationErrorUrl(LOGIN_URL);
         http
                 .authorizeRequests()
-                .antMatchers("/facelets/pages/login.jsf","/facelets/pages/registration.jsf").permitAll()
+                .antMatchers(LOGIN_URL, "/facelets/pages/registration.jsf").permitAll()
                 .antMatchers("/javax.faces.resource/**").permitAll()
                 .antMatchers("/facelets/pages/userProfile.jsf").authenticated()
                 .antMatchers("/facelets/pages/issues.jsf").hasAnyRole("LIST_ISSUES", "DELETE_ISSUE", "EDIT_ISSUE")
@@ -58,7 +59,7 @@ public class SecurityAppConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/logout")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/facelets/pages/login.jsf");
+                .logoutSuccessUrl(LOGIN_URL);
     }
 
     @Override

@@ -1,10 +1,10 @@
 package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.TestAppConfig;
-import org.hetsold.bugtracker.model.User;
 import org.hetsold.bugtracker.dao.util.Contract;
 import org.hetsold.bugtracker.dao.util.FieldFilter;
 import org.hetsold.bugtracker.dao.util.FilterOperation;
+import org.hetsold.bugtracker.model.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.transaction.Transactional;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 

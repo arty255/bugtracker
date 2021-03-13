@@ -88,15 +88,17 @@
 
 }
 
-.stateEventTextContent{
+.stateEventTextContent {
 
 }
 
-.stateEventTextContentWrapper{
-    display: flex;flex-direction: row; flex-wrap: wrap;
+.stateEventTextContentWrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
-.stateEventTextContentWrapper .coloredStateLabel{
+.stateEventTextContentWrapper .coloredStateLabel {
     font-weight: bold;
 }
 

@@ -1,15 +1,12 @@
 package org.hetsold.bugtracker.model;
 
-/*
- * this enum describe Issue states
- */
 public enum IssueState {
     OPEN("open"),
     REOPEN("reopen"),
     ASSIGNED("assigned"),
     FIXED("fixed");
 
-    private String label;
+    private final String label;
 
     IssueState(String label) {
         this.label = label;

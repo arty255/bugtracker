@@ -1,4 +1,4 @@
-package org.hetsold.bugtracker.model;
+package org.hetsold.bugtracker.dao.util;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
@@ -17,6 +17,6 @@ public class BooleanToStringConverter implements AttributeConverter<Boolean, Str
         } else if ("N".equals(s)) {
             return false;
         }
-        return null;
+        return false;
     }
 }

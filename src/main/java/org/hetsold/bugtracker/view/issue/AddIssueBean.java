@@ -1,7 +1,7 @@
 package org.hetsold.bugtracker.view.issue;
 
-import org.hetsold.bugtracker.dto.user.SecurityUserDetails;
 import org.hetsold.bugtracker.dto.IssueDTO;
+import org.hetsold.bugtracker.dto.user.SecurityUserDetails;
 import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.model.IssueState;
 import org.hetsold.bugtracker.service.IssueService;

@@ -1,8 +1,8 @@
 package org.hetsold.bugtracker.service;
 
 import org.hetsold.bugtracker.dao.util.Contract;
-import org.hetsold.bugtracker.dto.user.RegistrationDataDTO;
 import org.hetsold.bugtracker.dto.user.FullUserDTO;
+import org.hetsold.bugtracker.dto.user.RegistrationDataDTO;
 import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.model.SecurityUserAuthority;
 
@@ -12,7 +12,7 @@ import java.util.Set;
 public interface UserService {
     UserDTO registerByData(RegistrationDataDTO registrationDataDTO);
 
-    UserDTO registerUser(FullUserDTO FullUserDTO);
+    UserDTO registerUser(FullUserDTO fullUserDTO);
 
     void updateUser(UserDTO userDTO);
 

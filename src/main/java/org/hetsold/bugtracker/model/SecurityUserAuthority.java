@@ -22,19 +22,11 @@ public enum SecurityUserAuthority implements GrantedAuthority {
         this.label = label;
     }
 
-    private String authority;
-    private String label;
-
-    public void setAuthority(String authority) {
-        this.authority = authority;
-    }
+    private final String authority;
+    private final String label;
 
     public String getLabel() {
         return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     @Override

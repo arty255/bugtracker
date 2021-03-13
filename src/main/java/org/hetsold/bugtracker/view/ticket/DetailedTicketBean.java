@@ -1,9 +1,9 @@
 package org.hetsold.bugtracker.view.ticket;
 
-import org.hetsold.bugtracker.dto.user.SecurityUserDetails;
 import org.hetsold.bugtracker.dto.IssueShortDTO;
 import org.hetsold.bugtracker.dto.MessageDTO;
 import org.hetsold.bugtracker.dto.TicketDTO;
+import org.hetsold.bugtracker.dto.user.SecurityUserDetails;
 import org.hetsold.bugtracker.service.IssueService;
 import org.hetsold.bugtracker.service.MessageService;
 import org.hetsold.bugtracker.service.TicketService;

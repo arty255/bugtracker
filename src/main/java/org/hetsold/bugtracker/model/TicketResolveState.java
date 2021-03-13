@@ -1,12 +1,12 @@
 package org.hetsold.bugtracker.model;
 
 public enum TicketResolveState {
-    NotResolved("not resolved"),
-    Resolving("resolving"),
-    Resolved("resolved"),
-    NotBeResolved("not be resolved");
+    NOT_RESOLVED("not resolved"),
+    RESOLVING("resolving"),
+    RESOLVED("resolved"),
+    NOT_BE_RESOLVED("not be resolved");
 
-    private String label;
+    private final String label;
 
     TicketResolveState(String label) {
         this.label = label;

@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 
 public class MessageMapper {
 
+    private MessageMapper() {
+    }
+
     public static MessageDTO getMessageDTO(Message message) {
         return new MessageDTO(message);
     }

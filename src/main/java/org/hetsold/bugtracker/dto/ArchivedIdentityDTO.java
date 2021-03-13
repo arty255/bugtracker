@@ -1,6 +1,8 @@
 package org.hetsold.bugtracker.dto;
 
-public abstract class ArchivedIdentityDTO extends AbstractDTO {
+import java.io.Serializable;
+
+public abstract class ArchivedIdentityDTO extends AbstractDTO implements Serializable {
     private Boolean archived;
 
     protected ArchivedIdentityDTO() {

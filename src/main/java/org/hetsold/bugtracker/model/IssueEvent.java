@@ -3,10 +3,6 @@ package org.hetsold.bugtracker.model;
 import javax.persistence.*;
 import java.util.Date;
 
-/*
- * This class describe issue events depending on state change
- * */
-
 @Entity
 @Table(name = "issueEvent")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -16,7 +12,7 @@ public abstract class IssueEvent extends AbstractEntity {
     private Issue issue;
     private Date eventDate;
 
-    public IssueEvent() {
+    protected IssueEvent() {
     }
 
     @PrePersist

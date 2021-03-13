@@ -1,10 +1,10 @@
 package org.hetsold.bugtracker.model;
 
 public enum TicketVerificationState {
-    Verified("verified"),
-    NotVerified("not verified");
+    VERIFIED("verified"),
+    NOT_VERIFIED("not verified");
 
-    private String label;
+    private final String label;
 
     TicketVerificationState(String label) {
         this.label = label;

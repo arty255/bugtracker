@@ -1,9 +1,6 @@
 package org.hetsold.bugtracker.dao;
 
-import org.hetsold.bugtracker.model.Message;
-import org.hetsold.bugtracker.model.Message_;
-import org.hetsold.bugtracker.model.Ticket;
-import org.hetsold.bugtracker.model.Ticket_;
+import org.hetsold.bugtracker.model.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
@@ -79,7 +76,7 @@ public class MessageHibernateDAO implements MessageDAO {
     private Join<Ticket, Message> getTicketMessageJoinByUUID(CriteriaBuilder builder, Ticket ticket, CriteriaQuery<?> query) {
         CriteriaQuery<Ticket> ticketQuery = builder.createQuery(Ticket.class);
         Root<Ticket> ticketRoot = query.from(Ticket.class);
-        ticketQuery.where(builder.equal(ticketRoot.get(Ticket_.uuid), ticket.getUuid()));
+        ticketQuery.where(builder.equal(ticketRoot.get(AbstractEntity_.uuid), ticket.getUuid()));
         return ticketRoot.join(Ticket_.messageList);
     }
 }

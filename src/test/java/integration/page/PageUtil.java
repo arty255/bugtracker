@@ -16,7 +16,7 @@ public class PageUtil {
     }
 
     public static void waitForJQuery(WebDriver webDriver) {
-        new WebDriverWait(webDriver, 5).until(d -> (boolean)((JavascriptExecutor) d).executeScript("return jQuery.active == 0"));
+        new WebDriverWait(webDriver, 5).until(d -> (boolean) ((JavascriptExecutor) d).executeScript("return jQuery.active === 0"));
     }
 
     public static void waitForMinimalAnimation(WebDriver webDriver) {

@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class MessageDTO extends IssueEventType implements Serializable {
+    private static final long serialVersionUID = 2777213513516432249L;
     private String content;
     private Date createDate;
     private Date editDate;

@@ -3,7 +3,10 @@ package org.hetsold.bugtracker.view.ticket;
 import org.hetsold.bugtracker.dao.util.Contract;
 import org.hetsold.bugtracker.dto.TicketDTO;
 import org.hetsold.bugtracker.service.TicketService;
-import org.hetsold.bugtracker.view.filter.*;
+import org.hetsold.bugtracker.view.filter.ContractBuilder;
+import org.hetsold.bugtracker.view.filter.FieldMaskFilter;
+import org.hetsold.bugtracker.view.filter.FilterComponentBuilder;
+import org.hetsold.bugtracker.view.filter.SortedColumnsContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.jsf.FacesContextUtils;
 
@@ -44,7 +47,7 @@ public class TicketListBean implements Serializable {
     }
 
     public void createOrderFiltersAction() {
-
+        throw new UnsupportedOperationException("not implemented");
     }
 
     private void buildContract() {

@@ -1,9 +1,9 @@
 package org.hetsold.bugtracker.dao;
 
+import org.hetsold.bugtracker.model.AbstractEntity_;
 import org.hetsold.bugtracker.model.SecurityUser;
 import org.hetsold.bugtracker.model.SecurityUser_;
 import org.hetsold.bugtracker.model.User;
-import org.hetsold.bugtracker.model.User_;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
@@ -51,7 +51,7 @@ public class SecurityUserHibernateDAO implements SecurityUserDAO {
             query.select(root.get(SecurityUser_.username));
             return session.createQuery(query).setMaxResults(1).stream().findFirst().isPresent();
         });
-        return result != null ? result : false;
+        return result != null && result;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class SecurityUserHibernateDAO implements SecurityUserDAO {
             CriteriaQuery<SecurityUser> query = builder.createQuery(SecurityUser.class);
             Root<SecurityUser> root = query.from(SecurityUser.class);
             Join<SecurityUser, User> join = root.join(SecurityUser_.user);
-            query.where(builder.equal(join.get(User_.uuid), uuid));
+            query.where(builder.equal(join.get(AbstractEntity_.uuid), uuid));
             query.select(root);
             return session.createQuery(query).getSingleResult();
         });

@@ -1,8 +1,9 @@
 package org.hetsold.bugtracker.dto;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public abstract class AbstractDTO {
+public abstract class AbstractDTO implements Serializable {
     private String uuid;
 
     protected AbstractDTO() {

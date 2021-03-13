@@ -1,6 +1,9 @@
 package org.hetsold.bugtracker.dto.user;
 
-public class RegistrationDataDTO {
+import java.io.Serializable;
+
+public class RegistrationDataDTO implements Serializable {
+    private static final long serialVersionUID = 2936681426040726549L;
     private String login;
     private String password;
     private String email;

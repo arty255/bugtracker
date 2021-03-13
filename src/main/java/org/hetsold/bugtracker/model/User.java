@@ -19,13 +19,10 @@ public class User extends AbstractEntity {
     @OneToMany(mappedBy = "messageCreator", fetch = FetchType.LAZY)
     private List<Message> messageList;
 
-    {
+    public User() {
         reportedIssues = new ArrayList<>();
         assignedIssues = new ArrayList<>();
         messageList = new ArrayList<>();
-    }
-
-    public User() {
     }
 
     public User(String firstName, String lastName) {

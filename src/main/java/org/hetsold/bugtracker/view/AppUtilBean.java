@@ -2,7 +2,8 @@ package org.hetsold.bugtracker.view;
 
 
 import org.hetsold.bugtracker.dao.util.FilterOperation;
-import org.hetsold.bugtracker.dto.*;
+import org.hetsold.bugtracker.dto.IssueEventDTO;
+import org.hetsold.bugtracker.dto.TicketDTO;
 import org.hetsold.bugtracker.dto.user.SecurityUserDetails;
 import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.model.*;
@@ -49,7 +50,7 @@ public class AppUtilBean implements Serializable {
     }
 
     public boolean isMessageInHistory(IssueEventDTO.EventType eventType) {
-        return eventType == IssueEventDTO.EventType.MessageEvent;
+        return eventType == IssueEventDTO.EventType.MESSAGE_EVENT;
     }
 
     public boolean isLoggedInUserAreTicketCreator(TicketDTO ticketDTO) {

@@ -29,11 +29,13 @@ public class MessageServiceImplTest {
     @InjectMocks
     private final MessageServiceImpl messageService = new MessageServiceImpl();
 
-    private static final User savedUser = new User("first name", "last name");
-    private static final Message savedMessage = new Message(savedUser, "messageContent");
+    private User savedUser;
+    private Message savedMessage;
 
     @Before
     public void beforeTest() {
+        savedUser = new User("first name", "last name");
+        savedMessage = new Message(savedUser, "messageContent");
         MockitoAnnotations.openMocks(this);
         Mockito.when(messageDAO.getMessageById(savedMessage.getUuid())).thenReturn(savedMessage);
         Mockito.when(userService.getUser(savedUser)).thenReturn(savedUser);

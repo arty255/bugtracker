@@ -48,10 +48,10 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
 
     private void presetResolveAndVerificationState(Ticket ticket) {
         if (ticket.getResolveState() == null) {
-            ticket.setResolveState(TicketResolveState.NotResolved);
+            ticket.setResolveState(TicketResolveState.NOT_RESOLVED);
         }
         if (ticket.getVerificationState() == null) {
-            ticket.setVerificationState(TicketVerificationState.NotVerified);
+            ticket.setVerificationState(TicketVerificationState.NOT_VERIFIED);
         }
     }
 
@@ -163,8 +163,8 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
         validateNotNullEntityAndUUID(ticket);
         Ticket fetchedTicket = ticketDao.getTicketById(ticket.getUuid());
         validateNotNull(fetchedTicket, TICKET_NOT_PERSISTED);
-        fetchedTicket.setVerificationState(TicketVerificationState.Verified);
-        fetchedTicket.setResolveState(TicketResolveState.Resolving);
+        fetchedTicket.setVerificationState(TicketVerificationState.VERIFIED);
+        fetchedTicket.setResolveState(TicketResolveState.RESOLVING);
     }
 
     @Override

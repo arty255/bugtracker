@@ -1,5 +1,7 @@
 package org.hetsold.bugtracker.model;
 
+import org.hetsold.bugtracker.dao.util.BooleanToStringConverter;
+
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.MappedSuperclass;
@@ -10,7 +12,7 @@ public class ArchivedEntity extends AbstractEntity {
     @Convert(converter = BooleanToStringConverter.class)
     private Boolean archived;
 
-    public ArchivedEntity() {
+    protected ArchivedEntity() {
     }
 
     public Boolean getArchived() {

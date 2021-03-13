@@ -49,7 +49,7 @@ public class AddUserBean implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "new user " + actionResultUser.getUuid() + " added",
                                 "new user " + actionResultUser.getUuid() + " added"));
-            }else {
+            } else {
                 userService.fullUserUpdate(securityUser);
             }
         } catch (IllegalArgumentException e) {

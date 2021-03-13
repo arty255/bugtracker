@@ -1,6 +1,7 @@
 package integration.page;
 
 import org.openqa.selenium.WebDriver;
+
 import static integration.page.PageUtil.waitForPageLoad;
 
 public abstract class AbstractPage {

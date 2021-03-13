@@ -5,6 +5,10 @@ import org.hetsold.bugtracker.dto.AbstractDTO;
 import java.util.UUID;
 
 public class UUIDMapper {
+
+    private UUIDMapper() {
+    }
+
     public static UUID getUUID(AbstractDTO abstractDTO) {
         return getUUID(abstractDTO.getUuid());
     }

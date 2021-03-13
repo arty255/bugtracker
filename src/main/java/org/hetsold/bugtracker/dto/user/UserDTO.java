@@ -3,9 +3,11 @@ package org.hetsold.bugtracker.dto.user;
 import org.hetsold.bugtracker.dto.AbstractDTO;
 import org.hetsold.bugtracker.model.User;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class UserDTO extends AbstractDTO {
+public class UserDTO extends AbstractDTO implements Serializable {
+    private static final long serialVersionUID = 2936687026040726549L;
     private String firstName;
     private String lastName;
     private Date registrationDate;

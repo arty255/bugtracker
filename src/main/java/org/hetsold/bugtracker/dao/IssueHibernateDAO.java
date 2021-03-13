@@ -1,8 +1,8 @@
 package org.hetsold.bugtracker.dao;
 
 import org.hetsold.bugtracker.dao.util.Contract;
+import org.hetsold.bugtracker.model.AbstractEntity_;
 import org.hetsold.bugtracker.model.Issue;
-import org.hetsold.bugtracker.model.Issue_;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
@@ -10,7 +10,9 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.UUID;
 
@@ -73,7 +75,7 @@ public class IssueHibernateDAO implements IssueDAO {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Issue> query = criteriaBuilder.createQuery(Issue.class);
             Root<Issue> root = query.from(Issue.class);
-            query.where(criteriaBuilder.equal(root.get(Issue_.uuid), uuid));
+            query.where(criteriaBuilder.equal(root.get(AbstractEntity_.uuid), uuid));
             TypedQuery<Issue> typedQuery = session.createQuery(query);
             typedQuery.setHint("javax.persistence.loadgraph", issueEntityGraph);
             return typedQuery.getSingleResult();

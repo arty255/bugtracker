@@ -1,5 +1,6 @@
 package org.hetsold.bugtracker.model;
 
+import org.hetsold.bugtracker.dao.util.BooleanToStringConverter;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -36,16 +37,14 @@ public class SecurityUser extends AbstractEntity implements UserDetails {
     private User user;
     private String email;
 
-    {
-        authorities = new HashSet<>();
-    }
-
     public SecurityUser() {
+        authorities = new HashSet<>();
     }
 
     public SecurityUser(String username, String password) {
         this.username = username;
         this.password = password;
+        authorities = new HashSet<>();
     }
 
 

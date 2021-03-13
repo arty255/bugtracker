@@ -30,21 +30,20 @@ public class Ticket extends ArchivedEntity {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "ticket")
     private Issue issue;
 
-    {
-        messageList = new ArrayList<>();
-    }
-
     public Ticket() {
+        messageList = new ArrayList<>();
     }
 
     public Ticket(UUID uuid) {
         this.setUuid(uuid);
+        messageList = new ArrayList<>();
     }
 
     public Ticket(String description, String reproduceSteps, User createdBy) {
         this.description = description;
         this.reproduceSteps = reproduceSteps;
         this.createdBy = createdBy;
+        messageList = new ArrayList<>();
     }
 
     public Ticket(UUID uuid, String description, String reproduceSteps, User createdBy) {

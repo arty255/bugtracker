@@ -1,7 +1,7 @@
 package org.hetsold.bugtracker.view.ticket;
 
-import org.hetsold.bugtracker.dto.user.SecurityUserDetails;
 import org.hetsold.bugtracker.dto.TicketDTO;
+import org.hetsold.bugtracker.dto.user.SecurityUserDetails;
 import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.model.TicketResolveState;
 import org.hetsold.bugtracker.model.TicketVerificationState;
@@ -37,8 +37,8 @@ public class AddTicketBean implements Serializable {
 
     private void initTicket() {
         ticket = new TicketDTO("");
-        ticket.setVerificationState(TicketVerificationState.NotVerified);
-        ticket.setResolveState(TicketResolveState.NotResolved);
+        ticket.setVerificationState(TicketVerificationState.NOT_VERIFIED);
+        ticket.setResolveState(TicketResolveState.NOT_RESOLVED);
         ticket.setProductVersion("");
         ticket.setDescription("");
         ticket.setReproduceSteps("");

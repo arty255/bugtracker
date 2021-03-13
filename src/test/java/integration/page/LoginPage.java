@@ -35,7 +35,7 @@ public class LoginPage extends AbstractPage {
         PageUtil.waitForAjaxAndPage(webDriver);
     }
 
-    public boolean containsErrorMessage(){
+    public boolean containsErrorMessage() {
         PageUtil.waitForVisibility(By.className("ui-messages-error"), webDriver);
         return errorMessage.isDisplayed();
     }

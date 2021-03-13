@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 
 public class UserMapper {
 
+    private UserMapper() {
+    }
+
     public static User getUser(UserDTO userDTO) {
         if (userDTO != null) {
             User user = new User();
