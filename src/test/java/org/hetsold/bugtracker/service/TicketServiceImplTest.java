@@ -37,9 +37,12 @@ public class TicketServiceImplTest {
 
     @Before
     public void beforeTest() {
-        savedUser = new User("testFN", "testLN");
-        savedTicket = new Ticket("ticket description", "steps", savedUser);
-        Message savedMessage = new Message(savedUser, "test message content");
+        savedUser = new User.Builder().withNames("testFN", "testLN").build();
+        savedTicket = new Ticket.Builder().withData("ticket description", "steps").withCreatedBy(savedUser).build();
+        Message savedMessage = new Message.Builder()
+                .withCreator(savedUser)
+                .withContent("test message content")
+                .build();
         MockitoAnnotations.openMocks(this);
         Mockito.when(userService.getUser(savedUser)).thenReturn(savedUser);
         Mockito.when(ticketDao.getTicketById(savedTicket.getUuid())).thenReturn(savedTicket);
@@ -58,19 +61,19 @@ public class TicketServiceImplTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void addTicket_emptyTicketCreatorThrowException() {
-        Ticket ticket = new Ticket(null, "description", "steps", null);
+        Ticket ticket = new Ticket.Builder().withUUID(null).withData("description", "steps").withCreatedBy(null).build();
         ticketService.addTicket(ticket);
     }
 
     @Test(expected = EmptyTicketDescriptionException.class)
     public void addTicket_emptyTicketMessageThrowException() {
-        Ticket ticket = new Ticket(null, "", "steps", savedUser);
+        Ticket ticket = new Ticket.Builder().withUUID(null).withData("", "steps").withCreatedBy(savedUser).build();
         ticketService.addTicket(ticket);
     }
 
     @Test
     public void addTicket_correctSave() {
-        Ticket ticket = new Ticket(null, "description", "steps", savedUser);
+        Ticket ticket = new Ticket.Builder().withUUID(null).withData("description", "steps").withCreatedBy(savedUser).build();
         ticketService.addTicket(ticket);
         ArgumentCaptor<Ticket> ticketArgumentCaptor = ArgumentCaptor.forClass(Ticket.class);
         Mockito.verify(ticketDao).save(ticketArgumentCaptor.capture());
@@ -96,13 +99,13 @@ public class TicketServiceImplTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void updateTicket_NotPersistedTicketThrowException() {
-        Ticket ticket = new Ticket("description", "reproduce", savedUser);
+        Ticket ticket = new Ticket.Builder().withData("description", "reproduce").withCreatedBy(savedUser).build();
         ticketService.updateTicket(ticket, savedUser);
     }
 
     @Test
     public void updateTicket_preformCorrect() {
-        Ticket ticket = new Ticket(savedTicket.getUuid(), "new Description", "reproduce", savedUser);
+        Ticket ticket = new Ticket.Builder().withUUID(savedTicket.getUuid()).withData("new Description", "steps").withCreatedBy(null).build();
         ticketService.updateTicket(ticket, savedUser);
         assertEquals("new Description", savedTicket.getDescription());
     }
@@ -127,7 +130,7 @@ public class TicketServiceImplTest {
 
     @Test
     public void getTicket_returnCorrect() {
-        Ticket argument = new Ticket(savedTicket.getUuid());
+        Ticket argument = new Ticket.Builder().withUUID(savedTicket.getUuid()).build();
         Ticket result = ticketService.getTicket(argument);
         assertEquals(savedTicket.getUuid(), result.getUuid());
     }
@@ -146,13 +149,16 @@ public class TicketServiceImplTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void applyForIssue_notPersistedTicketThrowException() {
-        Ticket ticket = new Ticket("description", "steps", savedUser);
+        Ticket ticket = new Ticket.Builder().withData("description", "steps").withCreatedBy(savedUser).build();
         ticketService.applyForIssue(ticket);
     }
 
     @Test
     public void addTicketMessage_correctAdd() {
-        Message message = new Message(savedUser, "messageContent");
+        Message message = new Message.Builder()
+                .withCreator(savedUser)
+                .withContent("messageContent")
+                .build();
         ticketService.addTicketMessage(savedTicket, message);
         Mockito.verify(messageService, Mockito.atLeastOnce()).saveNewMessage(message);
         assertTrue(savedTicket.getMessageList().contains(message));
@@ -160,14 +166,20 @@ public class TicketServiceImplTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void addTicketMessage_notPersistedTicketThrowException() {
-        Message message = new Message(savedUser, "messageContent");
-        Ticket ticket = new Ticket();
+        Message message = new Message.Builder()
+                .withCreator(savedUser)
+                .withContent("messageContent")
+                .build();
+        Ticket ticket = new Ticket.Builder().build();
         ticketService.addTicketMessage(ticket, message);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void addTicketMessage_nullTicketThrowException() {
-        Message message = new Message(savedUser, "messageContent");
+        Message message = new Message.Builder()
+                .withCreator(savedUser)
+                .withContent("messageContent")
+                .build();
         ticketService.addTicketMessage(null, message);
     }
 }

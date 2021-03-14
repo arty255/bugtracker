@@ -28,7 +28,7 @@ public class UserHibernateDAOTest {
 
     @Test
     public void checkIfUserCanBeFoundById() {
-        User sourceUser = new User("Alex", "Test");
+        User sourceUser = new User.Builder().withNames("Alex", "Test").build();
         userDao.save(sourceUser);
         User resultUser = userDao.getUserByUUID(sourceUser.getUuid());
         assertEquals(sourceUser.getUuid(), resultUser.getUuid());
@@ -36,8 +36,8 @@ public class UserHibernateDAOTest {
 
     @Test
     public void checkIfUsersCountCorrectly() {
-        userDao.save(new User("First", "User"));
-        userDao.save(new User("Second", "User"));
+        userDao.save(new User.Builder().withNames("First", "User").build());
+        userDao.save(new User.Builder().withNames("Second", "User").build());
         //expected added count + 1(added default admin)
         assertEquals(3, userDao.getUsersCount(new Contract(new HashSet<>(), new ArrayList<>())));
     }
@@ -46,10 +46,10 @@ public class UserHibernateDAOTest {
     public void checkIfUsersCanBeFilteredByContract() {
         Contract contract = new Contract(new HashSet<>(), new ArrayList<>());
         contract.getFilters().add(new FieldFilter("firstName", FilterOperation.LIKE, "ob"));
-        userDao.save(new User("Alex", "Test"));
-        userDao.save(new User("Tom", "Test"));
-        userDao.save(new User("Rob", "Test"));
-        userDao.save(new User("Bob", "Test"));
+        userDao.save(new User.Builder().withNames("Alex", "Test").build());
+        userDao.save(new User.Builder().withNames("Tom", "Test").build());
+        userDao.save(new User.Builder().withNames("Rob", "Test").build());
+        userDao.save(new User.Builder().withNames("Bob", "Test").build());
         assertEquals(2, userDao.getUsers(contract, 0, 100).size());
     }
 }

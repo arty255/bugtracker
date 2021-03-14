@@ -34,23 +34,11 @@ public class SecurityUser extends AbstractEntity implements UserDetails {
     private Collection<SecurityUserAuthority> authorities;
     @OneToOne()
     @JoinColumn(name = "userId")
-    private transient User user;
+    private User user;
     private String email;
 
-    public SecurityUser() {
+    protected SecurityUser() {
         authorities = new HashSet<>();
-    }
-
-    public SecurityUser(String username, String password) {
-        this.username = username;
-        this.password = password;
-        authorities = new HashSet<>();
-    }
-
-
-    public SecurityUser(UUID uuid, String username, String password) {
-        this(username, password);
-        this.setUuid(uuid);
     }
 
     public void updateNotSensitiveData(SecurityUser newSecurityUser) {
@@ -145,5 +133,33 @@ public class SecurityUser extends AbstractEntity implements UserDetails {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public static class Builder {
+        private final SecurityUser securityUser;
+
+        public Builder() {
+            securityUser = new SecurityUser();
+        }
+
+        public Builder withNameAndPassword(final String username, final String password) {
+            securityUser.setUsername(username);
+            securityUser.setPassword(password);
+            return this;
+        }
+
+        public Builder withUUID(final UUID uuid) {
+            securityUser.setUuid(uuid);
+            return this;
+        }
+
+        public Builder withEmail(final String email) {
+            securityUser.setEmail(email);
+            return this;
+        }
+
+        public SecurityUser build() {
+            return securityUser;
+        }
     }
 }

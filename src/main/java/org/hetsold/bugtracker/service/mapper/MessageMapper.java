@@ -17,11 +17,12 @@ public final class MessageMapper {
 
     public static Message getMessage(MessageDTO messageDTO) {
         if (messageDTO != null) {
-            Message message = new Message();
-            message.setUuid(UUIDMapper.getUUID(messageDTO));
-            message.setContent(messageDTO.getContent());
+            Message message = new Message.Builder()
+                    .withUUID(UUIDMapper.getUUID(messageDTO))
+                    .withContent(messageDTO.getContent())
+                    .withCreator(UserMapper.getUser(messageDTO.getCreator()))
+                    .build();
             message.setMessageEditor(UserMapper.getUser(messageDTO.getEditor()));
-            message.setMessageCreator(UserMapper.getUser(messageDTO.getCreator()));
             message.setCreateDate(messageDTO.getCreateDate());
             message.setEditDate(messageDTO.getEditDate());
             if (messageDTO.getCreator() != null) {

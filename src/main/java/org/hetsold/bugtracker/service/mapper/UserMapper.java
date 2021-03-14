@@ -17,17 +17,12 @@ public final class UserMapper {
 
     public static User getUser(UserDTO userDTO) {
         if (userDTO != null) {
-            User user = new User();
-            user.setUuid(UUIDMapper.getUUID(userDTO));
-            mapDataFields(userDTO, user);
-            return user;
+            return new User.Builder()
+                    .withUUID(UUIDMapper.getUUID(userDTO))
+                    .withNames(userDTO.getFirstName(), userDTO.getLastName())
+                    .build();
         }
         return null;
-    }
-
-    private static void mapDataFields(UserDTO userDTO, User user) {
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
     }
 
     public static UserDTO getUserDTO(User user) {
@@ -40,11 +35,11 @@ public final class UserMapper {
 
     public static SecurityUser getSecurityUser(FullUserDTO fullUserDTO) {
         if (fullUserDTO != null) {
-            SecurityUser securityUser = new SecurityUser();
-            securityUser.setUuid(UUIDMapper.getUUID(fullUserDTO));
-            securityUser.setUsername(fullUserDTO.getUsername());
-            securityUser.setPassword(fullUserDTO.getPassword());
-            securityUser.setEmail(fullUserDTO.getEmail());
+            SecurityUser securityUser = new SecurityUser.Builder()
+                    .withNameAndPassword(fullUserDTO.getUsername(), fullUserDTO.getPassword())
+                    .withEmail(fullUserDTO.getEmail())
+                    .withUUID(UUIDMapper.getUUID(fullUserDTO))
+                    .build();
             securityUser.setEnabled(fullUserDTO.isEnabled());
             securityUser.setCredentialsNonExpired(fullUserDTO.isCredentialsNonExpired());
             securityUser.setAccountNonLocked(fullUserDTO.isAccountNonLocked());
@@ -57,23 +52,21 @@ public final class UserMapper {
 
     public static SecurityUser getSecurityUser(RegistrationDataDTO registrationDataDTO) {
         if (registrationDataDTO != null) {
-            SecurityUser securityUser = new SecurityUser();
-            securityUser.setUuid(null);
-            securityUser.setUsername(registrationDataDTO.getLogin());
-            securityUser.setPassword(registrationDataDTO.getPassword());
-            securityUser.setEmail(registrationDataDTO.getEmail());
-            return securityUser;
+            return new SecurityUser.Builder()
+                    .withNameAndPassword(registrationDataDTO.getLogin(), registrationDataDTO.getPassword())
+                    .withEmail(registrationDataDTO.getEmail())
+                    .withUUID(null)
+                    .build();
         }
         return null;
     }
 
     public static User getUser(RegistrationDataDTO registrationDataDTO) {
         if (notNullFields(registrationDataDTO)) {
-            User user = new User();
-            user.setUuid(null);
-            user.setFirstName(registrationDataDTO.getFirstName());
-            user.setLastName(registrationDataDTO.getLastName());
-            return user;
+            return new User.Builder()
+                    .withNames(registrationDataDTO.getFirstName(), registrationDataDTO.getLastName())
+                    .withUUID(null)
+                    .build();
         }
         return null;
     }

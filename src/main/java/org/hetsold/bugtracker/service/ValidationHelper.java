@@ -60,7 +60,6 @@ public final class ValidationHelper {
     public static void validateTicketBeforeUpdate(Ticket ticket) {
         validateNotNullEntityAndUUID(ticket);
         validateTicketDescription(ticket);
-        validateNotNullEntityAndUUID(ticket.getCreatedBy());
     }
 
     public static void validateTicketDescription(Ticket ticket) {

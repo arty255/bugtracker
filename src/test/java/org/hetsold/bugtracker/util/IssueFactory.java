@@ -19,15 +19,14 @@ public class IssueFactory {
                 .withIssueNumber("issue number 1")
                 .withCreationTime(new Date())
                 .withProductVersion("product version v0.1")
-                .withDescription("description")
-                .withReproduceSteps("1.step 1, 2.step 2")
+                .withDescriptionAndReproduceSteps("description", "1.step 1, 2.step 2")
                 .build();
         switch (factoryIssueType) {
             case ISSUE_WITH_PERSISTED_USER:
                 issue.setReportedBy(savedUser);
                 break;
             case ISSUE_WITH_NOT_PERSISTED_USER:
-                issue.setReportedBy(new User("test", "test"));
+                issue.setReportedBy(new User.Builder().withNames("test", "test").build());
                 break;
             case ISSUE_ON_BASE_OF_PERSISTED:
                 issue.setReportedBy(savedUser);

@@ -36,9 +36,14 @@ public class IssueEventHibernateDAOTest {
 
     @BeforeClass
     public static void prepareData() {
-        issue = new Issue();
-        user = new User("user_1", "user_1");
-        message = new Message(user, "message content");
+        issue = new Issue.Builder().build();
+        user = new User.Builder()
+                .withNames("user_1", "user_1")
+                .build();
+        message = new Message.Builder()
+                .withCreator(user)
+                .withContent("message content")
+                .build();
     }
 
     @Before

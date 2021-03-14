@@ -19,20 +19,10 @@ public class User extends AbstractEntity {
     @OneToMany(mappedBy = "messageCreator", fetch = FetchType.LAZY)
     private List<Message> messageList;
 
-    public User() {
+    protected User() {
         reportedIssues = new ArrayList<>();
         assignedIssues = new ArrayList<>();
         messageList = new ArrayList<>();
-    }
-
-    public User(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    public User(UUID uuid, String firstName, String lastName) {
-        this(firstName, lastName);
-        this.setUuid(uuid);
     }
 
     @PrePersist
@@ -91,5 +81,33 @@ public class User extends AbstractEntity {
 
     public void setMessageList(List<Message> messageList) {
         this.messageList = messageList;
+    }
+
+    public static class Builder {
+        private final User user;
+
+        public Builder() {
+            user = new User();
+        }
+
+        public Builder withNames(final String firstName, final String lastName) {
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            return this;
+        }
+
+        public Builder withUUID(final UUID uuid) {
+            user.setUuid(uuid);
+            return this;
+        }
+
+        public Builder withRegistrationDate(final Date registrationDate) {
+            user.setRegistrationDate(registrationDate);
+            return this;
+        }
+
+        public User build() {
+            return user;
+        }
     }
 }

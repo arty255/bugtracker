@@ -21,7 +21,9 @@ public class IssueShortDTO extends ArchivedIdentityDTO implements Serializable {
 
     public IssueShortDTO(Issue issue) {
         super();
-        this.setUuid(issue.getUuid().toString());
+        if(issue.getUuid()!=null) {
+            this.setUuid(issue.getUuid().toString());
+        }
         this.issueNumber = issue.getIssueNumber();
         this.description = issue.getDescription();
         this.creationTime = issue.getCreationTime();

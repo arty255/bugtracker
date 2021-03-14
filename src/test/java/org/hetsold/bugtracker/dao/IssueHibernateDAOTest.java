@@ -7,7 +7,6 @@ import org.hetsold.bugtracker.model.User;
 import org.hetsold.bugtracker.util.FactoryIssueType;
 import org.hetsold.bugtracker.util.IssueFactory;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +30,18 @@ public class IssueHibernateDAOTest {
     @Autowired
     private UserDAO userDAO;
 
-    private static final User savedUser = new User("user1", "user1");
-    private static final Issue savedIssue = new Issue("description", "steps", savedUser);
+    private Issue savedIssue;
     private IssueFactory issueFactory;
-
-    @BeforeClass
-    public static void prepareData() {
-
-    }
 
     @Before
     public void prepareUserData() {
+        User savedUser = new User.Builder()
+                .withNames("user1", "user1")
+                .build();
+        savedIssue = new Issue.Builder()
+                .withDescriptionAndReproduceSteps("description", "steps")
+                .withReportedBy(savedUser)
+                .build();
         userDAO.save(savedUser);
         issueDAO.save(savedIssue);
         issueFactory = new IssueFactory(savedIssue, savedUser);

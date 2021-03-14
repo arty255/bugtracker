@@ -20,7 +20,9 @@ public class TicketDTO extends ArchivedIdentityDTO implements Serializable {
     private String issueID;
 
     public TicketDTO(Ticket ticket) {
-        this.setUuid(ticket.getUuid().toString());
+        if (ticket.getUuid() != null) {
+            this.setUuid(ticket.getUuid().toString());
+        }
         this.creationTime = ticket.getCreationTime();
         this.description = ticket.getDescription();
         this.reproduceSteps = ticket.getReproduceSteps();

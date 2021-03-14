@@ -86,7 +86,9 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
 
     private User evaluateUser(User user) {
         if (isUserDataEmpty(user)) {
-            return new User(null, "user " + UUID.randomUUID().toString(), "");
+            return new User.Builder()
+                    .withNames("user:" + UUID.randomUUID().toString(), "")
+                    .build();
         }
         return user;
     }
@@ -291,10 +293,12 @@ public class UserServiceImpl implements UserService, UserServiceInternal, UserDe
         CharacterRule upperCaseRule = new CharacterRule(EnglishCharacterData.UpperCase, 2);
         CharacterRule digitRule = new CharacterRule(EnglishCharacterData.Digit, 2);
         CharacterData specialChars = new CharacterData() {
+            @Override
             public String getErrorCode() {
                 return ERROR_CODE;
             }
 
+            @Override
             public String getCharacters() {
                 if (specialCharsString.isEmpty()) {
                     return "!@#$%^&*()_+";

@@ -12,6 +12,7 @@ import org.hetsold.bugtracker.service.exception.EmptyIssueDescriptionException;
 import org.hetsold.bugtracker.service.exception.EmptyUUIDKeyException;
 import org.hetsold.bugtracker.util.FactoryIssueType;
 import org.hetsold.bugtracker.util.IssueFactory;
+import org.hetsold.bugtracker.util.MessageFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,19 +47,32 @@ public class IssueServiceImplTest {
     private Message savedMessage;
     private Ticket savedTicket;
     private IssueFactory issueFactory;
+    private MessageFactory messageFactory;
 
     @Before
     public void prepareData() {
-        savedUser = new User("Alex", "Tester");
-        savedIssue = new Issue("issue description", "steps", savedUser);
-        savedMessage = new Message(savedUser, "message content");
-        savedTicket = new Ticket("ticket description", "steps", savedUser);
+        savedUser = new User.Builder()
+                .withNames("Alex", "Tester")
+                .build();
+        savedIssue = new Issue.Builder()
+                .withDescriptionAndReproduceSteps("saved issue description", "saved issue steps")
+                .withReportedBy(savedUser)
+                .build();
+        savedMessage = new Message.Builder()
+                .withCreator(savedUser)
+                .withContent("message content")
+                .build();
+        savedTicket = new Ticket.Builder()
+                .withData("ticket description", "steps")
+                .withCreatedBy(savedUser)
+                .build();
         MockitoAnnotations.openMocks(this);
         Mockito.when(userService.getUser(savedUser)).thenReturn(savedUser);
         Mockito.when(issueDAO.getIssueByUUID(savedIssue.getUuid())).thenReturn(savedIssue);
         Mockito.when(messageService.getMessage(savedMessage)).thenReturn(savedMessage);
         Mockito.when(ticketService.getTicket(savedTicket)).thenReturn(savedTicket);
         issueFactory = new IssueFactory(savedIssue, savedUser);
+        messageFactory = new MessageFactory(savedUser, savedUser);
     }
 
     @After
@@ -111,7 +125,7 @@ public class IssueServiceImplTest {
     @Test(expected = IllegalArgumentException.class)
     public void updateIssue_notPersistedEditorThrowException() {
         Issue issue = issueFactory.getIssue(FactoryIssueType.ISSUE_ON_BASE_OF_PERSISTED);
-        User user = new User("testFN", "testLN");
+        User user = new User.Builder().withNames("testFN", "testLN").build();
         issueService.updateIssue(issue, user);
     }
 
@@ -147,7 +161,7 @@ public class IssueServiceImplTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void createIssueFromTicket_notPersistedTicketThrowException() {
-        Ticket ticket = new Ticket();
+        Ticket ticket = new Ticket.Builder().build();
         ticket.setCreatedBy(savedUser);
         issueService.createIssueFromTicket(ticket, savedUser);
     }
@@ -165,7 +179,7 @@ public class IssueServiceImplTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void createIssueFromTicket_notPersistedCreatorThrowException() {
-        User user = new User();
+        User user = new User.Builder().build();
         issueService.createIssueFromTicket(savedTicket, user);
     }
 
@@ -223,7 +237,7 @@ public class IssueServiceImplTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void assignIssueToTicket_notPersistedTicketThrowException() {
-        Ticket ticket = new Ticket("description", "steps", savedUser);
+        Ticket ticket = new Ticket.Builder().withData("description", "steps").withCreatedBy(savedUser).build();
         issueService.linkIssueToTicket(savedIssue, ticket, false);
     }
 
@@ -264,7 +278,7 @@ public class IssueServiceImplTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void changeIssueAssignedUser_notPersistedUserThrowException() {
-        User notPersisted = new User("testFN", "testLN");
+        User notPersisted = new User.Builder().withNames("testFN", "testLN").build();
         issueService.changeIssueAssignedUser(savedIssue, notPersisted, savedUser);
     }
 
@@ -329,29 +343,37 @@ public class IssueServiceImplTest {
     @Test(expected = IllegalArgumentException.class)
     public void addIssueMessage_emptyMessageContentThrowException() {
         IssueDTO issueDTO = new IssueDTO(savedIssue);
-        MessageDTO messageDTO = new MessageDTO(new Message(savedUser, ""));
+        MessageDTO messageDTO = new MessageDTO(messageFactory.getMessage(MessageFactory.MessageType.EMPTY_CONTENT_MESSAGE));
         issueService.addIssueMessage(issueDTO, messageDTO);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void addIssueMessage_notPersistedUserThrowException() {
         IssueDTO issueDTO = new IssueDTO(savedIssue);
-        MessageDTO messageDTO = new MessageDTO(new Message(new User(), "messageContent"));
+        MessageDTO messageDTO = new MessageDTO(messageFactory.getMessage(MessageFactory.MessageType.NOT_PERSISTED_CREATOR));
         issueService.addIssueMessage(issueDTO, messageDTO);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void addIssueMessage_notPersistedIssueThrowException() {
         IssueDTO issueDTO = new IssueDTO(issueFactory.getIssue(FactoryIssueType.ISSUE_WITH_PERSISTED_USER));
-        MessageDTO messageDTO = new MessageDTO(new Message(savedUser, "messageContent"));
+        MessageDTO messageDTO = new MessageDTO(new Message.Builder()
+                .withUUID(null)
+                .withCreator(savedUser)
+                .withContent("messageContent")
+                .build()
+        );
         issueService.addIssueMessage(issueDTO, messageDTO);
     }
 
     @Test
     public void addIssueMessage_correctAdd() {
         IssueDTO issueDTO = new IssueDTO(savedIssue);
-        MessageDTO messageDTO = new MessageDTO(new Message(savedUser, "messageContent"));
-        messageDTO.setUuid("");
+        MessageDTO messageDTO = new MessageDTO(new Message.Builder()
+                .withUUID(null)
+                .withCreator(savedUser)
+                .withContent("messageContent")
+                .build());
         ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
         issueService.addIssueMessage(issueDTO, messageDTO);
         Mockito.verify(historyEventDAO, Mockito.times(1)).saveIssueMessage(Mockito.any());

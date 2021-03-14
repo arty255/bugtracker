@@ -125,12 +125,12 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
 
     private Issue buildIssueFromTicket(Ticket ticket) {
         return new Issue.Builder()
+                .withUUID(null)
                 .withIssueNumber("")
-                .withIssueUuid(null)
-                .withReproduceSteps(ticket.getReproduceSteps())
+                .withDescriptionAndReproduceSteps(ticket.getDescription(), ticket.getReproduceSteps())
                 .withProductVersion(ticket.getProductVersion())
                 .withCreationTime(new Date())
-                .withDescription(ticket.getDescription()).build();
+                .build();
     }
 
     @Override

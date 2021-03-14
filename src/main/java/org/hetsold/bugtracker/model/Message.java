@@ -6,7 +6,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "message")
-public class Message extends ArchivedEntity {
+public class Message extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "messageCreator")
     private User messageCreator;
@@ -16,23 +16,9 @@ public class Message extends ArchivedEntity {
     @JoinColumn(name = "messageEditor")
     private User messageEditor;
     private Date editDate;
+    private Boolean archived;
 
-    public Message() {
-    }
-
-    public Message(User messageCreator, String messageContent) {
-        this.messageCreator = messageCreator;
-        this.content = messageContent;
-    }
-
-    public Message(UUID uuid, String content) {
-        this.setUuid(uuid);
-        this.content = content;
-    }
-
-    public Message(UUID uuid, User messageCreator, String messageContent) {
-        this(messageCreator, messageContent);
-        this.setUuid(uuid);
+    protected Message() {
     }
 
     @PrePersist
@@ -88,5 +74,40 @@ public class Message extends ArchivedEntity {
 
     public void setEditDate(Date editDate) {
         this.editDate = editDate;
+    }
+
+    public Boolean getArchived() {
+        return archived;
+    }
+
+    public void setArchived(Boolean archived) {
+        this.archived = archived;
+    }
+
+    public static class Builder {
+        private final Message message;
+
+        public Builder() {
+            this.message = new Message();
+        }
+
+        public Builder withUUID(UUID uuid) {
+            message.setUuid(uuid);
+            return this;
+        }
+
+        public Builder withCreator(User creator) {
+            message.setMessageCreator(creator);
+            return this;
+        }
+
+        public Builder withContent(String content) {
+            message.setContent(content);
+            return this;
+        }
+
+        public Message build() {
+            return message;
+        }
     }
 }

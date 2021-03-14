@@ -1,5 +1,7 @@
 package org.hetsold.bugtracker.model;
 
+import org.hetsold.bugtracker.dao.util.BooleanToStringConverter;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "ticket")
-public class Ticket extends ArchivedEntity {
+public class Ticket extends AbstractEntity {
     private String description;
     private String reproduceSteps;
     private String productVersion;
@@ -29,26 +31,12 @@ public class Ticket extends ArchivedEntity {
     private List<Message> messageList;
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "ticket")
     private Issue issue;
+    @Column(name = "archived")
+    @Convert(converter = BooleanToStringConverter.class)
+    private Boolean archived;
 
-    public Ticket() {
+    protected Ticket() {
         messageList = new ArrayList<>();
-    }
-
-    public Ticket(UUID uuid) {
-        this.setUuid(uuid);
-        messageList = new ArrayList<>();
-    }
-
-    public Ticket(String description, String reproduceSteps, User createdBy) {
-        this.description = description;
-        this.reproduceSteps = reproduceSteps;
-        this.createdBy = createdBy;
-        messageList = new ArrayList<>();
-    }
-
-    public Ticket(UUID uuid, String description, String reproduceSteps, User createdBy) {
-        this(description, reproduceSteps, createdBy);
-        this.setUuid(uuid);
     }
 
     @PrePersist
@@ -143,5 +131,41 @@ public class Ticket extends ArchivedEntity {
 
     public void setIssue(Issue issue) {
         this.issue = issue;
+    }
+
+    public Boolean getArchived() {
+        return archived;
+    }
+
+    public void setArchived(Boolean archived) {
+        this.archived = archived;
+    }
+
+    public static class Builder {
+        private final Ticket ticket;
+
+        public Builder() {
+            this.ticket = new Ticket();
+        }
+
+        public Builder withData(final String description, final String reproduceSteps) {
+            ticket.setDescription(description);
+            ticket.setReproduceSteps(reproduceSteps);
+            return this;
+        }
+
+        public Builder withUUID(final UUID uuid) {
+            ticket.setUuid(uuid);
+            return this;
+        }
+
+        public Builder withCreatedBy(User createdBy) {
+            ticket.setCreatedBy(createdBy);
+            return this;
+        }
+
+        public Ticket build() {
+            return ticket;
+        }
     }
 }

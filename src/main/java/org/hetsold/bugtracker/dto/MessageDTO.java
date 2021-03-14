@@ -22,7 +22,9 @@ public class MessageDTO extends IssueEventType implements Serializable {
     }
 
     public MessageDTO(Message message) {
-        this.setUuid(message.getUuid().toString());
+        if (message.getUuid() != null) {
+            this.setUuid(message.getUuid().toString());
+        }
         this.content = message.getContent();
         this.createDate = message.getCreateDate();
         this.editDate = message.getEditDate();

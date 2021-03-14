@@ -13,7 +13,7 @@ public class TicketFactory {
     }
 
     public Ticket getTicket(TicketFactoryTicketType ticketFactoryTicketType) {
-        Ticket ticket = new Ticket();
+        Ticket ticket = new Ticket.Builder().build();
         ticket.setCreationTime(new Date());
         ticket.setDescription("description");
         ticket.setCreatedBy(user);

@@ -3,46 +3,49 @@ package org.hetsold.bugtracker.util;
 import org.hetsold.bugtracker.model.Message;
 import org.hetsold.bugtracker.model.User;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 
-public class MessageFactory {
-    private final User user;
+public final class MessageFactory {
+    private final User messageCreator;
+    private final User messageEditor;
 
-    public MessageFactory(User user) {
-        this.user = user;
+    public MessageFactory(User messageCreator, User messageEditor) {
+        this.messageCreator = messageCreator;
+        this.messageEditor = messageEditor;
     }
 
-    public synchronized Message getMessage(MessageFactoryCreatedMessageType createdMessageType) {
-        Message message = new Message();
-        message.setContent("correct content");
+    public synchronized Message getMessage(MessageType createdMessageType) {
+        Message message = new Message.Builder()
+                .withContent("correct content")
+                .withCreator(messageCreator)
+                .build();
         message.setCreateDate(new Date());
-        message.setMessageCreator(user);
         switch (createdMessageType) {
-            case IncorrectNullMessage:
+            case NULL_MESSAGE:
                 message = null;
                 break;
-            case IncorrectNullContentMessage:
+            case EMPTY_CONTENT_MESSAGE:
                 message.setContent("");
                 break;
-            case IncorrectNullCreator:
+            case NULL_CREATOR_MESSAGE:
                 message.setMessageCreator(null);
                 break;
-            case IncorrectNullDateMessage:
-                message.setCreateDate(null);
+            case NEW_MESSAGE_WITH_EDITOR:
+                message.setMessageEditor(messageEditor);
                 break;
-            case CorrectMessage:
-                break;
-            case CorrectMessageNow:
-                break;
-            case CorrectMessageMinusTwoDays:
-                message.setCreateDate(Date.from(LocalDateTime.now().minusDays(2).atZone(ZoneId.systemDefault()).toInstant()));
-                break;
-            case CorrectMessageMinusFiveDays:
-                message.setCreateDate(Date.from(LocalDateTime.now().minusDays(5).atZone(ZoneId.systemDefault()).toInstant()));
+            case NOT_PERSISTED_CREATOR:
+                message.setMessageCreator(new User.Builder().withNames("not persisted", "not persisted").build());
                 break;
         }
         return message;
+    }
+
+    public enum MessageType {
+        NEW_MESSAGE,
+        NEW_MESSAGE_WITH_EDITOR,
+        NULL_MESSAGE,
+        EMPTY_CONTENT_MESSAGE,
+        NULL_CREATOR_MESSAGE,
+        NOT_PERSISTED_CREATOR
     }
 }

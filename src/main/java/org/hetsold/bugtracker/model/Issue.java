@@ -1,8 +1,6 @@
 package org.hetsold.bugtracker.model;
 
-/*
- * A Issue object describe basic data about issue
- */
+import org.hetsold.bugtracker.dao.util.BooleanToStringConverter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -67,7 +65,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "issue")
-public class Issue extends ArchivedEntity {
+public class Issue extends AbstractEntity {
     private String issueNumber;
     private String description;
     private Date creationTime;
@@ -97,25 +95,12 @@ public class Issue extends ArchivedEntity {
             joinColumns = @JoinColumn(name = "issueId", referencedColumnName = "uuid"),
             inverseJoinColumns = @JoinColumn(name = "ticketId", referencedColumnName = "uuid"))
     private Ticket ticket;
+    @Column(name = "archived")
+    @Convert(converter = BooleanToStringConverter.class)
+    private Boolean archived;
 
-    public Issue() {
+    protected Issue() {
         history = new ArrayList<>();
-    }
-
-    public Issue(String description, String reproduceSteps) {
-        this.description = description;
-        this.reproduceSteps = reproduceSteps;
-    }
-
-    public Issue(String description, String reproduceSteps, User reportedBy) {
-        this.description = description;
-        this.reproduceSteps = reproduceSteps;
-        this.reportedBy = reportedBy;
-    }
-
-    public Issue(UUID uuid, String description, String reproduceSteps, User reportedBy) {
-        this(description, reproduceSteps, reportedBy);
-        this.setUuid(uuid);
     }
 
     @PrePersist
@@ -130,7 +115,7 @@ public class Issue extends ArchivedEntity {
         this.reproduceSteps = newIssue.getReproduceSteps();
         this.existedResult = newIssue.getExistedResult();
         this.expectedResult = newIssue.getExpectedResult();
-        this.setArchived(newIssue.getArchived());
+        this.archived = newIssue.archived;
     }
 
     public String getIssueNumber() {
@@ -245,85 +230,70 @@ public class Issue extends ArchivedEntity {
         this.ticket = ticket;
     }
 
+    public Boolean getArchived() {
+        return archived;
+    }
+
+    public void setArchived(Boolean archived) {
+        this.archived = archived;
+    }
+
     public static class Builder {
-        private final Issue newIssue;
+        private final Issue issue;
 
         public Builder() {
-            newIssue = new Issue();
+            issue = new Issue();
         }
 
-        public Builder withIssueEmpty() {
-            newIssue.setUuid(null);
+        public Builder withUUID(final UUID uuid) {
+            issue.setUuid(uuid);
             return this;
         }
 
-        public Builder withIssueUuid(UUID issueUuid) {
-            newIssue.setUuid(issueUuid);
+        public Builder withIssueNumber(final String issueNumber) {
+            issue.setIssueNumber(issueNumber);
             return this;
         }
 
-        public Builder withIssueNumber(String issueNumber) {
-            newIssue.setIssueNumber(issueNumber);
-            return this;
-        }
-
-        public Builder withDescription(String description) {
-            newIssue.setDescription(description);
-            return this;
-        }
-
-        public Builder withReproduceSteps(String reproduceSteps) {
-            newIssue.setReproduceSteps(reproduceSteps);
+        public Builder withDescriptionAndReproduceSteps(final String description, final String reproduceSteps) {
+            issue.setDescription(description);
+            issue.setReproduceSteps(reproduceSteps);
             return this;
         }
 
         public Builder withProductVersion(String productVersion) {
-            newIssue.setProductVersion(productVersion);
+            issue.setProductVersion(productVersion);
             return this;
         }
 
         public Builder withReportedBy(User reportedBy) {
-            newIssue.setReportedBy(reportedBy);
+            issue.setReportedBy(reportedBy);
             return this;
         }
 
         public Builder withCreationTime(Date creationTime) {
-            newIssue.setCreationTime(creationTime);
+            issue.setCreationTime(creationTime);
             return this;
         }
 
-        public Builder withIssueExistedResult(String existedResult) {
-            newIssue.setExistedResult(existedResult);
-            return this;
-        }
-
-        public Builder withIssueExpectedResult(String expectedResult) {
-            newIssue.setExpectedResult(expectedResult);
+        public Builder withIssueExistedAndExpectedResults(final String existedResult, final String expectedResult) {
+            issue.setExistedResult(existedResult);
+            issue.setExpectedResult(expectedResult);
             return this;
         }
 
         public Builder withIssueSeverity(Severity issueSeverity) {
-            newIssue.setSeverity(issueSeverity);
-            return this;
-        }
-
-        public Builder withFixVersion(String fixVersion) {
-            newIssue.setFixVersion(fixVersion);
+            issue.setSeverity(issueSeverity);
             return this;
         }
 
         public Builder withIssueState(IssueState issueState) {
-            newIssue.setCurrentIssueState(issueState);
-            return this;
-        }
-
-        public Builder wittArchived(Boolean archived) {
-            newIssue.setArchived(archived);
+            issue.setCurrentIssueState(issueState);
             return this;
         }
 
         public Issue build() {
-            return newIssue;
+            return issue;
         }
     }
 }
