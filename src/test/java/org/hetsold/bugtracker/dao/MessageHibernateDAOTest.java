@@ -58,6 +58,6 @@ public class MessageHibernateDAOTest {
         messageDAO.save(message);
         messageDAO.delete(message);
         List<Message> messageList = messageDAO.loadAll();
-        assertEquals(messageList.size(), 0);
+        assertEquals("incorrect size", 0, messageList.size());
     }
 }

@@ -52,14 +52,14 @@ public class IssueHibernateDAOTest {
         Issue issue = issueFactory.getIssue(FactoryIssueType.ISSUE_WITH_PERSISTED_USER);
         issueDAO.save(issue);
         List<Issue> issues = issueDAO.getIssueList(null, 0, 100);
-        assertEquals(issues.size(), 2);
+        assertEquals("incorrect issues count after save", 2, issues.size());
     }
 
     @Test
     public void checkIfIssueCanBeDeleted() {
         issueDAO.delete(savedIssue);
         List<Issue> issues = issueDAO.getIssueList(null, 0, 100);
-        assertEquals(issues.size(), 0);
+        assertEquals("incorrect issues count after delete", 0, issues.size());
     }
 
     @Test

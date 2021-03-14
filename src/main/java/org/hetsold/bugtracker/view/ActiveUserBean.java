@@ -11,6 +11,7 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class ActiveUserBean {
     private static final String ANONYMOUS_USER = "anonymousUser";
+
     public UserDTO getActiveUser() {
         if (!ANONYMOUS_USER.equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
             return ((SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserDTO();

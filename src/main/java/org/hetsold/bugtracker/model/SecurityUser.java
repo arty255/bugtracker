@@ -34,7 +34,7 @@ public class SecurityUser extends AbstractEntity implements UserDetails {
     private Collection<SecurityUserAuthority> authorities;
     @OneToOne()
     @JoinColumn(name = "userId")
-    private User user;
+    private transient User user;
     private String email;
 
     public SecurityUser() {

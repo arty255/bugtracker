@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public abstract class AbstractDTO implements Serializable {
-    private static final long serialVersionUID = -4039508287740280632L;
     private String uuid;
 
     protected AbstractDTO() {
