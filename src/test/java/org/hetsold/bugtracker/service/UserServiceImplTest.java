@@ -5,14 +5,12 @@ import org.hetsold.bugtracker.TestAppConfig;
 import org.hetsold.bugtracker.dao.SecurityUserDAO;
 import org.hetsold.bugtracker.dao.UserDAO;
 import org.hetsold.bugtracker.dto.user.FullUserDTO;
+import org.hetsold.bugtracker.dto.user.RegistrationDataDTO;
 import org.hetsold.bugtracker.dto.user.UserDTO;
 import org.hetsold.bugtracker.model.SecurityUser;
 import org.hetsold.bugtracker.model.SecurityUserAuthority;
 import org.hetsold.bugtracker.model.User;
-import org.hetsold.bugtracker.service.exception.ContentMismatchException;
-import org.hetsold.bugtracker.service.exception.EmailFormatException;
-import org.hetsold.bugtracker.service.exception.EmptySecurityUserDataException;
-import org.hetsold.bugtracker.service.exception.TakenLoginException;
+import org.hetsold.bugtracker.service.exception.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.validateMockitoUsage;
@@ -56,6 +55,34 @@ public class UserServiceImplTest {
     @After
     public void validate() {
         validateMockitoUsage();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void registerByData_nullDataThrowException() {
+        userService.registerByData(null);
+    }
+
+    @Test(expected = EmptySecurityUserDataException.class)
+    public void registerByData_emptyDataThrowException() {
+        RegistrationDataDTO registrationDataDTO = new RegistrationDataDTO("", "", "");
+        userService.registerByData(registrationDataDTO);
+    }
+
+    @Test(expected = TakenLoginException.class)
+    public void registerByData_takenLoginThrowException() {
+        RegistrationDataDTO registrationDataDTO = new RegistrationDataDTO(savedSecurityUser.getUsername(), "test11", "Im taken login");
+        userService.registerByData(registrationDataDTO);
+    }
+
+    @Test
+    public void registerByData_correctRegistration() {
+        String firstName = "name" + UUID.randomUUID().toString();
+        RegistrationDataDTO registrationDataDTO = new RegistrationDataDTO("Login" + UUID.randomUUID().toString(),
+                "pass11", firstName);
+        userService.registerByData(registrationDataDTO);
+        ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
+        Mockito.verify(userDAO).save(userArgumentCaptor.capture());
+        assertEquals(firstName, userArgumentCaptor.getValue().getFirstName());
     }
 
     @Test(expected = TakenLoginException.class)
@@ -112,6 +139,55 @@ public class UserServiceImplTest {
         user.setFirstName("edited");
         userService.updateUser(user);
         assertEquals("edited", savedUser.getFirstName());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void fullUserUpdate_nullSecurityUserThrowException() {
+        userService.fullUserUpdate(null);
+    }
+
+    @Test(expected = EmptyUUIDKeyException.class)
+    public void fullUserUpdate_emptySecurityUserThrowException() {
+        FullUserDTO fullUserDTO = new FullUserDTO(savedSecurityUser);
+        fullUserDTO.setUuid("");
+        userService.fullUserUpdate(fullUserDTO);
+    }
+
+    @Test(expected = EmailFormatException.class)
+    public void fullUserUpdate_wrongEmailSecurityUserThrowException() {
+        FullUserDTO fullUserDTO = new FullUserDTO(savedSecurityUser);
+        fullUserDTO.setEmail("dasdfa#fdsds.com");
+        userService.fullUserUpdate(fullUserDTO);
+    }
+
+    @Test(expected = TakenLoginException.class)
+    public void fullUserUpdate_takenLoginThrowException() {
+        String newLogin = "newLogin";
+        Mockito.when(securityUserDAO.isLoginTaken(newLogin)).thenReturn(true);
+        FullUserDTO fullUserDTO = new FullUserDTO(savedSecurityUser);
+        fullUserDTO.setEmail("");
+        fullUserDTO.setUsername(newLogin);
+        userService.fullUserUpdate(fullUserDTO);
+    }
+
+    @Test
+    public void fullUserUpdate_correctUpdate() {
+        String newUserName = "new Name " + UUID.randomUUID().toString();
+        User updatedUser = new User.Builder()
+                .withUUID(savedUser.getUuid())
+                .withNames(newUserName, "test")
+                .build();
+        String newLogin = "newLogin" + UUID.randomUUID().toString();
+        SecurityUser updatedSecurityUser = new SecurityUser.Builder()
+                .withUUID(savedSecurityUser.getUuid())
+                .withNameAndPassword(newLogin, "123456")
+                .withEmail("test@email.com")
+                .build();
+        updatedSecurityUser.setUser(updatedUser);
+        FullUserDTO fullUserDTO = new FullUserDTO(updatedSecurityUser);
+        userService.fullUserUpdate(fullUserDTO);
+        assertEquals(newLogin, savedSecurityUser.getUsername());
+        assertEquals(newUserName, savedUser.getFirstName());
     }
 
     @Test

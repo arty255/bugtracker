@@ -48,11 +48,11 @@ public class SecurityUser extends AbstractEntity implements UserDetails {
         this.setCredentialsNonExpired(newSecurityUser.isCredentialsNonExpired());
         this.setAuthorities(newSecurityUser.getAuthorities());
         this.setEmail(newSecurityUser.getEmail());
+        this.setUsername(newSecurityUser.getUsername());
     }
 
     public void fullUpdate(SecurityUser securityUser) {
         updateNotSensitiveData(securityUser);
-        this.setUsername(securityUser.getUsername());
         this.setPassword(securityUser.getPassword());
     }
 

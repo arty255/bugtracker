@@ -19,7 +19,8 @@ public class FullUserDTO extends AbstractDTO implements UserDetails, Serializabl
     private boolean credentialsNonExpired;
     private Collection<SecurityUserAuthority> authorities = new ArrayList<>();
     private String email;
-    private UserDTO userDTO;
+    private String firstName;
+    private String lastName;
 
     public FullUserDTO() {
     }
@@ -34,7 +35,8 @@ public class FullUserDTO extends AbstractDTO implements UserDetails, Serializabl
         this.authorities.addAll(securityUser.getAuthorities());
         this.email = securityUser.getEmail();
         if (securityUser.getUser() != null) {
-            this.userDTO = new UserDTO(securityUser.getUser());
+            this.firstName = securityUser.getUser().getFirstName();
+            this.lastName = securityUser.getUser().getLastName();
         }
     }
 
@@ -73,10 +75,6 @@ public class FullUserDTO extends AbstractDTO implements UserDetails, Serializabl
         return enabled;
     }
 
-    public UserDTO getUserDTO() {
-        return userDTO;
-    }
-
     public void setUsername(String username) {
         this.username = username;
     }
@@ -113,7 +111,19 @@ public class FullUserDTO extends AbstractDTO implements UserDetails, Serializabl
         this.email = email;
     }
 
-    public void setUserDTO(UserDTO userDTO) {
-        this.userDTO = userDTO;
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }

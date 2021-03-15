@@ -92,7 +92,7 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
         Issue oldIssue = getIssue(issue);
         validateNotNull(oldIssue, ISSUE_NOT_PERSISTED);
         User fetchedUser = userService.getUser(user);
-        validateNotNull(fetchedUser, "user is not persisted");
+        validateNotNull(fetchedUser, USER_NOT_PERSISTED);
         oldIssue.update(issue);
         return oldIssue;
     }
@@ -109,9 +109,9 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
     @Transactional(propagation = Propagation.REQUIRED)
     public Issue createIssueFromTicket(Ticket ticket, User user) {
         User fetchedUser = userService.getUser(user);
-        validateNotNull(fetchedUser, "user can not be not persisted");
+        validateNotNull(fetchedUser, USER_NOT_PERSISTED);
         Ticket fetchedTicket = ticketService.getTicket(ticket);
-        validateNotNull(fetchedTicket, "ticket can not be not persisted");
+        validateNotNull(fetchedTicket, TICKET_NOT_PERSISTED);
         if (fetchedTicket.getIssue() != null) {
             throw new IllegalArgumentException("issue for this ticket is already created");
         }
@@ -313,9 +313,9 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
             validateNotNull(fetchedAssignedUser, "assigned user is not persisted");
         }
         Issue fetchedIssue = getIssue(issue);
-        validateNotNull(fetchedIssue, "issue is not persisted");
+        validateNotNull(fetchedIssue, ISSUE_NOT_PERSISTED);
         User fetchedUser = userService.getUser(user);
-        validateNotNull(fetchedUser, "user is not persisted");
+        validateNotNull(fetchedUser, USER_NOT_PERSISTED);
         if (isAssignedUserChanged(fetchedIssue, fetchedAssignedUser)) {
             processAssignation(fetchedIssue, fetchedAssignedUser, fetchedUser);
         }
@@ -397,7 +397,7 @@ public class IssueServiceImpl implements IssueService, IssueServiceInternal {
     public void addIssueMessage(Issue issue, Message message) {
         validateMessageBeforeSave(message);
         Issue fetchedIssue = getIssue(issue);
-        validateNotNull(fetchedIssue, "issue is not persisted");
+        validateNotNull(fetchedIssue, ISSUE_NOT_PERSISTED);
         validateNotNull(message.getMessageCreator(), "message creator can not be null");
         messageService.saveNewMessage(message);
         generateAndSaveMessageEvent(fetchedIssue, message);

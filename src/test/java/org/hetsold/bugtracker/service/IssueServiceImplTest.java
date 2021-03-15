@@ -282,6 +282,28 @@ public class IssueServiceImplTest {
         issueService.changeIssueAssignedUser(savedIssue, notPersisted, savedUser);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void changeIssueAssignedUser_fixedIssueThrowException() {
+        savedIssue.setCurrentIssueState(IssueState.FIXED);
+        issueService.changeIssueAssignedUser(savedIssue, savedUser, savedUser);
+    }
+
+    @Test
+    public void changeIssueAssignedUser_correctChangeOnOpenState() {
+        savedIssue.setAssignedTo(null);
+        savedIssue.setCurrentIssueState(IssueState.OPEN);
+        issueService.changeIssueAssignedUser(savedIssue, savedUser, savedUser);
+        assertEquals(savedUser, savedIssue.getAssignedTo());
+    }
+
+    @Test
+    public void changeIssueAssignedUser_correctChangeOnReOpenState() {
+        savedIssue.setAssignedTo(null);
+        savedIssue.setCurrentIssueState(IssueState.REOPEN);
+        issueService.changeIssueAssignedUser(savedIssue, savedUser, savedUser);
+        assertEquals(savedUser, savedIssue.getAssignedTo());
+    }
+
     @Test
     public void changeIssueArchiveState_correctChange() {
         issueService.changeIssueArchiveState(savedIssue, false);

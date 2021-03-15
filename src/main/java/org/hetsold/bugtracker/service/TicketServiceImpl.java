@@ -86,7 +86,6 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
         return TicketMapper.getTicketDTO(ticket);
     }
 
-    //@Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<Ticket> getTickets(Contract contract, int startPosition, int limit) {
         return ticketDao.getTickets(contract, startPosition, limit);
@@ -117,7 +116,6 @@ public class TicketServiceImpl implements TicketService, TicketServiceInternal {
         return TicketMapper.getTicketDTOList(getTicketListReportedByUser(UserMapper.getUser(userDTO), contract, startPosition, limit));
     }
 
-    //@Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public long getTicketCountReportedByUser(User user, Contract contract) {
         validateNotNullEntityAndUUID(user);

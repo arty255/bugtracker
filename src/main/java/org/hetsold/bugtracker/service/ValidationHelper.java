@@ -88,6 +88,9 @@ public final class ValidationHelper {
     }
 
     public static void validateEmail(String email) {
+        if(email == null){
+            throw new EmailFormatException();
+        }
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
         if (!email.isEmpty() && !matcher.find()) {
             throw new EmailFormatException();

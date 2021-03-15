@@ -64,7 +64,6 @@ public class AddUserBean implements Serializable {
 
     public void initNewUser() {
         securityUser = new FullUserDTO();
-        securityUser.setUserDTO(new UserDTO(""));
         registrationAction = true;
     }
 
@@ -97,6 +96,7 @@ public class AddUserBean implements Serializable {
 
     public void onTabChangeListener(TabChangeEvent<?> event) {
         if (!registrationAction && isActiveTabCredentialsTab(event)) {
+            throw new UnsupportedOperationException("not implemented");
             //securityUser = securityService.getSecurityUserByUserUuid(user.getUuid());
         }
     }
